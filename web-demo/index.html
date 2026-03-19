@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wish House - Chapter 1: That'll Be 1 Button.</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="game-container">
+
+    <!-- Title Screen -->
+    <div id="title-screen">
+        <h1>Wish House</h1>
+        <div class="subtitle">Chapter 1</div>
+        <div class="episode-title">"That'll Be 1 Button."</div>
+        <button id="start-btn">Begin</button>
+    </div>
+
+    <!-- Scene Area -->
+    <div id="scene">
+        <!-- Background placeholder -->
+        <div id="scene-bg"></div>
+
+        <!-- Character sprite areas -->
+        <div id="character-left"></div>
+        <div id="character-right"></div>
+
+        <!-- Choice panel -->
+        <div id="choice-panel"></div>
+
+        <!-- Dialogue box -->
+        <div id="dialogue-box">
+            <div id="speaker-name"></div>
+            <div id="dialogue-text"></div>
+            <div id="advance-indicator">Click or press Space to continue</div>
+        </div>
+    </div>
+
+    <!-- Fade overlay -->
+    <div id="fade-overlay"></div>
+
+    <!-- Episode complete screen -->
+    <div id="episode-complete">
+        <h2>Episode 1 Complete</h2>
+        <p>"That'll Be 1 Button."</p>
+        <p id="choice-summary"></p>
+        <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem;">To be continued in Episode 2: "Help Wanted, No Experience Required?"</p>
+        <button id="restart-btn">Replay Episode</button>
+    </div>
+
+</div>
+
+<script src="js/game.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,392 @@
+/* ============================================
+   Wish House Visual Novel - Web Demo Styles
+   Art Direction: 2D watercolour, Barbie My Scene
+   Palette: cream, soft peach, milk tea browns,
+            dusty rose, gold, pale mint glow
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --cream: #FFF8F0;
+    --soft-peach: #FDDCBA;
+    --blush: #F4B8C1;
+    --milk-tea: #C8A882;
+    --cocoa: #8B4513;
+    --dusty-rose: #C48B9F;
+    --gold: #D4A843;
+    --soft-yellow: #F5E6A3;
+    --pale-mint: #C8E6D0;
+    --warm-white: #FFF5EB;
+    --text-dark: #4A3728;
+    --text-light: #7A6455;
+    --shadow: rgba(74, 55, 40, 0.15);
+}
+
+body {
+    background: linear-gradient(135deg, var(--cream) 0%, var(--soft-peach) 50%, var(--cream) 100%);
+    font-family: 'Quicksand', sans-serif;
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* ---- Game Container ---- */
+#game-container {
+    width: 900px;
+    max-width: 95vw;
+    height: 600px;
+    max-height: 90vh;
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px var(--shadow), 0 2px 8px rgba(0,0,0,0.08);
+    background: var(--warm-white);
+}
+
+/* ---- Title Screen ---- */
+#title-screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, var(--cream) 0%, var(--soft-peach) 60%, var(--blush) 100%);
+    z-index: 100;
+    transition: opacity 0.8s ease;
+}
+
+#title-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#title-screen h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    color: var(--cocoa);
+    text-shadow: 0 2px 4px var(--shadow);
+    margin-bottom: 0.25rem;
+}
+
+#title-screen .subtitle {
+    font-size: 1rem;
+    color: var(--dusty-rose);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+#title-screen .episode-title {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--gold);
+    margin-bottom: 2rem;
+}
+
+#start-btn {
+    padding: 14px 48px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--warm-white);
+    background: linear-gradient(135deg, var(--dusty-rose), var(--blush));
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(196, 139, 159, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(196, 139, 159, 0.55);
+}
+
+/* ---- Scene Area ---- */
+#scene {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--cream) 0%, var(--soft-peach) 70%, var(--blush) 100%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+/* Background illustration placeholder */
+#scene-bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.15;
+    font-size: 6rem;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* ---- Character Sprites ---- */
+#character-left, #character-right {
+    position: absolute;
+    bottom: 180px;
+    width: 180px;
+    height: 260px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    transition: opacity 0.4s, transform 0.4s;
+}
+
+#character-left {
+    left: 60px;
+}
+
+#character-right {
+    right: 60px;
+}
+
+.character-placeholder {
+    width: 120px;
+    height: 220px;
+    border-radius: 60px 60px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--warm-white);
+    text-align: center;
+    padding: 8px;
+    box-shadow: 0 4px 12px var(--shadow);
+    transition: opacity 0.3s, filter 0.3s;
+}
+
+.character-placeholder.dimmed {
+    opacity: 0.4;
+    filter: grayscale(30%);
+}
+
+.character-placeholder .char-icon {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+}
+
+.char-kit {
+    background: linear-gradient(180deg, #2C1810 20%, var(--gold) 100%);
+}
+
+.char-claire {
+    background: linear-gradient(180deg, #5A3E4A 20%, var(--dusty-rose) 100%);
+}
+
+.char-edward {
+    background: linear-gradient(180deg, #3A1A4A 20%, var(--cocoa) 100%);
+}
+
+/* ---- Dialogue Box ---- */
+#dialogue-box {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    min-height: 170px;
+    background: linear-gradient(180deg, rgba(255,248,240,0.95) 0%, rgba(253,220,186,0.97) 100%);
+    border-top: 3px solid var(--blush);
+    padding: 20px 30px 24px;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.3s;
+}
+
+#dialogue-box.narrator-mode {
+    background: linear-gradient(180deg, rgba(74,55,40,0.9) 0%, rgba(74,55,40,0.95) 100%);
+    border-top-color: var(--gold);
+}
+
+/* Speaker name */
+#speaker-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    min-height: 1.3em;
+}
+
+.speaker-kit       { color: var(--gold); }
+.speaker-edward    { color: var(--cocoa); }
+.speaker-claire    { color: var(--dusty-rose); }
+.speaker-narrator  { color: var(--text-light); font-style: italic; }
+.speaker-stage     { color: #999; font-style: italic; }
+
+/* Dialogue text */
+#dialogue-text {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--text-dark);
+    min-height: 3.3em;
+}
+
+#dialogue-box.narrator-mode #dialogue-text {
+    color: var(--cream);
+    font-style: italic;
+}
+
+/* Advance indicator */
+#advance-indicator {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    opacity: 0;
+    transition: opacity 0.3s;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+#advance-indicator.visible {
+    opacity: 0.7;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}
+
+/* ---- Choice Panel ---- */
+#choice-panel {
+    position: absolute;
+    bottom: 180px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s;
+}
+
+#choice-panel.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.choice-btn {
+    padding: 14px 32px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    background: linear-gradient(135deg, var(--warm-white), var(--cream));
+    border: 2px solid var(--blush);
+    border-radius: 24px;
+    cursor: pointer;
+    min-width: 340px;
+    text-align: center;
+    box-shadow: 0 3px 12px var(--shadow);
+    transition: transform 0.15s, background 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.choice-btn:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, var(--soft-peach), var(--blush));
+    border-color: var(--dusty-rose);
+    box-shadow: 0 5px 18px rgba(196,139,159,0.35);
+}
+
+/* ---- Fade Overlay ---- */
+#fade-overlay {
+    position: absolute;
+    inset: 0;
+    background: #2C1810;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+    z-index: 200;
+}
+
+#fade-overlay.active {
+    opacity: 1;
+}
+
+/* ---- Episode Complete Screen ---- */
+#episode-complete {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, var(--cream) 0%, var(--soft-peach) 60%, var(--blush) 100%);
+    z-index: 150;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s;
+}
+
+#episode-complete.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#episode-complete h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--cocoa);
+    margin-bottom: 0.5rem;
+}
+
+#episode-complete p {
+    color: var(--dusty-rose);
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+#restart-btn {
+    padding: 12px 36px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--warm-white);
+    background: linear-gradient(135deg, var(--dusty-rose), var(--blush));
+    border: none;
+    border-radius: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(196,139,159,0.4);
+    transition: transform 0.2s;
+}
+
+#restart-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 640px) {
+    #game-container {
+        width: 100vw;
+        height: 100vh;
+        max-width: 100vw;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+
+    #title-screen h1 { font-size: 2rem; }
+    #dialogue-box { padding: 16px 20px 20px; min-height: 150px; }
+    .choice-btn { min-width: 260px; font-size: 0.85rem; padding: 12px 24px; }
+    #character-left { left: 10px; }
+    #character-right { right: 10px; }
+    .character-placeholder { width: 90px; height: 170px; }
+}
