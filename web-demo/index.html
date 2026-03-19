@@ -6,6 +6,7 @@
     <title>Wish House</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/journal.css">
+    <link rel="stylesheet" href="css/cafe.css">
 </head>
 <body>
 
@@ -104,10 +105,102 @@
         </div>
     </div>
 
+    <!-- ═══════ CAFE GAME (Shift Gameplay) ═══════ -->
+    <div id="cafe-screen" class="hidden-screen">
+
+        <!-- Shift intro overlay -->
+        <div id="shift-intro">
+            <h2 id="shift-intro-title">Shift 1</h2>
+            <p id="shift-intro-desc">Your first day! Kit guides you through making simple drinks and snacks.</p>
+            <div id="shift-intro-goal">Serve <strong>5</strong> successful dishes to complete the shift.</div>
+            <button id="shift-start-btn">Start Shift</button>
+        </div>
+
+        <!-- HUD: shift progress bar -->
+        <div id="cafe-hud">
+            <div class="hud-left">
+                <span id="hud-shift-label">Shift 1</span>
+                <div class="hud-progress">
+                    <div class="hud-progress-fill" id="hud-progress-fill"></div>
+                </div>
+                <span id="hud-dish-count">0 / 5</span>
+            </div>
+            <div class="hud-right">
+                <span id="hud-streak" class="hud-streak">Streak: 0</span>
+                <span id="hud-mistakes" class="hud-mistakes"></span>
+                <button id="end-shift-btn" class="hud-end-btn" disabled>End Shift</button>
+            </div>
+        </div>
+
+        <!-- Customer order banner -->
+        <div id="customer-order">
+            <div id="order-avatar" class="order-avatar"></div>
+            <div id="order-content">
+                <div id="order-customer-name">Customer</div>
+                <div id="order-dialogue">"Just a coffee, please."</div>
+                <div id="order-recipe-hint">
+                    <span id="order-recipe-icon"></span>
+                    <span id="order-recipe-name"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recipe Book (top area) -->
+        <div id="recipe-book">
+            <div id="recipe-tabs">
+                <button class="recipe-tab active" data-category="drink">Drinks</button>
+                <button class="recipe-tab" data-category="food">Food</button>
+                <button class="recipe-tab" data-category="dessert">Desserts</button>
+            </div>
+            <div id="recipe-pages">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Card Slots (middle) -->
+        <div id="card-slots">
+            <!-- Populated by JS based on recipe ingredient count -->
+        </div>
+
+        <!-- Ingredient Deck (bottom) -->
+        <div id="ingredient-deck">
+            <div id="deck-scroll">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- FUSE button -->
+        <button id="fuse-btn" disabled>
+            <span class="fuse-sparkle">&#10024;</span>
+            FUSE
+            <span class="fuse-sparkle">&#10024;</span>
+        </button>
+
+        <!-- Serve result overlay -->
+        <div id="serve-result" class="hidden">
+            <div id="serve-result-icon"></div>
+            <div id="serve-result-text"></div>
+            <button id="serve-next-btn">Next Order</button>
+        </div>
+
+        <!-- Shift complete overlay -->
+        <div id="shift-complete" class="hidden">
+            <h2>Shift Complete!</h2>
+            <div id="shift-summary">
+                <p id="shift-dishes-served"></p>
+                <p id="shift-streak-final"></p>
+                <p id="shift-rating"></p>
+            </div>
+            <button id="shift-done-btn" class="journal-return-btn">Continue</button>
+        </div>
+    </div>
+
 </div>
 
+<script src="js/cafe-data.js"></script>
 <script src="js/journal.js"></script>
 <script src="js/game.js"></script>
+<script src="js/cafe.js"></script>
 
 </body>
 </html>
