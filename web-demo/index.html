@@ -3,55 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wish House - Chapter 1: That'll Be 1 Button.</title>
+    <title>Wish House</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/journal.css">
 </head>
 <body>
 
 <div id="game-container">
 
-    <!-- Title Screen -->
-    <div id="title-screen">
-        <h1>Wish House</h1>
-        <div class="subtitle">Chapter 1</div>
-        <div class="episode-title">"That'll Be 1 Button."</div>
-        <button id="start-btn">Begin</button>
-    </div>
+    <!-- ═══════ JOURNAL BOOK (Main Menu) ═══════ -->
+    <div id="journal-screen">
+        <div id="journal-book">
+            <!-- Book spine -->
+            <div id="book-spine"></div>
 
-    <!-- Scene Area -->
-    <div id="scene">
-        <!-- Background placeholder -->
-        <div id="scene-bg"></div>
+            <!-- Left page: chapter info -->
+            <div id="journal-left-page" class="journal-page">
+                <div class="page-texture"></div>
+                <div class="page-content">
+                    <h1 id="journal-title">Wish House</h1>
+                    <div id="journal-chapter-label">Chapter 1</div>
+                    <div id="journal-location">The Wish House</div>
+                    <div id="journal-synopsis">
+                        In a quiet corner of the city stands the Wish House, a small cafe
+                        whispered about in rumors — said to grant the wishes of anyone who
+                        walks through its doors...
+                    </div>
+                    <div id="journal-progress">
+                        <div class="progress-label">Memories</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="memory-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text" id="memory-text">0 / 6</div>
+                    </div>
+                    <!-- Scrapbook decorations -->
+                    <div class="deco deco-flower-1"></div>
+                    <div class="deco deco-paperclip-1"></div>
+                </div>
+            </div>
 
-        <!-- Character sprite areas -->
-        <div id="character-left"></div>
-        <div id="character-right"></div>
-
-        <!-- Choice panel -->
-        <div id="choice-panel"></div>
-
-        <!-- Dialogue box -->
-        <div id="dialogue-box">
-            <div id="speaker-name"></div>
-            <div id="dialogue-text"></div>
-            <div id="advance-indicator">Click or press Space to continue</div>
+            <!-- Right page: episode tapes -->
+            <div id="journal-right-page" class="journal-page">
+                <div class="page-texture"></div>
+                <div class="page-content">
+                    <div class="page-header">
+                        <span id="page-header-text">Episodes</span>
+                        <div class="page-nav">
+                            <button id="prev-chapter-btn" class="nav-btn" disabled>&laquo;</button>
+                            <span id="page-indicator">1 / 8</span>
+                            <button id="next-chapter-btn" class="nav-btn">&raquo;</button>
+                        </div>
+                    </div>
+                    <div id="episode-list"></div>
+                </div>
+                <!-- Scrapbook decorations -->
+                <div class="deco deco-sticker-1"></div>
+                <div class="deco deco-tape-corner"></div>
+            </div>
         </div>
     </div>
 
-    <!-- Fade overlay -->
-    <div id="fade-overlay"></div>
+    <!-- ═══════ VN PLAYER (Episode Scene) ═══════ -->
+    <div id="vn-player" class="hidden-screen">
 
-    <!-- Episode complete screen -->
-    <div id="episode-complete">
-        <h2>Episode 1 Complete</h2>
-        <p>"That'll Be 1 Button."</p>
-        <p id="choice-summary"></p>
-        <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem;">To be continued in Episode 2: "Help Wanted, No Experience Required?"</p>
-        <button id="restart-btn">Replay Episode</button>
+        <!-- Title card for episode -->
+        <div id="title-screen">
+            <h1>Wish House</h1>
+            <div class="subtitle" id="ep-subtitle">Chapter 1</div>
+            <div class="episode-title" id="ep-title">"That'll Be 1 Button."</div>
+            <button id="start-btn">Begin</button>
+        </div>
+
+        <!-- Scene area -->
+        <div id="scene">
+            <div id="scene-bg"></div>
+            <div id="character-left"></div>
+            <div id="character-right"></div>
+            <div id="choice-panel"></div>
+            <div id="dialogue-box">
+                <div id="speaker-name"></div>
+                <div id="dialogue-text"></div>
+                <div id="advance-indicator">Click or press Space to continue</div>
+            </div>
+        </div>
+
+        <!-- Fade overlay -->
+        <div id="fade-overlay"></div>
+
+        <!-- Episode complete screen -->
+        <div id="episode-complete">
+            <h2 id="complete-heading">Episode 1 Complete</h2>
+            <p id="complete-title">"That'll Be 1 Button."</p>
+            <p id="choice-summary"></p>
+            <p id="next-episode-hint" style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem;"></p>
+            <button id="back-to-journal-btn" class="journal-return-btn">Back to Journal</button>
+            <button id="restart-btn">Replay Episode</button>
+        </div>
     </div>
 
 </div>
 
+<script src="js/journal.js"></script>
 <script src="js/game.js"></script>
 
 </body>
