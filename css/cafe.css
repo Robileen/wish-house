@@ -493,7 +493,7 @@
 /* ---- FUSE Button ---- */
 #fuse-btn {
     position: absolute;
-    bottom: 10px;
+    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 15;
@@ -682,5 +682,5 @@
     .recipe-card { flex: 0 0 130px; }
     .card-slot { width: 52px; height: 66px; }
     .ingredient-card { flex: 0 0 52px; height: 66px; }
-    #fuse-btn { bottom: 6px; padding: 10px 28px; font-size: 0.85rem; }
+    #fuse-btn { bottom: 30px; padding: 10px 28px; font-size: 0.85rem; }
 }
