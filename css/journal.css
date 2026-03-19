@@ -1,0 +1,490 @@
+/* ============================================
+   Wish House Journal Book - Scrapbook Menu UI
+   Washi tape chapters, watercolour textures,
+   scrapbook decorations
+   ============================================ */
+
+/* ---- Journal Screen ---- */
+#journal-screen {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #E8D5C4 0%, #D4B896 40%, #C8A882 100%);
+    z-index: 80;
+    transition: opacity 0.6s ease;
+}
+
+#journal-screen.hidden-screen {
+    opacity: 0;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* ---- Journal Book ---- */
+#journal-book {
+    display: flex;
+    width: 860px;
+    max-width: 94vw;
+    height: 520px;
+    max-height: 85vh;
+    position: relative;
+    filter: drop-shadow(0 6px 24px rgba(74, 55, 40, 0.3));
+}
+
+#book-spine {
+    width: 24px;
+    background: linear-gradient(90deg, #8B6F5A 0%, #A0856E 40%, #8B6F5A 100%);
+    border-radius: 4px 0 0 4px;
+    box-shadow: inset -2px 0 4px rgba(0,0,0,0.15);
+    z-index: 2;
+}
+
+/* ---- Pages ---- */
+.journal-page {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+#journal-left-page {
+    border-radius: 0;
+    background: #FFF8F0;
+}
+
+#journal-right-page {
+    border-radius: 0 8px 8px 0;
+    background: #FFFAF5;
+}
+
+.page-texture {
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(253,220,186,0.2) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 30%, rgba(244,184,193,0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* Subtle paper lines */
+#journal-right-page::before {
+    content: '';
+    position: absolute;
+    top: 55px;
+    left: 24px;
+    right: 24px;
+    bottom: 20px;
+    background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 63px,
+        rgba(200, 168, 130, 0.12) 63px,
+        rgba(200, 168, 130, 0.12) 64px
+    );
+    pointer-events: none;
+}
+
+.page-content {
+    position: relative;
+    z-index: 1;
+    padding: 28px 24px 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ---- Left Page Content ---- */
+#journal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--cocoa);
+    margin-bottom: 2px;
+}
+
+#journal-chapter-label {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--dusty-rose);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+}
+
+#journal-location {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin-bottom: 16px;
+}
+
+#journal-synopsis {
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--text-light);
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Progress bar */
+#journal-progress {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(200, 168, 130, 0.25);
+}
+
+.progress-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--dusty-rose);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.progress-bar {
+    height: 8px;
+    background: rgba(200, 168, 130, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--pale-mint), var(--gold));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.progress-text {
+    font-size: 0.72rem;
+    color: var(--text-light);
+    text-align: right;
+}
+
+/* ---- Right Page Content ---- */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(200, 168, 130, 0.2);
+}
+
+#page-header-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--cocoa);
+}
+
+.page-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-btn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--blush);
+    border-radius: 50%;
+    background: var(--warm-white);
+    color: var(--dusty-rose);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-btn:hover:not(:disabled) {
+    background: var(--blush);
+    color: white;
+    transform: scale(1.05);
+}
+
+.nav-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+#page-indicator {
+    font-size: 0.72rem;
+    color: var(--text-light);
+}
+
+/* ---- Episode List (Washi Tapes) ---- */
+#episode-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+/* ---- Washi Tape Strip ---- */
+.washi-tape {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+    min-height: 56px;
+    /* Washi tape texture: slight transparency + torn edge illusion */
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: hidden;
+}
+
+.washi-tape::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: inherit;
+    opacity: 0.85;
+    border-radius: 3px;
+}
+
+.washi-tape::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -4px;
+    width: 8px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+    pointer-events: none;
+}
+
+.washi-tape:hover:not(.tape-locked) {
+    transform: translateX(4px) rotate(-0.3deg);
+    box-shadow: 0 3px 12px rgba(74, 55, 40, 0.15);
+}
+
+.washi-tape:active:not(.tape-locked) {
+    transform: translateX(6px) rotate(-0.5deg);
+}
+
+/* Tape color variants */
+.tape-blush     { background-color: rgba(244, 184, 193, 0.55); }
+.tape-mint      { background-color: rgba(200, 230, 208, 0.55); }
+.tape-peach     { background-color: rgba(253, 220, 186, 0.55); }
+.tape-lavender  { background-color: rgba(212, 170, 212, 0.55); }
+.tape-yellow    { background-color: rgba(245, 230, 163, 0.55); }
+.tape-blue      { background-color: rgba(186, 212, 245, 0.55); }
+.tape-tea       { background-color: rgba(237, 202, 176, 0.55); }
+.tape-rose      { background-color: rgba(217, 191, 217, 0.55); }
+
+.tape-locked {
+    background-color: rgba(200, 200, 200, 0.3) !important;
+    cursor: default;
+    filter: grayscale(60%);
+}
+
+.tape-locked .tape-title {
+    color: #BBB;
+}
+
+/* Tape content */
+.tape-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+}
+
+.tape-episode-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: rgba(74, 55, 40, 0.6);
+    min-width: 24px;
+}
+
+.tape-title {
+    flex: 1;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    line-height: 1.3;
+}
+
+.tape-type-badge {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+
+.badge-vn {
+    background: rgba(196, 139, 159, 0.25);
+    color: var(--dusty-rose);
+}
+
+.badge-shift {
+    background: rgba(212, 168, 67, 0.25);
+    color: var(--gold);
+}
+
+/* Tape state indicators */
+.tape-status {
+    font-size: 0.72rem;
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+.status-unlocked  { color: var(--pale-mint); }
+.status-progress  { color: var(--gold); }
+.status-completed { color: var(--dusty-rose); }
+.status-locked    { color: #CCC; }
+
+/* Magician sparkle */
+.tape-sparkle {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    font-size: 0.7rem;
+    opacity: 0.7;
+    animation: sparkle-float 2s ease-in-out infinite;
+    z-index: 2;
+}
+
+@keyframes sparkle-float {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
+    50%      { transform: translateY(-3px) scale(1.2); opacity: 1; }
+}
+
+/* ---- Scrapbook Decorations ---- */
+.deco {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.4;
+    z-index: 3;
+}
+
+.deco-flower-1 {
+    bottom: 20px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, var(--blush) 30%, transparent 70%);
+    border-radius: 50%;
+}
+
+.deco-flower-1::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    background: radial-gradient(circle at 30% 30%, rgba(244,184,193,0.3) 20%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(244,184,193,0.2) 20%, transparent 50%);
+    border-radius: 50%;
+}
+
+.deco-paperclip-1 {
+    top: 12px;
+    right: -4px;
+    width: 16px;
+    height: 44px;
+    border: 2px solid rgba(180, 160, 140, 0.4);
+    border-radius: 8px;
+    transform: rotate(8deg);
+}
+
+.deco-sticker-1 {
+    bottom: 12px;
+    left: 16px;
+    width: 32px;
+    height: 32px;
+    background: var(--soft-yellow);
+    border-radius: 50%;
+    opacity: 0.25;
+}
+
+.deco-tape-corner {
+    top: 0;
+    right: 0;
+    width: 48px;
+    height: 20px;
+    background: rgba(200, 230, 208, 0.35);
+    transform: rotate(-3deg);
+    transform-origin: top right;
+}
+
+/* ---- VN Player Screen ---- */
+#vn-player {
+    position: absolute;
+    inset: 0;
+    z-index: 90;
+    transition: opacity 0.6s ease;
+}
+
+#vn-player.hidden-screen {
+    opacity: 0;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* ---- Back to Journal Button ---- */
+.journal-return-btn {
+    padding: 12px 36px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--cocoa);
+    background: linear-gradient(135deg, var(--cream), var(--soft-peach));
+    border: 2px solid var(--blush);
+    border-radius: 24px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.journal-return-btn:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, var(--soft-peach), var(--blush));
+    color: var(--warm-white);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 700px) {
+    #journal-book {
+        flex-direction: column;
+        height: auto;
+        max-height: 92vh;
+    }
+
+    #book-spine {
+        width: 100%;
+        height: 8px;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .journal-page {
+        border-radius: 0;
+    }
+
+    #journal-right-page {
+        border-radius: 0 0 8px 8px;
+    }
+
+    #journal-left-page .page-content {
+        padding: 16px;
+    }
+
+    #journal-title { font-size: 1.4rem; }
+    #journal-synopsis { font-size: 0.75rem; max-height: 100px; }
+}
