@@ -44,12 +44,10 @@ Wish House is a heartwarming, magical slice‑of‑life story about healing, emp
 - **Web Deployment**: WebGL via GitHub Pages
 - **Cross-Platform**: Web (WebGL), consoles (Xbox/PlayStation/Switch), mobile
 
-
 ### Development Notes
 - Ensure smooth mobile/web performance
 - Keep code modular for cross-platform compatibility
 - Branching storylines
-
 
 ## Asset Art 
 - **Aesthetics**: 2D, watercolour, soft pencil tones and shapes , Cozy, pastel-colored cafe interiors

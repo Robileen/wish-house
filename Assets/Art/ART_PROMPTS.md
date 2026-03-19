@@ -1,70 +1,146 @@
-# AI Art Prompts - Barbie My Scene Style Assets
+# AI Art Prompts - Wish House Visual Novel
+
+## Art Style Guide
+
+- **Medium**: 2D, watercolour, soft pencil tones and shapes
+- **Aesthetic**: 2000s Mattel Barbie My Scene character proportions and styling
+- **Mood**: Cozy, magical, heartwarming slice-of-life
+- **References**: Danganronpa-style VN sprite expressions, Diner Dash-style serving scenes, Overcooked-style order cards, Duolingo phrase builder + poker card matching
+
+---
+
+## Color Palette
+
+| Category | Colors |
+|----------|--------|
+| **Base** | Cream, soft peach, blush |
+| **Anchors** | Milk tea browns, cocoa, dusty rose |
+| **Magical accents** | Gold, soft yellow, pale mint glow |
+| **Ingredients** | Soft, recognizable colors (fruits, bases, add-ons, temperature) |
+
+---
 
 ## Character Prompts
 
-### Main Character (Wish House Owner)
+### Kit the Wizard (Owner / Chef)
 ```
-"2000s Barbie My Scene style character, fashionable young woman wish house owner, wearing pastel pink crop top and low-rise jeans, platform sandals, long voluminous blonde hair with pink highlights, large expressive blue eyes, full lips, confident smile, standing in cute pastel wish house, soft lighting, Y2K aesthetic, digital art style"
-```
-
-### Barista Friend
-```
-"2000s Barbie My Scene style character, cool barista girl, wearing purple bandana and matching purple crop top, cargo pants, chunky sneakers, dark curly hair with colorful clips, friendly expression, leaning on coffee counter, wish house background, warm lighting, Y2K fashion, digital art"
+"2D watercolour Barbie My Scene style character, young male wizard cafe owner, jet black slightly long hair, tanned peachy skin, dark brown eyes, whimsical dramatic expression, wearing Peranakan-inspired outfit with a stylish hat, small floating star particles around him, cozy magical cafe background, soft warm lighting, gentle pencil tones"
 ```
 
-### Rival Wish House Owner
+**Expressions to generate:**
+neutral, excited, mischievous_smile, laughing, surprised, thinking, teasing, bawling_cry_big, bawling_cry_small, serious_soft
+
+**Outfit variants (Chapter 1):**
+- Twilight Sorcerer: navy velvet kimono-style jacket, silver constellation embroidery, wide-brimmed navy fedora with star pins
+- Summer Garden Party: light pink batik shirt with pastel floral motifs, straw fedora with pastel ribbon
+- Casual Festival Magician: short-sleeved Peranakan-inspired jacket over white T-shirt, fedora with colorful patterned band
+- Moonlight Performer: black and silver asymmetrical coat, tall black top hat with silver crescent accent
+- Peranakan Night Market: colorful brocade jacket with intricate floral pattern, small top hat with tiny beads
+
+### Edward the Barista
 ```
-"2000s Barbie My Scene style character, sophisticated business rival, wearing stylish black blazer with pink camisole, leather pants, high heels, sleek brunette hair, confident pose, expensive coffee cup, modern wish house setting, dramatic lighting, Y2K power aesthetic, digital art"
+"2D watercolour Barbie My Scene style character, young male barista, dark purple wavy hair, dark brown eyes, calm composed expression, wearing red velvet top hat, professional barista attire, cozy cafe counter background, soft warm lighting, gentle pencil tones"
 ```
 
-### Regular Customers
-```
-"2000s Barbie My Scene style character, studious customer, wearing glasses and cozy sweater, reading book in wish house, warm lighting, soft colors, academic Y2K style, digital art"
+**Expressions to generate:**
+neutral, professional_smile_closed_eyes, small_smile, surprised, sweating, facepalm, thinking, serious, slightly_annoyed, gentle_smile
 
-"2000s Barbie My Scene style character, trendy customer, wearing colorful outfit and accessories, taking selfie with coffee, bright lighting, social media Y2K aesthetic, digital art"
+### Customer NPCs
 ```
+"2D watercolour Barbie My Scene style character, [description], sitting at a cozy wish house table, soft warm lighting, gentle pencil tones, emotional and expressive"
+```
+- Studious student: glasses, cozy sweater, reading book, warm academic look
+- Trendy visitor: colorful outfit, accessories, bright and social
+- Scared hungry boy: dirty school uniform, quiet lonely expression
+- Party goer: energetic, bold outfit, lively expression
+
+---
 
 ## Background Prompts
 
-### Main Wish House Interior
+### Wish House Interior
 ```
-"Cute pastel colored wish house interior, 2000s Y2K aesthetic, pink and purple walls, round tables with colorful chairs, neon signs, plants, coffee counter with pastel decorations, soft window lighting, cozy atmosphere, digital art style, Barbie My Scene background"
-```
-
-### Kitchen Area
-```
-"Wish House kitchen with pastel colors, stainless steel equipment with pink accents, baking ingredients, colorful utensils, warm lighting, Y2K aesthetic, clean and organized, digital art style"
+"2D watercolour cozy magical cafe interior, cream and soft peach walls, round tables with pastel chairs, warm window lighting, subtle magical glow, plants and soft decorations, Barbie My Scene aesthetic, gentle pencil tones, cozy atmosphere"
 ```
 
-### Outdoor Wish House Patio
+### Wish House Kitchen
 ```
-"Cute outdoor wish house patio, pastel colored tables and chairs, flower boxes, string lights, city background, soft sunset lighting, romantic atmosphere, Y2K aesthetic, digital art style"
+"2D watercolour cafe kitchen, warm tones, baking ingredients and colorful utensils, stainless steel equipment with soft accents, magical sparkle details, organized and inviting, gentle pencil tones"
 ```
 
-## UI Elements
+### Wish House Exterior / Patio
+```
+"2D watercolour cozy cafe exterior, pastel-colored tables and chairs, flower boxes, string lights, quiet city corner, soft sunset lighting, magical and inviting atmosphere, gentle pencil tones"
+```
+
+---
+
+## Gameplay UI Prompts
+
+### Recipe Book (Top Half of Screen)
+```
+"2D watercolour style recipe book UI, two-page open book layout, 2 dish illustrations per page, each dish shown with ingredient icons in a row below, tab buttons for Food / Drinks / Desserts / Special Cards, cream and soft peach tones, gentle pencil outlines, Barbie My Scene aesthetic"
+```
+
+### Ingredient Cards (Bottom Deck)
+```
+"2D watercolour style ingredient card, soft recognizable icon of [ingredient], rounded corners, gentle pencil outline, cream background with soft color fill, slight card overlap in horizontal row, faint watercolour scrollbar beneath"
+```
+
+**Card types to generate:**
+- Ingredient cards: fruits, bases (milk, cream, flour), add-ons (honey, sugar, chocolate), temperature icons
+- Wild Card: any-ingredient icon, playful design
+- Category Card: group icon (e.g., berries category)
+- Combination Card: paired ingredient icons
+- Premade Dish/Drink Card: gold border, subtle sparkle effect, completed dish icon
+
+### Card Slots (Middle)
+```
+"2D watercolour style empty card slot, grey dented gradient, rounded rectangle, soft shadow, gentle pencil outline, glows softly when correct card is placed"
+```
+
+### Fuse / Conjure Button
+```
+"2D watercolour style glowing button, label 'FUSE', gold and pale mint glow, sparkle effects when active, disabled grey state when slots are empty, bottom center of screen, Barbie My Scene UI aesthetic"
+```
 
 ### Dialogue Box
 ```
-"Y2K style dialogue box UI, pastel pink and purple gradients, rounded corners, sparkle effects, cute font, 2000s web aesthetic, transparent overlay, digital UI design"
+"2D watercolour style dialogue box UI, cream and soft peach gradients, rounded corners, soft pencil outline, character name label, gentle sparkle accents, transparent overlay, cozy aesthetic"
 ```
 
-### Menu Design
+### Shift Rating Indicators
 ```
-"2000s style wish house menu, pastel colors, bubble letters, cute food icons, glitter effects, Y2K web design aesthetic, rounded buttons, bright and cheerful, digital UI"
+"2D watercolour style shift rating icons: sparkles for perfect (0 mistakes), faded question marks for slight mistakes, explosion icon for max mistakes, soft gentle tones, Barbie My Scene aesthetic"
 ```
-
-## Asset Generation Tips
-- **Consistency**: Use "2000s Barbie My Scene style" in all prompts
-- **Color Palette**: Pastels (pink, purple, baby blue, mint)
-- **Lighting**: Soft, warm, often with sparkle/glitter effects
-- **Style**: Digital art, clean lines, fashion doll proportions
-- **Details**: Y2K fashion elements, platform shoes, chunky accessories
-
-## Free Asset Alternatives
-- [Itch.io](https://itch.io) for visual novel assets
-- [OpenGameArt.org](https://opengameart.org)
-- Unity Asset Store free 2D characters
-- Custom pixel art for simpler style
 
 ---
-*All prompts designed for consistent Barbie My Scene aesthetic*
+
+## Animation & Effects Reference
+
+| Element | Description |
+|---------|-------------|
+| **Magician FUSE** | Kit performs magic movements -- sparkles, swirling ingredients, golden glow |
+| **Barista FUSE** | Edward slicing, steaming, stirring -- practical and precise motions |
+| **Correct placement** | Card slot glows with pale mint highlight when correct ingredient is placed |
+| **Dish served** | Dish delivery animation with soft sparkle trail |
+| **Mistake feedback** | Question mark icons appear, subtle shake or faded glow |
+| **Streak reward** | Sparkle burst, gold accent flash |
+| **Page turn** | Recipe book page flip with soft paper texture animation |
+| **Card hover** | Card lifts slightly with soft glow on hover/tap |
+
+---
+
+## Asset Generation Tips
+
+- **Consistency**: Use "2D watercolour, Barbie My Scene style, gentle pencil tones" in all prompts
+- **Color Palette**: Stick to cream, soft peach, blush, milk tea browns, cocoa, dusty rose, gold, soft yellow, pale mint
+- **Lighting**: Soft, warm, with subtle magical glow and sparkle where needed
+- **Style**: Watercolour with soft pencil outlines, fashion doll proportions for characters
+- **Cards & UI**: Rounded corners, gentle gradients, soft shadows, faint watercolour textures
+- **Expressions**: Generate each character expression as a separate sprite for Danganronpa-style VN switching
+
+---
+
+*All prompts designed for consistent Wish House watercolour aesthetic*
+*Last updated: 2026-03-20*

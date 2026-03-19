@@ -1,0 +1,64 @@
+{
+  "magician_outfits_v2": [
+    {
+      "name": "Twilight Sorcerer",
+      "description": "Deep navy velvet kimono-style jacket with silver embroidery resembling constellations. Slim black pants.",
+      "hat": "Wide-brimmed navy fedora with small star pins",
+      "style": ["Peranakan-inspired", "Barbie/My Scene", "Watercolor", "2D"]
+    },
+    {
+      "name": "Summer Garden Party",
+      "description": "Light pink batik shirt with pastel floral motifs. Beige cropped trousers.",
+      "hat": "Straw fedora with pastel ribbon",
+      "style": ["Peranakan-inspired", "Barbie/My Scene", "Watercolor", "2D"]
+    },
+    {
+      "name": "Mystic Explorer",
+      "description": "Olive green military-style jacket with epaulets. Fitted brown pants and boots.",
+      "hat": "Tan fedora with leather band and tiny charms",
+      "style": ["Western-inspired", "Barbie/My Scene", "Watercolor", "2D"]
+    },
+    {
+      "name": "Gilded Victorian",
+      "description": "Gold-embroidered tailcoat with ruffled cuffs. Black trousers with gold piping.",
+      "hat": "Top hat with a thin golden chain",
+      "style": ["Western-inspired", "Barbie/My Scene", "Watercolor", "2D"]
+    },
+    {
+      "name": "Casual Festival Magician",
+      "description": "Short-sleeved Peranakan-inspired jacket over a white T-shirt. Light khaki shorts.",
+      "hat": "Fedora with colorful patterned band",
+      "style": ["Peranakan-inspired", "Barbie/My Scene", "Watercolor", "2D"]
+    },
+    {
+      "name": "Moonlight Performer",
+      "description": "Black and silver asymmetrical coat. Slim black trousers with subtle glitter detailing.",
+      "hat": "Tall black top hat with a silver crescent accent",
+      "style": ["Western-inspired", "Barbie/My Scene", "Watercolor", "2D"]
+    },
+    {
+      "name": "Retro Dandy",
+      "description": "Powder blue blazer with embroidered lapels. White shirt with bow tie.",
+      "hat": "Beige fedora tilted jauntily",
+      "style": ["Western-inspired", "Barbie/My Scene", "Watercolor", "2D"]
+    },
+    {
+      "name": "Forest Alchemist",
+      "description": "Dark green hooded jacket layered over patterned vest. Earth-toned trousers.",
+      "hat": "Wide-brimmed fedora with leaf motif",
+      "style": ["Western-inspired", "Barbie/My Scene", "Watercolor", "2D"]
+    },
+    {
+      "name": "Urban Magician",
+      "description": "Layered black trench coat over buttoned vest. Slim dark jeans.",
+      "hat": "Black fedora with thin red ribbon",
+      "style": ["Western-inspired", "Barbie/My Scene", "Watercolor", "2D"]
+    },
+    {
+      "name": "Peranakan Night Market",
+      "description": "Colorful brocade jacket with intricate floral pattern. Dark trousers.",
+      "hat": "Small top hat decorated with tiny beads",
+      "style": ["Peranakan-inspired", "Barbie/My Scene", "Watercolor", "2D"]
+    }
+  ]
+}
