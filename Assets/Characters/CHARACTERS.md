@@ -2,15 +2,15 @@
 
 ## Main Character (Player Character)
 **Name**: [To be decided]
-**Role**: New cafe owner/manager
+**Role**: New wish house owner/manager
 **Personality**: [To be defined]
 **Style**: Trendy 2000s fashion, colorful outfits
 
 ## Supporting Characters
 
-### Cafe Staff
+### Wish House Staff
 - **Barista Friend**: Helpful mentor character
-- **Rival Cafe Owner**: Competitive but friendly
+- **Rival Wish House Owner**: Competitive but friendly
 - **Regular Customers**: Various personalities
 
 ### Story Characters
@@ -29,18 +29,18 @@
 ### Character Archetypes
 1. **The Fashionista**: Always on trend, gives style advice
 2. **The Brainy One**: Smart, helpful with business decisions
-3. **The Artsy One**: Creative, helps with cafe decor
+3. **The Artsy One**: Creative, helps with wish house decor
 4. **The Sporty One**: Energetic, brings in active customers
 
 ## AI Art Prompts (For Reference)
 ```
-"2000s Barbie My Scene style character, fashionable cafe owner, pastel colored outfit, Y2K aesthetic, large expressive eyes, voluminous hairstyle, cute cafe background, soft lighting, digital art style"
+"2000s Barbie My Scene style character, fashionable wish house owner, pastel colored outfit, Y2K aesthetic, large expressive eyes, voluminous hairstyle, cute wish house background, soft lighting, digital art style"
 ```
 
 ## Relationship Dynamics
 - Friendship levels affect story branches
 - Romance options (if desired)
-- Business relationships impact cafe success
+- Business relationships impact wish house success
 - Customer satisfaction affects endings
 
 ---

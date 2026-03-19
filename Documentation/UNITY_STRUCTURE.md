@@ -2,7 +2,7 @@
 
 ## Folder Organization
 ```
-cafe-visual-novel/
+wish house-visual-novel/
 ├── Assets/
 │   ├── Scripts/
 │   │   ├── DialogueSystem/
@@ -69,7 +69,7 @@ cafe-visual-novel/
 - **ChoiceHandler**: Process player choices
 - **CharacterManager**: Track character relationships
 
-### Cafe Mechanics
+### Wish House Mechanics
 - **OrderManager**: Handle customer orders and timing
 - **CustomerAI**: Control customer behavior and patience
 - **ServingMiniGame**: Manage serving gameplay
@@ -88,7 +88,7 @@ cafe-visual-novel/
 
 ## Development Phases
 1. **Phase 1**: Basic dialogue system
-2. **Phase 2**: Simple cafe mechanics
+2. **Phase 2**: Simple wish house mechanics
 3. **Phase 3**: Story integration
 4. **Phase 4**: Polish and optimization
 5. **Phase 5**: Multi-platform deployment

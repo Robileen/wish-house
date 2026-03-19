@@ -1,13 +1,13 @@
 # Wish House - Repository Folder Structure
 
-## Root Directory (`cafe-visual-novel/`)
+## Root Directory (`wish house-visual-novel/`)
 
 | File | Description |
 |------|-------------|
-| `PROJECT_CONTEXT.md` | High-level project overview -- hybrid visual novel + cafe serving game (Diner Dash-style) built in Unity/C# with WebGL deployment, targeting a 2000s Barbie My Scene aesthetic |
-| `CHARACTERS.md` | Placeholder character concepts (cafe owner, barista, rival, customers) with Barbie My Scene design guidelines, archetypes, and relationship dynamics |
+| `PROJECT_CONTEXT.md` | High-level project overview -- hybrid visual novel + wish house serving game (Diner Dash-style) built in Unity/C# with WebGL deployment, targeting a 2000s Barbie My Scene aesthetic |
+| `CHARACTERS.md` | Placeholder character concepts (wish house owner, barista, rival, customers) with Barbie My Scene design guidelines, archetypes, and relationship dynamics |
 | `DIALOGUE_SYSTEM.md` | C# dialogue system architecture -- DialogueData, DialogueManager, CharacterManager, ChoiceHandler code specs and integration points |
-| `CAFE_MECHANICS.md` | Cafe serving gameplay loop (order-taking, preparation mini-games, service, payment) with C# code snippets for OrderManager, ServingMiniGame, CustomerAI |
+| `CAFE_MECHANICS.md` | Wish House serving gameplay loop (order-taking, preparation mini-games, service, payment) with C# code snippets for OrderManager, ServingMiniGame, CustomerAI |
 | `ART_PROMPTS.md` | AI art generation prompts for characters, backgrounds, and UI elements in 2000s Barbie My Scene style, plus free asset alternatives |
 | `UNITY_STRUCTURE.md` | Unity project folder organization spec, key scripts architecture, setup considerations, and development phases |
 
@@ -84,13 +84,13 @@ Each JSON follows this structure:
 | `DialogueLoader.cs` | Builds and manages a dictionary cache of DialogueData assets (inspector refs + Resources folder), with methods to load by ID, filter by chapter, and check availability |
 | `CharacterManager.cs` | Character relationship management -- friendship/romance/business levels, preferences, scene/dialogue tracking, save/load serialization, relationship change events |
 | `ChoiceHandler.cs` | Processes player dialogue choices -- records choices, applies relationship changes, unlocks content (dialogues/scenes/characters), checks milestones, handles navigation |
-| `CafeManager.cs` | Placeholder script with `StartCafeShift()` stub for transitioning to cafe gameplay (note: contains duplicate class definition / compile error) |
+| `CafeManager.cs` | Placeholder script with `StartCafeShift()` stub for transitioning to wish house gameplay (note: contains duplicate class definition / compile error) |
 | `GameProgress.cs` | Overall game progression tracking -- story chapters with unlock requirements, player choices, game stats (money/customers/score/playtime), save/load via PlayerPrefs JSON |
 
 ### `Assets/Stories/` -- Narrative Content
 | File | Description |
 |------|-------------|
-| `MAGICAL_CHEESECAKE_STORY.md` | Complete dialogue script for "Luna's Enchanted Treats" -- Emma visits the magical cafe, orders cheesecake and tea, experiences magical flavors tied to memories, pays with button currency |
+| `MAGICAL_CHEESECAKE_STORY.md` | Complete dialogue script for "Luna's Enchanted Treats" -- Emma visits the magical wish house, orders cheesecake and tea, experiences magical flavors tied to memories, pays with button currency |
 
 ### `Assets/Updates/` -- Change Logs & Bug Fixes
 | File | Description |
@@ -103,15 +103,15 @@ Each JSON follows this structure:
 
 ## `web-demo/` -- Web Demo (HTML/CSS/JS)
 
-Playable browser demos for prototyping the visual novel and cafe mechanics.
+Playable browser demos for prototyping the visual novel and wish house mechanics.
 
 | File | Description |
 |------|-------------|
 | `index.html` | Redirect page that navigates to `selection.html` |
 | `selection.html` | Demo selection landing page with card-based grid linking to the three demos: Magical Story, Visual Novel System, and Character Showcase |
 | `visual-novel-demo.html` | Self-contained VN demo with typing effects, character switching, branching choices, relationship tracking UI, auto-play/skip/reset controls |
-| `magical-cafe-story.html` | Main web demo for Luna's magical cafe story -- CSS food graphics, branching story, particle effects, character portraits, button currency payment UI |
-| `magical-cafe-fixed.html` | Alternate/fixed version with top-down cafe layout, clickable seats, visual menu, movable character sprites, and branching story system |
+| `magical-wish house-story.html` | Main web demo for Luna's magical wish house story -- CSS food graphics, branching story, particle effects, character portraits, button currency payment UI |
+| `magical-wish house-fixed.html` | Alternate/fixed version with top-down wish house layout, clickable seats, visual menu, movable character sprites, and branching story system |
 | `branching-story.js` | JavaScript `BranchingStory` class -- three-tier choice system (seating, cheesecake, tea), state management, three conditional endings, replay/retry, achievements |
 | `magical-food.css` | Pure CSS graphics and animations for magical cheesecake (sparkles), teacup (heart steam), teapot -- glow/float/sparkle keyframes, responsive design |
 | `character-showcase.html` | Redirect to `selection.html` (character showcase not yet implemented) |

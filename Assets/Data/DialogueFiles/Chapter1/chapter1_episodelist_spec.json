@@ -7,7 +7,7 @@
       "shiftId": null,
       "type": "Visual Novel",
       "pov": ["wizard"],
-      "scene": "Story will be focused on a NPC, who visited the cafe and met the magician who served her coffee. This is the introduction of this entire game VN.",
+      "scene": "Story will be focused on a NPC, who visited the wish house and met the magician who served her coffee. This is the introduction of this entire game VN.",
       "unlock": null
     },
     {
@@ -43,7 +43,7 @@
       "shiftId": 2,
       "type": "Visual Novel & Game",
       "pov": ["gameplay"],
-      "scene": "Cafe is near schools and the student crowd came.",
+      "scene": "Wish House is near schools and the student crowd came.",
       "unlock": null
     },
     {
