@@ -189,6 +189,19 @@ class JournalBook {
   // ── Episode Launch ──
 
   openEpisode(chapter, episode) {
+    // Store current episode info for completion callback
+    this._activeChapter = chapter;
+    this._activeEpisode = episode.episode;
+
+    // If episode has a shiftId, launch the cafe game instead of VN
+    if (episode.shiftId !== null && episode.shiftId !== undefined) {
+      this.journalScreen.classList.add("hidden-screen");
+      if (window.cafe) {
+        window.cafe.openShift(episode.shiftId, chapter, episode.episode);
+      }
+      return;
+    }
+
     // Update the VN player title card
     const subtitle = document.getElementById("ep-subtitle");
     const title = document.getElementById("ep-title");
@@ -210,10 +223,6 @@ class JournalBook {
         : "End of chapter.";
     }
 
-    // Store current episode info for completion callback
-    this._activeChapter = chapter;
-    this._activeEpisode = episode.episode;
-
     // Transition: journal -> VN player
     this.journalScreen.classList.add("hidden-screen");
     this.vnPlayer.classList.remove("hidden-screen");
@@ -223,6 +232,15 @@ class JournalBook {
     const episodeComplete = document.getElementById("episode-complete");
     if (titleScreen) titleScreen.classList.remove("hidden");
     if (episodeComplete) episodeComplete.classList.remove("visible");
+  }
+
+  // ── Cafe Shift Complete ──
+
+  onCafeShiftComplete(chapter, episodeNum) {
+    // Mark the shift episode as completed and return to journal
+    this.completeEpisode(chapter, episodeNum);
+    this.journalScreen.classList.remove("hidden-screen");
+    this.showChapter(this.currentChapter);
   }
 
   // ── Return to Journal ──
