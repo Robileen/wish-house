@@ -231,8 +231,10 @@ class WishHouseEngine {
 
     // Determine which characters are in scene
     // Episode 1: Kit is always present, Claire appears from line 5 onward
+    // In branching sub-episodes (1.1, 1.2, 1.3), Claire is already on screen
     const kitVisible = true;
-    const claireVisible = this.currentLineIdx >= 5;
+    const episodeKey = String(this.currentBlock.episode);
+    const claireVisible = this.currentLineIdx >= 5 || episodeKey !== "1";
 
     // Kit placeholder
     if (kitVisible) {
