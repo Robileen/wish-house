@@ -125,6 +125,7 @@ class WishHouseEngine {
     this.fadeOverlay     = document.getElementById("fade-overlay");
     this.episodeComplete = document.getElementById("episode-complete");
     this.restartBtn      = document.getElementById("restart-btn");
+    this.skipStoryBtn    = document.getElementById("skip-story-btn");
 
     // State
     this.currentBlock    = null;
@@ -138,6 +139,7 @@ class WishHouseEngine {
     this.startBtn.addEventListener("click", () => this.startGame());
     this.dialogueBox.addEventListener("click", () => this.advance());
     this.restartBtn.addEventListener("click", () => this.restart());
+    this.skipStoryBtn.addEventListener("click", () => this.skipStory());
     document.addEventListener("keydown", (e) => {
       if (e.key === " " || e.key === "Enter") {
         e.preventDefault();
@@ -150,6 +152,7 @@ class WishHouseEngine {
 
   startGame() {
     this.titleScreen.classList.add("hidden");
+    this.skipStoryBtn.style.display = "block";
     this.startBlock("1");
   }
 
@@ -372,7 +375,15 @@ class WishHouseEngine {
     this.charRight.style.opacity = "0";
     this.dialogueBox.style.opacity = "1";
     this.dialogueBox.classList.remove("narrator-mode");
+    this.skipStoryBtn.style.display = "none";
     this.titleScreen.classList.remove("hidden");
+  }
+
+  skipStory() {
+    // Skip all remaining dialogue and go straight to episode complete
+    this.skipStoryBtn.style.display = "none";
+    this.choicePanel.classList.remove("visible");
+    this.handleSceneTransition();
   }
 }
 
