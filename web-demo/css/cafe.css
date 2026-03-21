@@ -226,13 +226,209 @@
     color: var(--gold);
 }
 
-/* ---- Recipe Book ---- */
-#recipe-book {
+/* ---- Recipe Book ? Button ---- */
+#recipe-book-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(200, 168, 130, 0.35);
+    background: rgba(255, 248, 240, 0.8);
+    font-size: 1.1rem;
+    color: var(--cocoa);
+    cursor: pointer;
     flex-shrink: 0;
-    padding: 8px 12px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
 }
 
-#recipe-tabs {
+#recipe-book-btn em {
+    font-style: italic;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+#recipe-book-btn:hover {
+    background: var(--warm-white);
+    border-color: var(--gold);
+    transform: scale(1.08);
+}
+
+/* ---- Back to Tables Button ---- */
+#back-to-tables-btn {
+    padding: 5px 14px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-light);
+    background: rgba(255, 248, 240, 0.8);
+    border: 1px solid rgba(200, 168, 130, 0.3);
+    border-radius: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+#back-to-tables-btn:hover {
+    background: var(--blush);
+    color: var(--warm-white);
+    border-color: var(--blush);
+}
+
+/* ---- Quit Shift Button ---- */
+.hud-quit-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid rgba(196, 139, 159, 0.4);
+    background: transparent;
+    font-size: 1rem;
+    line-height: 1;
+    color: var(--dusty-rose);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+}
+
+.hud-quit-btn:hover {
+    background: var(--dusty-rose);
+    color: var(--warm-white);
+}
+
+/* ---- Quit Confirmation Modal ---- */
+#quit-confirm {
+    position: absolute;
+    inset: 0;
+    z-index: 210;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+#quit-confirm.hidden { display: none; }
+
+.quit-confirm-box {
+    background: var(--warm-white);
+    border-radius: 16px;
+    padding: 28px 36px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    max-width: 320px;
+}
+
+.quit-confirm-box p {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--cocoa);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.quit-confirm-sub {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+.quit-confirm-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.quit-confirm-actions button {
+    padding: 8px 28px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#quit-confirm-yes {
+    background: linear-gradient(135deg, var(--dusty-rose), var(--blush));
+    color: var(--warm-white);
+    box-shadow: 0 3px 10px rgba(196, 139, 159, 0.4);
+}
+
+#quit-confirm-yes:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(196, 139, 159, 0.5);
+}
+
+#quit-confirm-no {
+    background: rgba(200, 168, 130, 0.15);
+    color: var(--cocoa);
+}
+
+#quit-confirm-no:hover {
+    background: rgba(200, 168, 130, 0.3);
+}
+
+/* ---- Recipe Book Modal ---- */
+#recipe-book-modal {
+    position: absolute;
+    inset: 0;
+    z-index: 205;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+#recipe-book-modal.hidden { display: none; }
+
+.recipe-book-content {
+    background: var(--warm-white);
+    border-radius: 16px;
+    padding: 16px 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 500px;
+    max-height: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.recipe-book-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.recipe-book-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--cocoa);
+}
+
+#recipe-book-close {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(200, 168, 130, 0.15);
+    font-size: 1.1rem;
+    color: var(--text-light);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+#recipe-book-close:hover {
+    background: rgba(200, 168, 130, 0.3);
+}
+
+#recipe-book-tabs {
     display: flex;
     gap: 4px;
     margin-bottom: 6px;
@@ -262,7 +458,7 @@
     background: rgba(200, 168, 130, 0.25);
 }
 
-#recipe-pages {
+#recipe-book-pages {
     display: flex;
     gap: 8px;
     padding: 8px;
@@ -270,34 +466,19 @@
     border-radius: 0 8px 8px 8px;
     border: 1px solid rgba(200, 168, 130, 0.2);
     min-height: 100px;
+    max-height: 300px;
     overflow-x: auto;
+    flex-wrap: wrap;
 }
 
-/* Recipe Card */
+/* Recipe Card (used in modal) */
 .recipe-card {
-    flex: 0 0 160px;
+    flex: 0 0 140px;
     padding: 10px;
     background: linear-gradient(180deg, #FFF8F0, #FFFAF5);
     border: 1px solid rgba(244, 184, 193, 0.3);
     border-radius: 10px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     text-align: center;
-}
-
-.recipe-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 3px 12px var(--shadow);
-}
-
-.recipe-card.selected {
-    border-color: var(--gold);
-    box-shadow: 0 0 0 2px rgba(212, 168, 67, 0.3), 0 3px 12px var(--shadow);
-}
-
-.recipe-card.recipe-match {
-    border-color: var(--pale-mint);
-    box-shadow: 0 0 0 2px rgba(200, 230, 208, 0.5);
 }
 
 .recipe-card-icon {
@@ -380,6 +561,12 @@
     transform: scale(1.03);
 }
 
+.card-slot.drag-over {
+    border-color: var(--gold);
+    background: linear-gradient(180deg, rgba(212, 168, 67, 0.1), rgba(212, 168, 67, 0.2));
+    transform: scale(1.06);
+}
+
 .slot-ingredient {
     display: flex;
     flex-direction: column;
@@ -406,6 +593,37 @@
     flex-direction: column;
     justify-content: flex-start;
     overflow-y: auto;
+}
+
+#deck-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 6px;
+    flex-shrink: 0;
+}
+
+.deck-tab {
+    padding: 4px 12px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--text-light);
+    background: rgba(200, 168, 130, 0.12);
+    border: 1px solid rgba(200, 168, 130, 0.2);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.deck-tab.active {
+    background: var(--gold);
+    color: var(--warm-white);
+    border-color: var(--gold);
+    font-weight: 700;
+}
+
+.deck-tab:hover:not(.active) {
+    background: rgba(200, 168, 130, 0.25);
 }
 
 #deck-scroll {
@@ -476,6 +694,32 @@
 
 .ingredient-card.special-card .card-icon {
     animation: sparkle-float 2s ease-in-out infinite;
+}
+
+.ingredient-card.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
+.ingredient-card .card-use-count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--dusty-rose);
+    color: var(--warm-white);
+    font-size: 0.55rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.ingredient-card {
+    position: relative;
 }
 
 /* ---- FUSE Button ---- */
@@ -667,9 +911,12 @@
 @media (max-width: 640px) {
     #cafe-hud { padding: 6px 10px; }
     .hud-progress { width: 80px; }
-    .recipe-card { flex: 0 0 130px; }
+    .recipe-card { flex: 0 0 110px; }
     .card-slot { width: 52px; height: 66px; }
     .ingredient-card { flex: 0 0 58px; height: 72px; }
     #ingredient-deck { padding: 4px 10px 52px; }
     #fuse-btn { bottom: 10px; padding: 10px 28px; font-size: 0.85rem; }
+    #back-to-tables-btn { font-size: 0.6rem; padding: 4px 10px; }
+    .deck-tab { font-size: 0.6rem; padding: 3px 8px; }
+    .quit-confirm-box { padding: 20px 24px; }
 }

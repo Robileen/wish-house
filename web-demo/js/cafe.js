@@ -3,8 +3,8 @@
  *
  * Implements the card-matching mini-game from GAMEPLAY_SPECS.md:
  * - Customer orders appear one at a time
- * - Player selects a recipe from the recipe book
- * - Drags ingredient cards into slots
+ * - Recipe is auto-selected from the customer's order (icon + name display)
+ * - Player drags / clicks ingredient cards into slots
  * - Clicks FUSE to prepare the dish/drink
  * - Correct dishes advance the shift; mistakes are tracked
  * - Shift ends after ordersRequired successful dishes or all orders served
@@ -44,14 +44,25 @@ class CafeEngine {
     this.orderRecipeIcon = document.getElementById("order-recipe-icon");
     this.orderRecipeName = document.getElementById("order-recipe-name");
 
-    // DOM — recipe book
-    this.recipeTabs      = document.getElementById("recipe-tabs");
-    this.recipePages     = document.getElementById("recipe-pages");
-
     // DOM — card slots, deck, fuse
     this.cardSlotsEl     = document.getElementById("card-slots");
     this.deckScroll      = document.getElementById("deck-scroll");
+    this.deckTabsEl      = document.getElementById("deck-tabs");
     this.fuseBtn         = document.getElementById("fuse-btn");
+
+    // DOM — new buttons
+    this.recipeBookBtn   = document.getElementById("recipe-book-btn");
+    this.backToTablesBtn = document.getElementById("back-to-tables-btn");
+    this.quitShiftBtn    = document.getElementById("quit-shift-btn");
+    this.quitConfirm     = document.getElementById("quit-confirm");
+    this.quitYesBtn      = document.getElementById("quit-confirm-yes");
+    this.quitNoBtn       = document.getElementById("quit-confirm-no");
+
+    // DOM — recipe book modal
+    this.recipeBookModal = document.getElementById("recipe-book-modal");
+    this.recipeBookTabs  = document.getElementById("recipe-book-tabs");
+    this.recipeBookPages = document.getElementById("recipe-book-pages");
+    this.recipeBookClose = document.getElementById("recipe-book-close");
 
     // State
     this.shiftData       = null;
@@ -65,7 +76,20 @@ class CafeEngine {
     this.streak          = 0;
     this.bestStreak      = 0;
     this.totalServed     = 0;
-    this.activeTab       = "drink";
+    this.activeDeckTab   = "all";
+    this.activeBookTab   = "drink";
+
+    // Deck cache: shuffled once per order, filtered by tab
+    this._deckCache      = [];   // full shuffled deck for current order
+    this._deckCardUsage  = {};   // { ingredientId: timesPlaced } for multi-click
+
+    // Ingredient group -> deck tab mapping
+    this._groupToTab = {
+      base: "drink", dairy: "drink", temp: "drink",
+      fruit: "food", vegetable: "food", protein: "food", grain: "food",
+      topping: "dessert", sweetener: "dessert", spice: "dessert",
+      special: "special"
+    };
 
     // Bind events
     this.shiftStartBtn.addEventListener("click", () => this.beginShift());
@@ -74,15 +98,37 @@ class CafeEngine {
     this.shiftDoneBtn.addEventListener("click", () => this.exitShift());
     this.endShiftBtn.addEventListener("click", () => this.endShiftEarly());
 
-    // Tab clicks
-    this.recipeTabs.addEventListener("click", (e) => {
-      const tab = e.target.closest(".recipe-tab");
+    // Deck tab clicks
+    this.deckTabsEl.addEventListener("click", (e) => {
+      const tab = e.target.closest(".deck-tab");
       if (tab) {
-        this.activeTab = tab.dataset.category;
-        this.renderRecipeTabs();
-        this.renderRecipeBook();
+        this.activeDeckTab = tab.dataset.group;
+        this.renderDeckTabs();
+        this.renderDeck();
       }
     });
+
+    // Recipe book modal
+    this.recipeBookBtn.addEventListener("click", () => this.openRecipeBook());
+    this.recipeBookClose.addEventListener("click", () => this.closeRecipeBook());
+    this.recipeBookModal.addEventListener("click", (e) => {
+      if (e.target === this.recipeBookModal) this.closeRecipeBook();
+    });
+    this.recipeBookTabs.addEventListener("click", (e) => {
+      const tab = e.target.closest(".recipe-tab");
+      if (tab) {
+        this.activeBookTab = tab.dataset.category;
+        this.renderRecipeBookModal();
+      }
+    });
+
+    // Back to Tables
+    this.backToTablesBtn.addEventListener("click", () => this.backToTables());
+
+    // Quit Shift
+    this.quitShiftBtn.addEventListener("click", () => this.showQuitConfirm());
+    this.quitYesBtn.addEventListener("click", () => this.confirmQuit());
+    this.quitNoBtn.addEventListener("click", () => this.cancelQuit());
   }
 
   /* ══════════════════════════════════
@@ -113,7 +159,9 @@ class CafeEngine {
     this.streak       = 0;
     this.bestStreak   = 0;
     this.totalServed  = 0;
-    this.activeTab    = "drink";
+    this.activeDeckTab = "all";
+    this._deckCache   = [];
+    this._deckCardUsage = {};
 
     // Show intro
     this.shiftIntroTitle.textContent = this.shiftData.name;
@@ -122,6 +170,8 @@ class CafeEngine {
     this.shiftIntro.classList.remove("hidden");
     this.shiftComplete.classList.add("hidden");
     this.serveResult.classList.add("hidden");
+    this.quitConfirm.classList.add("hidden");
+    this.recipeBookModal.classList.add("hidden");
 
     // Show cafe screen
     this.cafeScreen.classList.remove("hidden-screen");
@@ -143,14 +193,26 @@ class CafeEngine {
     }
 
     this.currentOrder = this.orderQueue.shift();
-    this.selectedRecipe = null;
-    this.slots = [];
+
+    // Auto-select recipe from order
+    this.selectedRecipe = RECIPES[this.currentOrder.recipeId] || null;
+
+    // Set up slots
+    if (this.selectedRecipe) {
+      this.slots = this.selectedRecipe.ingredients.map(() => ({ ingredientId: null }));
+    } else {
+      this.slots = [];
+    }
     this.usedCardEls = new Set();
+    this._deckCardUsage = {};
+    this.activeDeckTab = "all";
+
+    // Build and cache the shuffled deck for this order
+    this._deckCache = this.selectedRecipe ? this.buildDeck() : [];
 
     this.renderCustomerOrder();
-    this.renderRecipeTabs();
-    this.renderRecipeBook();
     this.renderSlots();
+    this.renderDeckTabs();
     this.renderDeck();
     this.updateFuseButton();
   }
@@ -181,9 +243,43 @@ class CafeEngine {
 
     // Tell journal this episode is done
     if (window.journal) {
-      // Show the VN player episode-complete screen if the episode also has VN content,
-      // otherwise go straight back to journal
       window.journal.onCafeShiftComplete(this._chapter, this._episode);
+    }
+  }
+
+  /* ══════════════════════════════════
+     Back to Tables / Quit Shift
+     ══════════════════════════════════ */
+
+  backToTables() {
+    // Return to the tables/order view — for now re-renders current order
+    // (Future: multi-table view. Currently single-customer flow, so this
+    //  just clears slots and lets the player re-approach the same order.)
+    if (!this.selectedRecipe) return;
+    this.slots = this.selectedRecipe.ingredients.map(() => ({ ingredientId: null }));
+    this.usedCardEls = new Set();
+    this._deckCardUsage = {};
+    this.renderSlots();
+    this.renderDeck();
+    this.updateFuseButton();
+  }
+
+  showQuitConfirm() {
+    this.quitConfirm.classList.remove("hidden");
+  }
+
+  cancelQuit() {
+    this.quitConfirm.classList.add("hidden");
+  }
+
+  confirmQuit() {
+    this.quitConfirm.classList.add("hidden");
+    this.cafeScreen.classList.add("hidden-screen");
+
+    // Discard progress — return to journal without marking complete
+    if (window.journal) {
+      const journalScreen = document.getElementById("journal-screen");
+      if (journalScreen) journalScreen.classList.remove("hidden-screen");
     }
   }
 
@@ -197,7 +293,7 @@ class CafeEngine {
     this.hudFill.style.width      = `${(this.successCount / req) * 100}%`;
     this.hudDishCount.textContent  = `${this.successCount} / ${req}`;
     this.hudStreak.textContent     = `Streak: ${this.streak}`;
-    this.hudMistakes.textContent   = this.mistakeCount > 0 ? "?".repeat(Math.min(this.mistakeCount, 5)) : "";
+    this.hudMistakes.textContent   = this.mistakeCount > 0 ? "\u2753".repeat(Math.min(this.mistakeCount, 5)) : "";
 
     // Allow ending shift early once goal met
     this.endShiftBtn.disabled = this.successCount < req;
@@ -225,36 +321,41 @@ class CafeEngine {
   }
 
   /* ══════════════════════════════════
-     Recipe Book
+     Recipe Book Modal
      ══════════════════════════════════ */
 
-  renderRecipeTabs() {
-    this.recipeTabs.querySelectorAll(".recipe-tab").forEach(tab => {
-      tab.classList.toggle("active", tab.dataset.category === this.activeTab);
-    });
+  openRecipeBook() {
+    this.activeBookTab = "drink";
+    this.recipeBookModal.classList.remove("hidden");
+    this.renderRecipeBookModal();
   }
 
-  renderRecipeBook() {
+  closeRecipeBook() {
+    this.recipeBookModal.classList.add("hidden");
+  }
+
+  renderRecipeBookModal() {
+    // Update tab highlights
+    this.recipeBookTabs.querySelectorAll(".recipe-tab").forEach(tab => {
+      tab.classList.toggle("active", tab.dataset.category === this.activeBookTab);
+    });
+
     if (!this.shiftData) return;
 
     const available = this.shiftData.availableRecipes
       .map(id => RECIPES[id])
-      .filter(r => r && r.category.startsWith(this.activeTab));
+      .filter(r => r && r.category.startsWith(this.activeBookTab));
 
-    this.recipePages.innerHTML = "";
+    this.recipeBookPages.innerHTML = "";
 
     if (available.length === 0) {
-      this.recipePages.innerHTML = `<div style="padding:16px;color:var(--text-light);font-size:0.82rem;font-style:italic;">No ${this.activeTab} recipes this shift.</div>`;
+      this.recipeBookPages.innerHTML = `<div style="padding:16px;color:var(--text-light);font-size:0.82rem;font-style:italic;">No ${this.activeBookTab} recipes this shift.</div>`;
       return;
     }
-
-    const targetRecipeId = this.currentOrder ? this.currentOrder.recipeId : null;
 
     available.forEach(recipe => {
       const card = document.createElement("div");
       card.className = "recipe-card";
-      if (this.selectedRecipe && this.selectedRecipe.id === recipe.id) card.classList.add("selected");
-      if (targetRecipeId === recipe.id) card.classList.add("recipe-match");
 
       const ingredientIcons = recipe.ingredients
         .map(ingId => {
@@ -269,22 +370,8 @@ class CafeEngine {
         <div class="recipe-card-ingredients">${ingredientIcons}</div>
       `;
 
-      card.addEventListener("click", () => this.selectRecipe(recipe));
-      this.recipePages.appendChild(card);
+      this.recipeBookPages.appendChild(card);
     });
-  }
-
-  selectRecipe(recipe) {
-    this.selectedRecipe = recipe;
-
-    // Create empty slots matching ingredient count
-    this.slots = recipe.ingredients.map(() => ({ ingredientId: null }));
-    this.usedCardEls = new Set();
-
-    this.renderRecipeBook();
-    this.renderSlots();
-    this.renderDeck();
-    this.updateFuseButton();
   }
 
   /* ══════════════════════════════════
@@ -295,7 +382,7 @@ class CafeEngine {
     this.cardSlotsEl.innerHTML = "";
 
     if (!this.selectedRecipe) {
-      this.cardSlotsEl.innerHTML = `<div style="color:var(--text-light);font-size:0.78rem;font-style:italic;padding:16px;">Select a recipe from the book above.</div>`;
+      this.cardSlotsEl.innerHTML = `<div style="color:var(--text-light);font-size:0.78rem;font-style:italic;padding:16px;">Waiting for order...</div>`;
       return;
     }
 
@@ -331,6 +418,25 @@ class CafeEngine {
         });
       }
 
+      // Drag-and-drop: slot as drop target
+      slotEl.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        if (!slot.ingredientId) slotEl.classList.add("drag-over");
+      });
+      slotEl.addEventListener("dragleave", () => {
+        slotEl.classList.remove("drag-over");
+      });
+      slotEl.addEventListener("drop", (e) => {
+        e.preventDefault();
+        slotEl.classList.remove("drag-over");
+        const ingId = e.dataTransfer.getData("text/plain");
+        if (ingId && !slot.ingredientId) {
+          // Find the card element in the deck
+          const cardEl = this.deckScroll.querySelector(`.ingredient-card[data-ingredient-id="${ingId}"]:not(.used)`);
+          this.placeInSlot(idx, ingId, cardEl);
+        }
+      });
+
       this.cardSlotsEl.appendChild(slotEl);
     });
   }
@@ -339,9 +445,19 @@ class CafeEngine {
     if (this.slots[slotIdx].ingredientId) return; // already filled
 
     this.slots[slotIdx].ingredientId = ingredientId;
+
+    const ing = INGREDIENTS[ingredientId];
+    const isMultiUse = ing && !ing.isSpecial && ing.group !== "temp";
+
     if (cardEl) {
-      cardEl.classList.add("used");
-      this.usedCardEls.add(cardEl);
+      if (isMultiUse) {
+        // Track usage count for multi-click cards
+        this._deckCardUsage[ingredientId] = (this._deckCardUsage[ingredientId] || 0) + 1;
+        this.renderDeck(); // re-render to update badge
+      } else {
+        cardEl.classList.add("used");
+        this.usedCardEls.add(cardEl);
+      }
     }
 
     this.renderSlots();
@@ -354,12 +470,23 @@ class CafeEngine {
 
     // Un-mark the card in the deck
     if (removed) {
-      this.usedCardEls.forEach(el => {
-        if (el.dataset.ingredientId === removed && el.classList.contains("used")) {
-          el.classList.remove("used");
-          this.usedCardEls.delete(el);
+      const ing = INGREDIENTS[removed];
+      const isMultiUse = ing && !ing.isSpecial && ing.group !== "temp";
+
+      if (isMultiUse) {
+        if (this._deckCardUsage[removed]) {
+          this._deckCardUsage[removed]--;
+          if (this._deckCardUsage[removed] <= 0) delete this._deckCardUsage[removed];
         }
-      });
+        this.renderDeck();
+      } else {
+        this.usedCardEls.forEach(el => {
+          if (el.dataset.ingredientId === removed && el.classList.contains("used")) {
+            el.classList.remove("used");
+            this.usedCardEls.delete(el);
+          }
+        });
+      }
     }
 
     this.renderSlots();
@@ -370,15 +497,27 @@ class CafeEngine {
      Ingredient Deck
      ══════════════════════════════════ */
 
+  renderDeckTabs() {
+    this.deckTabsEl.querySelectorAll(".deck-tab").forEach(tab => {
+      tab.classList.toggle("active", tab.dataset.group === this.activeDeckTab);
+    });
+  }
+
   renderDeck() {
     this.deckScroll.innerHTML = "";
 
     if (!this.selectedRecipe) return;
 
-    // Build deck: required ingredients + distractors + 1 wild card
-    const deckIds = this.buildDeck();
+    // Filter cached deck by active tab
+    const filtered = this.activeDeckTab === "all"
+      ? this._deckCache
+      : this._deckCache.filter(ingId => {
+          const ing = INGREDIENTS[ingId];
+          if (!ing) return false;
+          return this._groupToTab[ing.group] === this.activeDeckTab;
+        });
 
-    deckIds.forEach(ingId => {
+    filtered.forEach(ingId => {
       const ing = INGREDIENTS[ingId];
       if (!ing) return;
 
@@ -387,26 +526,55 @@ class CafeEngine {
       card.dataset.ingredientId = ingId;
       if (ing.isSpecial) card.classList.add("special-card");
 
+      const isMultiUse = !ing.isSpecial && ing.group !== "temp";
+      const usageCount = this._deckCardUsage[ingId] || 0;
+
       card.innerHTML = `
         <span class="card-icon">${ing.icon}</span>
         <span class="card-name">${ing.name}</span>
+        ${usageCount > 0 ? `<span class="card-use-count">${usageCount}</span>` : ""}
       `;
 
-      // Click to select, then click a slot to place
+      // Mark single-use cards as used
+      if (!isMultiUse && this.usedCardEls.has(card)) {
+        card.classList.add("used");
+      }
+      // Restore used state for non-multi-use cards from previous renders
+      if (!isMultiUse) {
+        const isUsed = [...this.usedCardEls].some(
+          el => el.dataset.ingredientId === ingId
+        );
+        if (isUsed) card.classList.add("used");
+      }
+
+      // Click to place in first empty slot
       card.addEventListener("click", () => {
         if (card.classList.contains("used")) return;
 
-        // Find first empty slot and place directly
         const emptyIdx = this.slots.findIndex(s => s.ingredientId === null);
         if (emptyIdx !== -1) {
           this.placeInSlot(emptyIdx, ingId, card);
         }
       });
 
+      // Drag support
+      card.draggable = true;
+      card.addEventListener("dragstart", (e) => {
+        if (card.classList.contains("used")) {
+          e.preventDefault();
+          return;
+        }
+        e.dataTransfer.setData("text/plain", ingId);
+        e.dataTransfer.effectAllowed = "move";
+        card.classList.add("dragging");
+      });
+      card.addEventListener("dragend", () => {
+        card.classList.remove("dragging");
+      });
+
       this.deckScroll.appendChild(card);
     });
 
-    // Highlight ingredients that match the recipe
     this.highlightMatchingCards();
   }
 

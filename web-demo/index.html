@@ -129,6 +129,35 @@
                 <span id="hud-streak" class="hud-streak">Streak: 0</span>
                 <span id="hud-mistakes" class="hud-mistakes"></span>
                 <button id="end-shift-btn" class="hud-end-btn" disabled>End Shift</button>
+                <button id="quit-shift-btn" class="hud-quit-btn" title="Quit Shift">&times;</button>
+            </div>
+        </div>
+
+        <!-- Quit confirmation modal -->
+        <div id="quit-confirm" class="hidden">
+            <div class="quit-confirm-box">
+                <p>Quit this shift?<br><span class="quit-confirm-sub">All progress will be lost.</span></p>
+                <div class="quit-confirm-actions">
+                    <button id="quit-confirm-yes">Quit</button>
+                    <button id="quit-confirm-no">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recipe Book Modal -->
+        <div id="recipe-book-modal" class="hidden">
+            <div class="recipe-book-content">
+                <div class="recipe-book-header">
+                    <h3>Recipe Book</h3>
+                    <button id="recipe-book-close">&times;</button>
+                </div>
+                <div id="recipe-book-tabs">
+                    <button class="recipe-tab active" data-category="drink">Drinks</button>
+                    <button class="recipe-tab" data-category="food">Food</button>
+                    <button class="recipe-tab" data-category="dessert">Desserts</button>
+                    <button class="recipe-tab" data-category="specials">Specials</button>
+                </div>
+                <div id="recipe-book-pages"></div>
             </div>
         </div>
 
@@ -143,18 +172,8 @@
                     <span id="order-recipe-name"></span>
                 </div>
             </div>
-        </div>
-
-        <!-- Recipe Book (top area) -->
-        <div id="recipe-book">
-            <div id="recipe-tabs">
-                <button class="recipe-tab active" data-category="drink">Drinks</button>
-                <button class="recipe-tab" data-category="food">Food</button>
-                <button class="recipe-tab" data-category="dessert">Desserts</button>
-            </div>
-            <div id="recipe-pages">
-                <!-- Populated by JS -->
-            </div>
+            <button id="recipe-book-btn" title="Recipe Book"><em>?</em></button>
+            <button id="back-to-tables-btn" title="Back to Tables">Back to Tables</button>
         </div>
 
         <!-- Card Slots (middle) -->
@@ -164,6 +183,13 @@
 
         <!-- Ingredient Deck (bottom) -->
         <div id="ingredient-deck">
+            <div id="deck-tabs">
+                <button class="deck-tab active" data-group="all">All</button>
+                <button class="deck-tab" data-group="food">Food</button>
+                <button class="deck-tab" data-group="drink">Drinks</button>
+                <button class="deck-tab" data-group="dessert">Desserts</button>
+                <button class="deck-tab" data-group="special">Specials</button>
+            </div>
             <div id="deck-scroll">
                 <!-- Populated by JS -->
             </div>
