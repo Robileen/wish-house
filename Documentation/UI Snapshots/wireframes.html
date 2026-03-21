@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wish House — UI Wireframes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FFF8F0;
+            --soft-peach: #FDDCBA;
+            --blush: #F4B8C1;
+            --milk-tea: #C8A882;
+            --cocoa: #8B4513;
+            --dusty-rose: #C48B9F;
+            --gold: #D4A843;
+            --soft-yellow: #F5E6A3;
+            --pale-mint: #C8E6D0;
+            --warm-white: #FFF5EB;
+            --text-dark: #4A3728;
+            --text-light: #7A6455;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: #F0E6D6;
+            color: var(--text-dark);
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            color: var(--cocoa);
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-bottom: 40px;
+        }
+
+        .screen-section {
+            max-width: 480px;
+            margin: 0 auto 60px;
+        }
+
+        .screen-label {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--cocoa);
+            margin-bottom: 4px;
+        }
+
+        .screen-desc {
+            font-size: 0.72rem;
+            color: var(--text-light);
+            margin-bottom: 12px;
+        }
+
+        .frame {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9 / 16;
+            max-height: 720px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(74, 55, 40, 0.2);
+            border: 2px solid rgba(200, 168, 130, 0.3);
+        }
+
+        /* ===== JOURNAL ===== */
+        .journal-frame {
+            background: linear-gradient(180deg, var(--cream), var(--soft-peach));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .journal-book {
+            width: 100%;
+            height: 90%;
+            display: flex;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(74, 55, 40, 0.15);
+        }
+
+        .journal-spine {
+            width: 12px;
+            background: linear-gradient(180deg, #A07040, #8B5E3C, #A07040);
+        }
+
+        .journal-left, .journal-right {
+            flex: 1;
+            padding: 20px 16px;
+            position: relative;
+        }
+
+        .journal-left {
+            background: linear-gradient(135deg, #FFFAF5, #FFF8F0);
+            border-right: 1px solid rgba(200, 168, 130, 0.2);
+        }
+
+        .journal-right {
+            background: linear-gradient(135deg, #FFF8F0, #FFFAF5);
+        }
+
+        .j-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--cocoa);
+            margin-bottom: 6px;
+        }
+
+        .j-chapter {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--dusty-rose);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .j-location {
+            font-size: 0.7rem;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .j-synopsis {
+            font-size: 0.6rem;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .j-progress-bar {
+            height: 6px;
+            background: rgba(200, 168, 130, 0.2);
+            border-radius: 3px;
+            margin-bottom: 4px;
+        }
+
+        .j-progress-fill {
+            height: 100%;
+            width: 33%;
+            background: linear-gradient(90deg, var(--pale-mint), var(--gold));
+            border-radius: 3px;
+        }
+
+        .j-progress-text {
+            font-size: 0.6rem;
+            color: var(--text-light);
+            text-align: right;
+            margin-bottom: 8px;
+        }
+
+        .j-buttons {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            background: linear-gradient(135deg, rgba(212, 168, 67, 0.15), rgba(245, 230, 163, 0.2));
+            border: 1px solid rgba(212, 168, 67, 0.3);
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .j-page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .j-page-header span {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.75rem;
+            color: var(--cocoa);
+            font-weight: 700;
+        }
+
+        .j-page-nav {
+            font-size: 0.6rem;
+            color: var(--text-light);
+        }
+
+        .j-episode {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            background: rgba(253, 220, 186, 0.3);
+            border-radius: 8px;
+            border-left: 3px solid var(--gold);
+        }
+
+        .j-episode.locked {
+            opacity: 0.4;
+            border-left-color: var(--milk-tea);
+        }
+
+        .j-ep-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--cocoa);
+        }
+
+        .j-ep-title {
+            font-size: 0.6rem;
+            color: var(--text-light);
+        }
+
+        /* ===== SHIFT INTRO ===== */
+        .intro-frame {
+            background: linear-gradient(180deg, var(--cream), var(--soft-peach), var(--blush));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 32px;
+        }
+
+        .intro-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--cocoa);
+            margin-bottom: 12px;
+        }
+
+        .intro-desc {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 10px;
+            max-width: 300px;
+        }
+
+        .intro-goal {
+            font-size: 0.72rem;
+            color: var(--dusty-rose);
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .intro-btn {
+            padding: 12px 40px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--warm-white);
+            background: linear-gradient(135deg, var(--gold), var(--soft-yellow));
+            border: none;
+            border-radius: 24px;
+            box-shadow: 0 4px 16px rgba(212, 168, 67, 0.4);
+        }
+
+        /* ===== TABLE ZONE ===== */
+        .table-frame {
+            background: linear-gradient(180deg, var(--cream), var(--soft-peach), var(--warm-white));
+            display: flex;
+            flex-direction: column;
+        }
+
+        .t-hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: rgba(255, 248, 240, 0.9);
+            border-bottom: 2px solid var(--blush);
+            font-size: 0.6rem;
+        }
+
+        .t-hud-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .t-hud-label {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--cocoa);
+            font-size: 0.7rem;
+        }
+
+        .t-hud-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(200, 168, 130, 0.2);
+            border-radius: 3px;
+        }
+
+        .t-hud-bar-fill {
+            height: 100%;
+            width: 25%;
+            background: linear-gradient(90deg, var(--pale-mint), var(--gold));
+            border-radius: 3px;
+        }
+
+        .t-hud-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.6rem;
+            color: var(--text-light);
+        }
+
+        .t-hud-btn {
+            padding: 3px 10px;
+            font-size: 0.58rem;
+            border: 1px solid rgba(122, 100, 85, 0.3);
+            border-radius: 12px;
+            background: transparent;
+            color: var(--text-light);
+        }
+
+        .t-room {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            padding: 30px 12px 8px;
+        }
+
+        .t-row {
+            display: flex;
+            gap: 14px;
+        }
+
+        .t-table {
+            width: 110px;
+            text-align: center;
+            position: relative;
+        }
+
+        .t-surface {
+            width: 110px;
+            height: 78px;
+            background: linear-gradient(180deg, #FFF8F0, #FDDCBA, #F5E6C8);
+            border: 2px solid rgba(200, 168, 130, 0.4);
+            border-radius: 10px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 0 8px 4px;
+        }
+
+        .t-seat {
+            width: 28px;
+            height: 36px;
+            border-radius: 6px 6px 3px 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .t-seat-occupied {
+            background: linear-gradient(180deg, rgba(244, 184, 193, 0.25), rgba(253, 220, 186, 0.3));
+            border: 1px solid rgba(244, 184, 193, 0.4);
+        }
+
+        .t-seat-empty {
+            border: 1px dashed rgba(200, 168, 130, 0.2);
+        }
+
+        .t-food {
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.1rem;
+        }
+
+        .t-label {
+            font-size: 0.5rem;
+            color: var(--text-light);
+            margin-top: 3px;
+        }
+
+        .t-bubble {
+            position: absolute;
+            bottom: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--warm-white);
+            border: 1.5px solid var(--gold);
+            border-radius: 12px;
+            padding: 4px 10px;
+            font-size: 0.55rem;
+            font-weight: 600;
+            color: var(--cocoa);
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .t-bubble::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: var(--warm-white);
+        }
+
+        .t-bubble::before {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: var(--gold);
+        }
+
+        .t-barista {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            background: linear-gradient(180deg, rgba(253, 220, 186, 0.4), rgba(255, 248, 240, 0.6));
+            border-top: 1px solid rgba(200, 168, 130, 0.25);
+        }
+
+        .t-barista-sprite {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--soft-peach), var(--blush));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .t-barista-label {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--cocoa);
+        }
+
+        /* ===== CRAFT VIEW ===== */
+        .craft-frame {
+            background: linear-gradient(180deg, var(--cream), var(--soft-peach), var(--warm-white));
+            display: flex;
+            flex-direction: column;
+        }
+
+        .c-order {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: linear-gradient(90deg, rgba(253, 220, 186, 0.5), rgba(255, 248, 240, 0.8));
+            border-bottom: 1px solid rgba(244, 184, 193, 0.3);
+        }
+
+        .c-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blush), var(--dusty-rose));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .c-order-content {
+            flex: 1;
+        }
+
+        .c-order-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--cocoa);
+        }
+
+        .c-order-dialogue {
+            font-size: 0.58rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        .c-order-hint {
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .c-order-btns {
+            display: flex;
+            gap: 6px;
+        }
+
+        .c-btn-sm {
+            padding: 4px 10px;
+            font-size: 0.55rem;
+            font-weight: 600;
+            border: 1px solid rgba(200, 168, 130, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 248, 240, 0.8);
+            color: var(--text-light);
+        }
+
+        .c-btn-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid rgba(200, 168, 130, 0.35);
+            background: rgba(255, 248, 240, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-style: italic;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--cocoa);
+        }
+
+        /* Chat */
+        .c-chat {
+            padding: 8px 12px;
+        }
+
+        .c-chat-bubble {
+            background: linear-gradient(135deg, rgba(253, 220, 186, 0.4), rgba(255, 248, 240, 0.7));
+            border: 1px solid rgba(244, 184, 193, 0.3);
+            border-radius: 10px;
+            padding: 6px 12px;
+            margin-bottom: 6px;
+            font-size: 0.6rem;
+            color: var(--cocoa);
+            font-style: italic;
+        }
+
+        .c-chat-choices {
+            display: flex;
+            gap: 6px;
+        }
+
+        .c-chat-choice {
+            flex: 1;
+            padding: 6px 10px;
+            font-size: 0.55rem;
+            font-weight: 600;
+            color: var(--cocoa);
+            background: rgba(255, 248, 240, 0.8);
+            border: 1.5px solid rgba(200, 168, 130, 0.3);
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        /* Slots */
+        .c-slots-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 12px;
+        }
+
+        .c-slot {
+            width: 48px;
+            height: 60px;
+            border-radius: 8px;
+            border: 2px dashed rgba(200, 168, 130, 0.35);
+            background: linear-gradient(180deg, rgba(200, 168, 130, 0.1), rgba(200, 168, 130, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: rgba(200, 168, 130, 0.4);
+        }
+
+        .c-slot-filled {
+            border-style: solid;
+            border-color: var(--pale-mint);
+            background: linear-gradient(180deg, rgba(200, 230, 208, 0.2), rgba(200, 230, 208, 0.3));
+        }
+
+        .c-slot-filled .c-slot-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+        }
+
+        .c-slot-filled .c-slot-inner span:last-child {
+            font-size: 0.38rem;
+            color: var(--text-light);
+        }
+
+        .c-revert {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 1px solid rgba(200, 168, 130, 0.3);
+            background: rgba(255, 248, 240, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* Deck */
+        .c-deck {
+            flex: 1;
+            min-height: 0;
+            padding: 4px 12px 50px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .c-deck-tabs {
+            display: flex;
+            gap: 3px;
+            margin-bottom: 6px;
+        }
+
+        .c-deck-tab {
+            padding: 3px 8px;
+            font-size: 0.52rem;
+            font-weight: 600;
+            color: var(--text-light);
+            background: rgba(200, 168, 130, 0.12);
+            border: 1px solid rgba(200, 168, 130, 0.2);
+            border-radius: 8px;
+        }
+
+        .c-deck-tab.active {
+            background: var(--gold);
+            color: var(--warm-white);
+            border-color: var(--gold);
+            font-weight: 700;
+        }
+
+        .c-deck-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+        }
+
+        .c-card {
+            width: 52px;
+            height: 64px;
+            border-radius: 8px;
+            background: linear-gradient(180deg, #FFF8F0, #FFFAF5);
+            border: 1.5px solid rgba(200, 168, 130, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        .c-card-icon { font-size: 1.1rem; }
+        .c-card-name { font-size: 0.4rem; font-weight: 600; color: var(--text-dark); }
+
+        .c-card.highlight {
+            border-color: var(--pale-mint);
+            box-shadow: 0 0 6px rgba(200, 230, 208, 0.5);
+        }
+
+        .c-card.special {
+            border-color: var(--gold);
+            background: linear-gradient(180deg, #FFF8E7, #FFF0C8);
+        }
+
+        .c-fuse {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 30px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--warm-white);
+            background: linear-gradient(135deg, var(--gold), #E6C04E);
+            border: none;
+            border-radius: 24px;
+            box-shadow: 0 4px 16px rgba(212, 168, 67, 0.4);
+        }
+
+        /* ===== RECIPE BOOK ===== */
+        .book-frame {
+            background: rgba(74, 55, 40, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .book-outer {
+            width: 100%;
+            max-width: 400px;
+            background: linear-gradient(145deg, #D4A060, #C8946A, #B8845A);
+            border-radius: 6px 4px 4px 6px;
+            padding: 5px 0 5px 10px;
+            display: flex;
+            box-shadow: 0 8px 30px rgba(74, 55, 40, 0.3);
+            position: relative;
+        }
+
+        .book-close {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--warm-white);
+            background: var(--dusty-rose);
+            color: #fff;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .book-spine {
+            width: 6px;
+            background: linear-gradient(180deg, #A07040, #8B5E3C, #A07040);
+            border-radius: 3px 0 0 3px;
+            flex-shrink: 0;
+        }
+
+        .book-content {
+            flex: 1;
+            background: #FFF8F0;
+            border-radius: 2px 0 0 2px;
+            display: flex;
+            flex-direction: column;
+            min-height: 260px;
+        }
+
+        .book-spread {
+            flex: 1;
+            display: flex;
+        }
+
+        .book-page {
+            flex: 1;
+            padding: 12px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .book-page-left {
+            border-right: 1px solid rgba(200, 168, 130, 0.2);
+            background: linear-gradient(90deg, #FFFAF5, #FFF8F0);
+        }
+
+        .book-page-right {
+            background: linear-gradient(90deg, #FFF8F0, #FFFAF5);
+        }
+
+        .book-page-header {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.55rem;
+            font-weight: 700;
+            color: var(--dusty-rose);
+            text-align: center;
+            padding-bottom: 4px;
+            border-bottom: 1px solid rgba(244, 184, 193, 0.25);
+        }
+
+        .book-recipe {
+            padding: 8px;
+            background: linear-gradient(135deg, rgba(255, 248, 240, 0.8), rgba(253, 220, 186, 0.2));
+            border: 1px solid rgba(244, 184, 193, 0.25);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .book-recipe-icon { font-size: 1.6rem; margin-bottom: 3px; }
+
+        .book-recipe-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: var(--cocoa);
+            margin-bottom: 2px;
+        }
+
+        .book-recipe-sub {
+            font-size: 0.42rem;
+            font-weight: 600;
+            color: var(--dusty-rose);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 4px;
+        }
+
+        .book-recipe-ings {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .book-ing {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+        }
+
+        .book-ing-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(200, 168, 130, 0.12), rgba(244, 184, 193, 0.15));
+            border: 1px solid rgba(200, 168, 130, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.5rem;
+        }
+
+        .book-ing-name {
+            font-size: 0.32rem;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .book-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 6px;
+            border-top: 1px solid rgba(200, 168, 130, 0.2);
+            background: linear-gradient(180deg, #FFF8F0, #F5E6C8);
+            font-size: 0.55rem;
+            color: var(--text-light);
+        }
+
+        .book-tabs {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding-top: 12px;
+        }
+
+        .book-tab {
+            padding: 8px 8px 8px 6px;
+            font-size: 0.48rem;
+            font-weight: 600;
+            color: var(--text-light);
+            background: #F0E6D6;
+            border: 1px solid rgba(200, 168, 130, 0.25);
+            border-left: none;
+            border-radius: 0 14px 14px 0;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            position: relative;
+        }
+
+        .book-tab::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 3px;
+            bottom: 3px;
+            width: 2px;
+            border-radius: 0 1px 1px 0;
+        }
+
+        .book-tab.active {
+            background: #FFF8F0;
+            color: var(--cocoa);
+            font-weight: 700;
+        }
+
+        .book-tab[data-c="drink"]::before { background: #7BAFD4; }
+        .book-tab[data-c="food"]::before { background: #E8A87C; }
+        .book-tab[data-c="dessert"]::before { background: #E091A3; }
+        .book-tab[data-c="special"]::before { background: #B8A4E8; }
+
+        .book-page-num {
+            font-size: 0.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            margin-top: auto;
+            padding-top: 6px;
+        }
+
+        /* ===== SERVE RESULT ===== */
+        .result-frame {
+            background: rgba(255, 248, 240, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 32px;
+        }
+
+        .result-icon { font-size: 3.5rem; margin-bottom: 12px; }
+
+        .result-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--cocoa);
+            margin-bottom: 8px;
+        }
+
+        .result-quip {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .result-btn {
+            padding: 10px 32px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--warm-white);
+            background: linear-gradient(135deg, var(--dusty-rose), var(--blush));
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(196, 139, 159, 0.4);
+        }
+
+        /* ===== SHIFT COMPLETE ===== */
+        .complete-frame {
+            background: linear-gradient(180deg, var(--cream), var(--soft-peach), var(--blush));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 32px;
+        }
+
+        .complete-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--cocoa);
+            margin-bottom: 16px;
+        }
+
+        .complete-stat {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 6px;
+        }
+
+        .complete-rating {
+            font-size: 1.3rem;
+            margin-top: 8px;
+            margin-bottom: 20px;
+        }
+
+        .complete-btn {
+            padding: 12px 40px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--warm-white);
+            background: linear-gradient(135deg, var(--dusty-rose), var(--blush));
+            border: none;
+            border-radius: 24px;
+            box-shadow: 0 4px 12px rgba(196, 139, 159, 0.4);
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px dashed rgba(200, 168, 130, 0.3);
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Wish House</h1>
+<p class="subtitle">UI Wireframes — open in browser and screenshot each section</p>
+
+<!-- 1. JOURNAL -->
+<div class="screen-section">
+    <div class="screen-label">1. Journal (Main Menu)</div>
+    <div class="screen-desc">Two-page book layout. Left: chapter info + button counter. Right: episode list.</div>
+    <div class="frame journal-frame">
+        <div class="journal-book">
+            <div class="journal-spine"></div>
+            <div class="journal-left">
+                <div class="j-title">Wish House</div>
+                <div class="j-chapter">Chapter 1</div>
+                <div class="j-location">The Wish House</div>
+                <div class="j-synopsis">In a quiet corner of the city stands the Wish House, a small cafe whispered about in rumors...</div>
+                <div style="font-size:0.55rem;color:var(--dusty-rose);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Memories</div>
+                <div class="j-progress-bar"><div class="j-progress-fill"></div></div>
+                <div class="j-progress-text">2 / 6</div>
+                <div class="j-buttons">🟠 12</div>
+            </div>
+            <div class="journal-right">
+                <div class="j-page-header">
+                    <span>Episodes</span>
+                    <span class="j-page-nav">« 1 / 8 »</span>
+                </div>
+                <div class="j-episode"><span class="j-ep-num">1</span><span class="j-ep-title">"That'll Be 1 Button." ✓</span></div>
+                <div class="j-episode"><span class="j-ep-num">2</span><span class="j-ep-title">"The First Shift" ☕</span></div>
+                <div class="j-episode"><span class="j-ep-num">3</span><span class="j-ep-title">"A Warm Welcome"</span></div>
+                <div class="j-episode locked"><span class="j-ep-num">4</span><span class="j-ep-title">"The Flea Market" 🔒</span></div>
+                <div class="j-episode locked"><span class="j-ep-num">5</span><span class="j-ep-title">"Carrot Cake Catastrophe" 🔒</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr class="divider">
+
+<!-- 2. SHIFT INTRO -->
+<div class="screen-section">
+    <div class="screen-label">2. Shift Intro</div>
+    <div class="screen-desc">Full-screen overlay before the shift begins.</div>
+    <div class="frame intro-frame">
+        <div class="intro-title">First Shift — Trial, Error, and Too Much Sugar</div>
+        <div class="intro-desc">Your first day! Kit guides you through making simple drinks and snacks.</div>
+        <div class="intro-goal">Serve <strong>12</strong> successful dishes to complete the shift.</div>
+        <div class="intro-btn">Start Shift</div>
+    </div>
+</div>
+
+<hr class="divider">
+
+<!-- 3. TABLE ZONE -->
+<div class="screen-section">
+    <div class="screen-label">3. Table Zone (Cafe Room)</div>
+    <div class="screen-desc">6 tables in 2×3 grid. Speech bubbles show orders. Click table to take order.</div>
+    <div class="frame table-frame">
+        <div class="t-hud">
+            <div class="t-hud-left">
+                <span class="t-hud-label">Shift 1</span>
+                <div class="t-hud-bar"><div class="t-hud-bar-fill"></div></div>
+                <span>3/12</span>
+                <span class="j-buttons" style="font-size:0.55rem;padding:2px 6px;">🟠 5</span>
+            </div>
+            <div class="t-hud-right">
+                <span style="color:var(--gold);">Streak: 2</span>
+                <span>✨</span>
+                <span class="t-hud-btn">End Shift</span>
+                <span style="color:var(--dusty-rose);">×</span>
+            </div>
+        </div>
+        <div class="t-room">
+            <div class="t-row">
+                <div class="t-table">
+                    <div class="t-bubble">☕ House Blend</div>
+                    <div class="t-surface">
+                        <div class="t-seat t-seat-occupied">👩</div>
+                        <div class="t-food"></div>
+                        <div class="t-seat t-seat-empty"></div>
+                    </div>
+                    <div class="t-label">Table 1</div>
+                </div>
+                <div class="t-table">
+                    <div class="t-bubble">🍵 🍰 2 orders</div>
+                    <div class="t-surface">
+                        <div class="t-seat t-seat-occupied">👨</div>
+                        <div class="t-food"></div>
+                        <div class="t-seat t-seat-occupied">👧</div>
+                    </div>
+                    <div class="t-label">Table 2</div>
+                </div>
+                <div class="t-table">
+                    <div class="t-surface">
+                        <div class="t-seat t-seat-empty"></div>
+                        <div class="t-food"></div>
+                        <div class="t-seat t-seat-empty"></div>
+                    </div>
+                    <div class="t-label">Table 3</div>
+                </div>
+            </div>
+            <div class="t-row">
+                <div class="t-table">
+                    <div class="t-surface">
+                        <div class="t-seat t-seat-empty"></div>
+                        <div class="t-food">🧽</div>
+                        <div class="t-seat t-seat-empty"></div>
+                    </div>
+                    <div class="t-label">Table 4 (messy)</div>
+                </div>
+                <div class="t-table">
+                    <div class="t-surface" style="border-color:var(--pale-mint);">
+                        <div class="t-seat t-seat-occupied">🧓</div>
+                        <div class="t-food">☕</div>
+                        <div class="t-seat t-seat-empty"></div>
+                    </div>
+                    <div class="t-label">Table 5 (served)</div>
+                </div>
+                <div class="t-table">
+                    <div class="t-bubble">🍚 Rice Ball</div>
+                    <div class="t-surface">
+                        <div class="t-seat t-seat-occupied">👦</div>
+                        <div class="t-food"></div>
+                        <div class="t-seat t-seat-empty"></div>
+                    </div>
+                    <div class="t-label">Table 6</div>
+                </div>
+            </div>
+        </div>
+        <div class="t-barista">
+            <div class="t-barista-sprite">☕</div>
+            <div class="t-barista-label">M & B</div>
+        </div>
+    </div>
+</div>
+
+<hr class="divider">
+
+<!-- 4. CRAFT VIEW -->
+<div class="screen-section">
+    <div class="screen-label">4. Craft View</div>
+    <div class="screen-desc">Order banner, customer chat, ingredient slots, deck tabs, FUSE button.</div>
+    <div class="frame craft-frame">
+        <div class="t-hud">
+            <div class="t-hud-left">
+                <span class="t-hud-label">Shift 1</span>
+                <div class="t-hud-bar"><div class="t-hud-bar-fill"></div></div>
+                <span>3/12</span>
+                <span class="j-buttons" style="font-size:0.55rem;padding:2px 6px;">🟠 5</span>
+            </div>
+            <div class="t-hud-right">
+                <span style="color:var(--gold);">Streak: 2</span>
+                <span>✨</span>
+            </div>
+        </div>
+        <div class="c-order">
+            <div class="c-avatar">👩</div>
+            <div class="c-order-content">
+                <div class="c-order-name">Office Worker</div>
+                <div class="c-order-dialogue">"Just a simple coffee, please."</div>
+                <div class="c-order-hint">☕ House Blend</div>
+            </div>
+            <div class="c-order-btns">
+                <div class="c-btn-circle">?</div>
+                <div class="c-btn-sm">Back to Tables</div>
+            </div>
+        </div>
+        <div class="c-chat">
+            <div class="c-chat-bubble">"This place has such a nice vibe…"</div>
+            <div class="c-chat-choices">
+                <div class="c-chat-choice">Thank you! We try to make it cozy.</div>
+                <div class="c-chat-choice">Yeah, whatever.</div>
+            </div>
+        </div>
+        <div class="c-slots-row">
+            <div class="c-slot c-slot-filled"><div class="c-slot-inner"><span>☕</span><span>Coffee</span></div></div>
+            <div class="c-slot">+</div>
+            <div class="c-revert">↺</div>
+        </div>
+        <div class="c-deck">
+            <div class="c-deck-tabs">
+                <div class="c-deck-tab active">All</div>
+                <div class="c-deck-tab">Bases</div>
+                <div class="c-deck-tab">Produce</div>
+                <div class="c-deck-tab">Toppings</div>
+                <div class="c-deck-tab">Dairy</div>
+                <div class="c-deck-tab">Temp</div>
+                <div class="c-deck-tab">Special</div>
+            </div>
+            <div class="c-deck-cards">
+                <div class="c-card highlight"><span class="c-card-icon">☕</span><span class="c-card-name">Coffee</span></div>
+                <div class="c-card"><span class="c-card-icon">🍎</span><span class="c-card-name">Apple</span></div>
+                <div class="c-card"><span class="c-card-icon">🍌</span><span class="c-card-name">Banana</span></div>
+                <div class="c-card"><span class="c-card-icon">🍞</span><span class="c-card-name">Bread</span></div>
+                <div class="c-card"><span class="c-card-icon">🧈</span><span class="c-card-name">Butter</span></div>
+                <div class="c-card highlight"><span class="c-card-icon">🔥</span><span class="c-card-name">Hot</span></div>
+                <div class="c-card"><span class="c-card-icon">🍯</span><span class="c-card-name">Honey</span></div>
+                <div class="c-card"><span class="c-card-icon">🥛</span><span class="c-card-name">Milk</span></div>
+                <div class="c-card special"><span class="c-card-icon">🃏</span><span class="c-card-name">Wild</span></div>
+            </div>
+        </div>
+        <div class="c-fuse">✨ FUSE ✨</div>
+    </div>
+</div>
+
+<hr class="divider">
+
+<!-- 5. RECIPE BOOK -->
+<div class="screen-section">
+    <div class="screen-label">5. Recipe Book Modal</div>
+    <div class="screen-desc">Leather book with two-page spread, index tabs on right, faded page arrows.</div>
+    <div class="frame book-frame">
+        <div class="book-outer">
+            <div class="book-close">×</div>
+            <div class="book-spine"></div>
+            <div class="book-content">
+                <div class="book-spread">
+                    <div class="book-page book-page-left">
+                        <div class="book-page-header">Coffee, Tea</div>
+                        <div class="book-recipe">
+                            <div class="book-recipe-icon">☕</div>
+                            <div class="book-recipe-name">House Blend</div>
+                            <div class="book-recipe-sub">COFFEE</div>
+                            <div class="book-recipe-ings">
+                                <div class="book-ing"><div class="book-ing-icon">☕</div><div class="book-ing-name">Coffee</div></div>
+                                <div class="book-ing"><div class="book-ing-icon">🔥</div><div class="book-ing-name">Hot</div></div>
+                            </div>
+                        </div>
+                        <div class="book-recipe">
+                            <div class="book-recipe-icon">🍯</div>
+                            <div class="book-recipe-name">Honey Latte</div>
+                            <div class="book-recipe-sub">COFFEE</div>
+                            <div class="book-recipe-ings">
+                                <div class="book-ing"><div class="book-ing-icon">☕</div><div class="book-ing-name">Coffee</div></div>
+                                <div class="book-ing"><div class="book-ing-icon">🥛</div><div class="book-ing-name">Milk</div></div>
+                                <div class="book-ing"><div class="book-ing-icon">🍯</div><div class="book-ing-name">Honey</div></div>
+                                <div class="book-ing"><div class="book-ing-icon">🔥</div><div class="book-ing-name">Hot</div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="book-page book-page-right">
+                        <div class="book-page-header">Chocolate</div>
+                        <div class="book-recipe">
+                            <div class="book-recipe-icon">🍫</div>
+                            <div class="book-recipe-name">Hot Chocolate</div>
+                            <div class="book-recipe-sub">CHOCOLATE</div>
+                            <div class="book-recipe-ings">
+                                <div class="book-ing"><div class="book-ing-icon">🍫</div><div class="book-ing-name">Choco</div></div>
+                                <div class="book-ing"><div class="book-ing-icon">🥛</div><div class="book-ing-name">Milk</div></div>
+                                <div class="book-ing"><div class="book-ing-icon">🔥</div><div class="book-ing-name">Hot</div></div>
+                            </div>
+                        </div>
+                        <div class="book-recipe">
+                            <div class="book-recipe-icon">🧁</div>
+                            <div class="book-recipe-name">Cream Cocoa</div>
+                            <div class="book-recipe-sub">CHOCOLATE</div>
+                            <div class="book-recipe-ings">
+                                <div class="book-ing"><div class="book-ing-icon">🍫</div><div class="book-ing-name">Choco</div></div>
+                                <div class="book-ing"><div class="book-ing-icon">🥛</div><div class="book-ing-name">Milk</div></div>
+                                <div class="book-ing"><div class="book-ing-icon">🧁</div><div class="book-ing-name">Cream</div></div>
+                                <div class="book-ing"><div class="book-ing-icon">🔥</div><div class="book-ing-name">Hot</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="book-tabs">
+                <div class="book-tab active" data-c="drink">☕ Drinks</div>
+                <div class="book-tab" data-c="food">🍚 Food</div>
+                <div class="book-tab" data-c="dessert">🍰 Desserts</div>
+                <div class="book-tab" data-c="special">✨ Specials</div>
+                <div class="book-page-num">1 / 5</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr class="divider">
+
+<!-- 6. SERVE RESULT (SUCCESS) -->
+<div class="screen-section">
+    <div class="screen-label">6a. Serve Result — Success</div>
+    <div class="screen-desc">Shown after correct FUSE. +1 button earned.</div>
+    <div class="frame result-frame">
+        <div class="result-icon">✨</div>
+        <div class="result-text">House Blend served successfully!</div>
+        <div class="result-btn">Back to Tables</div>
+    </div>
+</div>
+
+<!-- 6b. SERVE RESULT (FAIL) -->
+<div class="screen-section">
+    <div class="screen-label">6b. Serve Result — Failure</div>
+    <div class="screen-desc">Shown after incorrect FUSE. Random Edward quip.</div>
+    <div class="frame result-frame">
+        <div class="result-icon">😞</div>
+        <div class="result-text">Wrong ingredients! The recipe didn't turn out right.</div>
+        <div class="result-quip">Edward: "…our budget, boss… 😒"</div>
+        <div class="result-btn">Back to Tables</div>
+    </div>
+</div>
+
+<!-- 6c. SERVE RESULT (5 MISTAKES) -->
+<div class="screen-section">
+    <div class="screen-label">6c. Serve Result — 5 Mistakes (Forced End)</div>
+    <div class="screen-desc">At 5 mistakes, special dialogue + forced end shift.</div>
+    <div class="frame result-frame">
+        <div class="result-icon">😞</div>
+        <div class="result-text">Wrong ingredients! The recipe didn't turn out right.</div>
+        <div class="result-quip">Edward: "Uh boss… more practice?"<br>Kit: "Why?!"</div>
+        <div class="result-btn" style="background:linear-gradient(135deg,var(--cocoa),#A06030);">End Shift</div>
+    </div>
+</div>
+
+<hr class="divider">
+
+<!-- 7. SHIFT COMPLETE -->
+<div class="screen-section">
+    <div class="screen-label">7. Shift Complete</div>
+    <div class="screen-desc">Summary screen with rating, dishes, streak, and tips earned.</div>
+    <div class="frame complete-frame">
+        <div class="complete-title">Shift Complete!</div>
+        <div class="complete-stat">Dishes served: 12</div>
+        <div class="complete-stat">Best streak: 5</div>
+        <div class="complete-stat">Tips earned: 15 🪣</div>
+        <div class="complete-rating">✨✨✨ Perfect shift!</div>
+        <div class="complete-btn">Continue</div>
+    </div>
+</div>
+
+<hr class="divider">
+
+<p style="text-align:center;font-size:0.7rem;color:var(--text-light);margin-top:20px;">
+    Wish House UI Wireframes — Screenshot each section for documentation.<br>
+    Open this file at: <code>Documentation/UI Snapshots/wireframes.html</code>
+</p>
+
+</body>
+</html>
