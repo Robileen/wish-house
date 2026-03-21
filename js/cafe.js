@@ -291,11 +291,9 @@ class CafeEngine {
     overlay.className = "table-overlay";
     overlay.textContent = "";
 
-    // Remove any bubble or cleanup btn
+    // Remove any speech bubble
     const existingBubble = el.querySelector(".table-order-bubble");
     if (existingBubble) existingBubble.remove();
-    const existingCleanup = el.querySelector(".table-cleanup-btn");
-    if (existingCleanup) existingCleanup.remove();
 
     const tableData = this.tables[tableNum];
     if (!tableData) return; // empty table
@@ -338,24 +336,19 @@ class CafeEngine {
 
     if (state === "messy") {
       el.classList.add("messy");
-      foodSlot.className = "food-slot has-food";
-      foodSlot.textContent = "\uD83E\uDDFD";  // sponge emoji
-
-      const cleanBtn = document.createElement("button");
-      cleanBtn.className = "table-cleanup-btn";
-      cleanBtn.textContent = "Clean";
-      cleanBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        this.cleanTable(tableNum);
-      });
-      el.appendChild(cleanBtn);
+      foodSlot.className = "food-slot has-food clickable";
+      foodSlot.textContent = "\uD83E\uDDFD";  // sponge emoji — click to clean
     }
   }
 
   onTableClick(tableNum) {
     const tableData = this.tables[tableNum];
     if (!tableData) return;
+
+    if (tableData.state === "messy") {
+      this.cleanTable(tableNum);
+      return;
+    }
 
     if (tableData.state === "ordering") {
       // Take this order -> go to craft view

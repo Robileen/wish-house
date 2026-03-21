@@ -738,28 +738,21 @@
     to   { transform: translateX(-50%) scale(1); opacity: 1; }
 }
 
-/* Cleanup button on messy table — appended to .cafe-table */
-.table-cleanup-btn {
-    display: block;
-    margin: 6px auto 0;
-    padding: 5px 20px;
-    font-family: 'Quicksand', sans-serif;
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: var(--warm-white);
-    background: linear-gradient(135deg, var(--dusty-rose), var(--blush));
-    border: none;
-    border-radius: 12px;
+/* Clickable sponge on messy table */
+.food-slot.clickable {
     cursor: pointer;
-    z-index: 10;
-    box-shadow: 0 2px 8px rgba(196, 139, 159, 0.5);
-    transition: transform 0.2s, box-shadow 0.2s;
-    position: relative;
+    animation: sponge-wobble 1s ease-in-out infinite;
 }
 
-.table-cleanup-btn:hover {
-    transform: scale(1.08);
-    box-shadow: 0 3px 12px rgba(196, 139, 159, 0.6);
+.food-slot.clickable:hover {
+    transform: translateX(-50%) scale(1.2);
+    filter: drop-shadow(0 0 6px rgba(196, 139, 159, 0.5));
+}
+
+@keyframes sponge-wobble {
+    0%, 100% { transform: translateX(-50%) rotate(0deg); }
+    25%      { transform: translateX(-50%) rotate(-8deg); }
+    75%      { transform: translateX(-50%) rotate(8deg); }
 }
 
 /* Barista / Magician Zone */
