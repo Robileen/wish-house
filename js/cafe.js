@@ -107,8 +107,38 @@ class CafeEngine {
     this.orderPicker     = document.getElementById("order-picker");
     this.orderPickerList = document.getElementById("order-picker-list");
 
+    // DOM — customer chat / tip
+    this.customerChat    = document.getElementById("customer-chat");
+    this.chatCustomerLine = document.getElementById("chat-customer-line");
+    this.chatChoices     = document.getElementById("chat-choices");
+    this.hudButtonCount  = document.getElementById("hud-button-count");
+
     // Avatars for customers
     this._avatarEmojis = ["\uD83D\uDC64", "\uD83E\uDDD1", "\uD83D\uDC69", "\uD83D\uDC68", "\uD83D\uDC66", "\uD83D\uDC67", "\uD83E\uDDD3"];
+
+    // Customer dialogue pool — { line, choices: [text, text], best: 0|1 }
+    this._dialoguePool = [
+      { line: "Do you think it\u2019ll rain today?", choices: ["Hmm, maybe! I\u2019ll keep an umbrella ready.", "I don\u2019t care about rain."], best: 0 },
+      { line: "What\u2019s your favourite thing on the menu?", choices: ["The honey latte \u2014 it\u2019s like a warm hug!", "I don\u2019t eat here."], best: 0 },
+      { line: "This place has such a nice vibe\u2026", choices: ["Thank you! We try to make it cozy.", "Yeah, whatever."], best: 0 },
+      { line: "I\u2019ve been coming here every week now!", choices: ["We love having regulars! Welcome back.", "Cool."], best: 0 },
+      { line: "My friend said the food here is magical\u2026 literally?", choices: ["Haha, we do put a little magic in everything!", "Your friend is weird."], best: 0 },
+      { line: "Can you recommend something for a bad day?", choices: ["Hot chocolate with extra cream \u2014 always helps!", "Just pick something from the menu."], best: 0 },
+      { line: "I\u2019m trying to eat healthier. Any suggestions?", choices: ["Our fruit salad is fresh and light!", "This is a cafe, not a gym."], best: 0 },
+      { line: "How long have you been working here?", choices: ["Since the very beginning! This place is special to me.", "Too long."], best: 0 },
+      { line: "Do you ever get tired of making coffee?", choices: ["Never! Each cup is a little different.", "Every single day."], best: 0 },
+      { line: "What\u2019s the secret ingredient in your cakes?", choices: ["Love! \u2026and maybe a pinch of stardust.", "Read the recipe book."], best: 0 },
+      { line: "I wish I could cook like this at home\u2026", choices: ["Practice makes perfect! I can share some tips.", "Some people just can\u2019t cook."], best: 0 },
+      { line: "Is that wizard outfit part of the uniform?", choices: ["It\u2019s more of a lifestyle choice!", "Mind your own business."], best: 0 },
+      { line: "The music in here is really calming.", choices: ["I picked the playlist myself! Glad you like it.", "It\u2019s just background noise."], best: 0 },
+      { line: "You seem really happy working here!", choices: ["This cafe brings out the best in everyone.", "I\u2019m just doing my job."], best: 0 },
+      { line: "My kid won\u2019t stop talking about your strawberry milk!", choices: ["That\u2019s so sweet! Tell them Kit says hi!", "Kids talk a lot."], best: 0 },
+      { line: "I heard you grant wishes here. Is that true?", choices: ["Every dish is made with a little wish inside!", "That\u2019s just a rumour."], best: 0 },
+      { line: "Do you ever close early?", choices: ["Only when the last customer is happy!", "I wish."], best: 0 },
+      { line: "What do YOU usually order when you\u2019re off duty?", choices: ["A matcha latte \u2014 it keeps me going!", "I don\u2019t eat this stuff."], best: 0 },
+      { line: "This latte art is beautiful! Did you make it?", choices: ["Thank you! Edward taught me \u2014 he\u2019s the real artist.", "It\u2019s just foam."], best: 0 },
+      { line: "I brought my friend today \u2014 first time here!", choices: ["Welcome! First orders are always special to us.", "Okay."], best: 0 },
+    ];
 
     // Ingredient group -> deck tab mapping
     this._groupToTab = {
@@ -162,6 +192,12 @@ class CafeEngine {
 
     // Back to Tables
     this.backToTablesBtn.addEventListener("click", () => this.backToTables());
+
+    // Chat choice clicks
+    this.chatChoices.addEventListener("click", (e) => {
+      const btn = e.target.closest(".chat-choice");
+      if (btn) this.onChatChoice(parseInt(btn.dataset.choice));
+    });
 
     // Quit Shift
     this.quitShiftBtn.addEventListener("click", () => this.showQuitConfirm());
@@ -505,6 +541,9 @@ class CafeEngine {
     this.renderDeckTabs();
     this.renderDeck();
     this.updateFuseButton();
+
+    // Maybe trigger customer chat dialogue
+    this.maybeShowChat();
   }
 
   async deliverFood(tableNum, success) {
@@ -561,6 +600,7 @@ class CafeEngine {
     this.currentOrder = null;
     this.selectedRecipe = null;
     this.orderPicker.classList.add("hidden");
+    this.customerChat.classList.add("hidden");
     document.getElementById("card-slots-row").style.display = "";
     document.getElementById("ingredient-deck").style.display = "";
     this.fuseBtn.style.display = "";
@@ -646,6 +686,103 @@ class CafeEngine {
     }
 
     this.endShiftBtn.disabled = this.successCount < req;
+
+    // Update button counter
+    if (this.hudButtonCount && window.journal) {
+      this.hudButtonCount.textContent = window.journal.getButtons();
+    }
+  }
+
+  /* ══════════════════════════════════
+     Customer Chat / Tip System
+     ══════════════════════════════════ */
+
+  /**
+   * Maybe show a random customer dialogue with 2 choices.
+   * ~60% chance per order. Best answer = +1 button tip.
+   */
+  maybeShowChat() {
+    if (Math.random() > 0.6) {
+      this.customerChat.classList.add("hidden");
+      return;
+    }
+
+    const dialogue = this._dialoguePool[Math.floor(Math.random() * this._dialoguePool.length)];
+    this._currentChat = dialogue;
+
+    this.chatCustomerLine.textContent = `"${dialogue.line}"`;
+
+    // Randomize choice order so the best answer isn't always first
+    const flip = Math.random() < 0.5;
+    const btns = this.chatChoices.querySelectorAll(".chat-choice");
+    btns[0].textContent = dialogue.choices[flip ? 1 : 0];
+    btns[0].dataset.choice = flip ? 1 : 0;
+    btns[0].className = "chat-choice";
+    btns[1].textContent = dialogue.choices[flip ? 0 : 1];
+    btns[1].dataset.choice = flip ? 0 : 1;
+    btns[1].className = "chat-choice";
+
+    this.customerChat.classList.remove("hidden");
+  }
+
+  onChatChoice(choiceIdx) {
+    const dialogue = this._currentChat;
+    if (!dialogue) return;
+
+    const btns = this.chatChoices.querySelectorAll(".chat-choice");
+    const isBest = choiceIdx === dialogue.best;
+
+    // Highlight correct/wrong
+    btns.forEach(btn => {
+      const idx = parseInt(btn.dataset.choice);
+      if (idx === dialogue.best) {
+        btn.classList.add("correct");
+      } else {
+        btn.classList.add("wrong");
+      }
+      btn.style.pointerEvents = "none";
+    });
+
+    if (isBest) {
+      this.awardTip();
+    }
+
+    // Auto-hide after a moment
+    setTimeout(() => {
+      this.customerChat.classList.add("hidden");
+    }, 1200);
+
+    this._currentChat = null;
+  }
+
+  awardTip() {
+    if (window.journal) {
+      window.journal.addButtons(1);
+    }
+    this.updateHud();
+
+    // Floating +1 animation
+    const float = document.createElement("div");
+    float.className = "tip-float";
+    float.textContent = "+1 \uD83E\uDEA3";
+
+    // Position near the HUD button counter
+    const hudBtn = document.getElementById("hud-buttons");
+    if (hudBtn) {
+      const rect = hudBtn.getBoundingClientRect();
+      float.style.left = `${rect.left + rect.width / 2}px`;
+      float.style.top = `${rect.top}px`;
+
+      // Bounce the counter
+      hudBtn.classList.add("tip-earned");
+      setTimeout(() => hudBtn.classList.remove("tip-earned"), 600);
+    } else {
+      float.style.left = "50%";
+      float.style.top = "50px";
+    }
+
+    document.body.appendChild(float);
+    setTimeout(() => float.remove(), 1200);
   }
 
   /* ══════════════════════════════════
