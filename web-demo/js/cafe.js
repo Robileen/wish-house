@@ -565,7 +565,7 @@ class CafeEngine {
       // Customer eating
       tableData.state = "eating";
       this.renderTable(tableNum);
-      await this.sleep(1200);
+      await this.sleep(5000);
 
       // Customer leaves, table messy
       tableData.state = "messy";
@@ -1372,7 +1372,7 @@ class CafeEngine {
       await this.sleep(600);
       tableData.state = "eating";
       this.renderTable(tableNum);
-      await this.sleep(800);
+      await this.sleep(5000);
       tableData.state = "crafting";
 
       // Return to order picker for remaining orders
