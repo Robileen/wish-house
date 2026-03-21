@@ -54,6 +54,7 @@ class CafeEngine {
 
     // DOM — card slots, deck, fuse
     this.cardSlotsEl     = document.getElementById("card-slots");
+    this.revertBtn       = document.getElementById("revert-slots-btn");
     this.deckScroll      = document.getElementById("deck-scroll");
     this.deckTabsEl      = document.getElementById("deck-tabs");
     this.fuseBtn         = document.getElementById("fuse-btn");
@@ -114,6 +115,7 @@ class CafeEngine {
     // Bind events
     this.shiftStartBtn.addEventListener("click", () => this.beginShift());
     this.fuseBtn.addEventListener("click", () => this.fuse());
+    this.revertBtn.addEventListener("click", () => this.revertAllSlots());
     this.serveNextBtn.addEventListener("click", () => this.afterServeResult());
     this.shiftDoneBtn.addEventListener("click", () => this.exitShift());
     this.endShiftBtn.addEventListener("click", () => this.endShiftEarly());
@@ -752,6 +754,16 @@ class CafeEngine {
     }
 
     this.renderSlots();
+    this.updateFuseButton();
+  }
+
+  revertAllSlots() {
+    if (!this.selectedRecipe) return;
+    this.slots = this.selectedRecipe.ingredients.map(() => ({ ingredientId: null }));
+    this.usedCardEls = new Set();
+    this._deckCardUsage = {};
+    this.renderSlots();
+    this.renderDeck();
     this.updateFuseButton();
   }
 
