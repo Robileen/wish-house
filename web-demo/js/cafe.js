@@ -96,10 +96,16 @@ class CafeEngine {
     this._deckCache      = [];
     this._deckCardUsage  = {};
 
-    // Table state: tracks which table has which order
-    // { tableNum: { order, state: 'waiting'|'ordering'|'crafting'|'served'|'eating'|'messy'|'clean' } }
+    // Table state: tracks which table has which customers & orders
+    // { tableNum: { customers: [{ avatar, orders: [{ order, recipe, completed }] }], state } }
     this.tables          = {};
     this._activeTableNum = null;  // which table the player is crafting for
+    this._activeOrderIdx = null;  // which order index within the table's orders
+    this._activeCustomerIdx = null; // which customer at the table
+
+    // DOM — order picker
+    this.orderPicker     = document.getElementById("order-picker");
+    this.orderPickerList = document.getElementById("order-picker-list");
 
     // Avatars for customers
     this._avatarEmojis = ["\uD83D\uDC64", "\uD83E\uDDD1", "\uD83D\uDC69", "\uD83D\uDC68", "\uD83D\uDC66", "\uD83D\uDC67", "\uD83E\uDDD3"];
@@ -201,6 +207,8 @@ class CafeEngine {
     this._deckCardUsage = {};
     this.tables         = {};
     this._activeTableNum = null;
+    this._activeOrderIdx = null;
+    this._activeCustomerIdx = null;
 
     // Show intro
     this.shiftIntroTitle.textContent = this.shiftData.name;
@@ -248,11 +256,10 @@ class CafeEngine {
 
   /**
    * Seat customers at empty tables from the order queue.
-   * Up to 3 customers at a time across the 6 tables.
+   * Each table gets 1-2 customers, each customer gets 1-3 orders.
    */
   seatNextCustomers() {
     if (this.orderQueue.length === 0) {
-      // No more orders — check if shift is done
       const hasActive = Object.values(this.tables).some(t => t);
       if (!hasActive && this.successCount >= this.shiftData.ordersRequired) {
         this.completeShift();
@@ -262,26 +269,32 @@ class CafeEngine {
 
     const emptyTables = [1, 2, 3, 4, 5, 6].filter(n => !this.tables[n]);
     const shuffledEmpty = this.shuffle([...emptyTables]);
-
-    // Seat up to 3 new customers (or however many orders remain / tables available)
-    const toSeat = Math.min(3, this.orderQueue.length, shuffledEmpty.length);
+    const toFill = Math.min(3, shuffledEmpty.length);
     const seatedTables = [];
 
-    for (let i = 0; i < toSeat; i++) {
-      const order = this.orderQueue.shift();
+    for (let i = 0; i < toFill && this.orderQueue.length > 0; i++) {
       const tableNum = shuffledEmpty[i];
-      const avatarIdx = (this.totalServed + Object.keys(this.tables).length + i) % this._avatarEmojis.length;
+      const numCustomers = this.orderQueue.length >= 2 ? (Math.random() < 0.4 ? 2 : 1) : 1;
+      const customers = [];
 
-      this.tables[tableNum] = {
-        order,
-        state: "ordering",
-        avatar: this._avatarEmojis[avatarIdx],
-        recipe: RECIPES[order.recipeId] || null
-      };
+      for (let c = 0; c < numCustomers && this.orderQueue.length > 0; c++) {
+        const maxOrders = Math.min(3, this.orderQueue.length);
+        const numOrders = maxOrders === 1 ? 1 : (Math.random() < 0.3 ? Math.min(maxOrders, Math.random() < 0.5 ? 3 : 2) : 1);
+        const avatarIdx = (this.totalServed + Object.keys(this.tables).length + customers.length) % this._avatarEmojis.length;
+        const orders = [];
+
+        for (let o = 0; o < numOrders; o++) {
+          const order = this.orderQueue.shift();
+          orders.push({ order, recipe: RECIPES[order.recipeId] || null, completed: false });
+        }
+
+        customers.push({ avatar: this._avatarEmojis[avatarIdx], orders });
+      }
+
+      this.tables[tableNum] = { customers, state: "ordering" };
       seatedTables.push(tableNum);
     }
 
-    // Only render the newly seated tables
     seatedTables.forEach(n => this.renderTable(n));
   }
 
@@ -295,7 +308,6 @@ class CafeEngine {
     const el = this.cafeRoom.querySelector(`.cafe-table[data-table="${tableNum}"]`);
     if (!el) return;
 
-    const surface = el.querySelector(".table-surface");
     const seatA = el.querySelector(".seat-a");
     const seatB = el.querySelector(".seat-b");
     const foodSlot = el.querySelector(".food-slot");
@@ -317,48 +329,71 @@ class CafeEngine {
     if (existingBubble) existingBubble.remove();
 
     const tableData = this.tables[tableNum];
-    if (!tableData) return; // empty table
+    if (!tableData) return;
 
-    const { order, state, avatar, recipe } = tableData;
+    const { customers, state } = tableData;
 
-    // Customer seated
     if (state === "ordering" || state === "crafting") {
       el.classList.add("has-customer");
-      seatA.className = "seat seat-a occupied";
-      seatA.textContent = avatar;
+
+      // Show customer avatars
+      if (customers[0]) {
+        seatA.className = "seat seat-a occupied";
+        seatA.textContent = customers[0].avatar;
+      }
+      if (customers[1]) {
+        seatB.className = "seat seat-b occupied";
+        seatB.textContent = customers[1].avatar;
+      }
 
       if (state === "ordering") {
-        // Show speech bubble outside the table
-        const bubble = document.createElement("div");
-        bubble.className = "table-order-bubble";
-        bubble.innerHTML = recipe
-          ? `<span class="bubble-icon">${recipe.icon}</span> ${recipe.name}`
-          : `<span class="bubble-dialogue">${order.dialogue}</span>`;
-        el.appendChild(bubble);
+        // Collect all pending orders for the speech bubble
+        const pendingOrders = [];
+        customers.forEach(c => {
+          c.orders.forEach(o => {
+            if (!o.completed && o.recipe) pendingOrders.push(o.recipe);
+          });
+        });
+
+        if (pendingOrders.length > 0) {
+          const bubble = document.createElement("div");
+          bubble.className = "table-order-bubble";
+          bubble.innerHTML = pendingOrders
+            .map(r => `<span class="bubble-icon">${r.icon}</span>`)
+            .join(" ");
+          if (pendingOrders.length === 1) {
+            bubble.innerHTML += ` ${pendingOrders[0].name}`;
+          } else {
+            bubble.innerHTML += ` <span class="bubble-count">${pendingOrders.length} orders</span>`;
+          }
+          el.appendChild(bubble);
+        }
       }
     }
 
     if (state === "served") {
       el.classList.add("served");
-      seatA.className = "seat seat-a occupied";
-      seatA.textContent = avatar;
+      if (customers[0]) { seatA.className = "seat seat-a occupied"; seatA.textContent = customers[0].avatar; }
+      if (customers[1]) { seatB.className = "seat seat-b occupied"; seatB.textContent = customers[1].avatar; }
+      const lastRecipe = this._lastDeliveredRecipe;
       foodSlot.className = "food-slot has-food";
-      foodSlot.textContent = recipe ? recipe.icon : "\uD83C\uDF7D";
+      foodSlot.textContent = lastRecipe ? lastRecipe.icon : "\uD83C\uDF7D";
       overlay.className = "table-overlay glow";
     }
 
     if (state === "eating") {
-      seatA.className = "seat seat-a occupied";
-      seatA.textContent = avatar;
+      if (customers[0]) { seatA.className = "seat seat-a occupied"; seatA.textContent = customers[0].avatar; }
+      if (customers[1]) { seatB.className = "seat seat-b occupied"; seatB.textContent = customers[1].avatar; }
+      const lastRecipe = this._lastDeliveredRecipe;
       foodSlot.className = "food-slot has-food";
-      foodSlot.textContent = recipe ? recipe.icon : "\uD83C\uDF7D";
+      foodSlot.textContent = lastRecipe ? lastRecipe.icon : "\uD83C\uDF7D";
       overlay.className = "table-overlay hearts";
     }
 
     if (state === "messy") {
       el.classList.add("messy");
       foodSlot.className = "food-slot has-food clickable";
-      foodSlot.textContent = "\uD83E\uDDFD";  // sponge emoji — click to clean
+      foodSlot.textContent = "\uD83E\uDDFD";
     }
   }
 
@@ -372,32 +407,104 @@ class CafeEngine {
     }
 
     if (tableData.state === "ordering") {
-      // Take this order -> go to craft view
       this._activeTableNum = tableNum;
       tableData.state = "crafting";
-      this.currentOrder = tableData.order;
-      this.selectedRecipe = tableData.recipe;
 
-      // Set up craft view
-      if (this.selectedRecipe) {
-        this.slots = this.selectedRecipe.ingredients.map(() => ({ ingredientId: null }));
+      // Collect all pending orders across customers
+      const allOrders = [];
+      tableData.customers.forEach((c, ci) => {
+        c.orders.forEach((o, oi) => {
+          if (!o.completed) allOrders.push({ customerIdx: ci, orderIdx: oi, ...o });
+        });
+      });
+
+      if (allOrders.length === 1) {
+        // Single order — go straight to crafting
+        this._selectOrder(tableNum, allOrders[0].customerIdx, allOrders[0].orderIdx);
       } else {
-        this.slots = [];
+        // Multiple orders — show order picker
+        this._showOrderPicker(tableNum, allOrders);
       }
-      this.usedCardEls = new Set();
-      this._deckCardUsage = {};
-      this.activeDeckTab = "all";
-      this._deckCache = this.selectedRecipe ? this.buildDeck() : [];
 
-      this.renderCustomerOrder();
-      this.renderSlots();
-      this.renderDeckTabs();
-      this.renderDeck();
-      this.updateFuseButton();
-
-      // Transition to craft view
       this.showCraftView();
     }
+  }
+
+  _showOrderPicker(tableNum, allOrders) {
+    const tableData = this.tables[tableNum];
+
+    // Show picker, hide craft elements
+    this.orderPicker.classList.remove("hidden");
+    document.getElementById("card-slots-row").style.display = "none";
+    document.getElementById("ingredient-deck").style.display = "none";
+    this.fuseBtn.style.display = "none";
+
+    // Show first customer info in order banner
+    const firstCustomer = tableData.customers[0];
+    this.orderAvatar.textContent = firstCustomer.avatar;
+    this.orderName.textContent = `Table ${tableNum}`;
+    this.orderDialogue.textContent = `${allOrders.length} orders to fill`;
+    this.orderRecipeIcon.textContent = "";
+    this.orderRecipeName.textContent = "";
+
+    // Render order cards
+    this.orderPickerList.innerHTML = "";
+    allOrders.forEach(({ customerIdx, orderIdx, order, recipe, completed }) => {
+      const card = document.createElement("div");
+      card.className = "order-pick-card" + (completed ? " completed" : "");
+
+      const customer = tableData.customers[customerIdx];
+      card.innerHTML = `
+        <span class="order-pick-icon">${recipe ? recipe.icon : "\uD83C\uDF7D"}</span>
+        <div class="order-pick-info">
+          <span class="order-pick-name">${recipe ? recipe.name : "Unknown"}</span>
+          <span class="order-pick-customer">${customer.avatar} ${order.customer}</span>
+        </div>
+      `;
+
+      if (!completed) {
+        card.addEventListener("click", () => {
+          this._selectOrder(tableNum, customerIdx, orderIdx);
+        });
+      }
+
+      this.orderPickerList.appendChild(card);
+    });
+  }
+
+  _selectOrder(tableNum, customerIdx, orderIdx) {
+    const tableData = this.tables[tableNum];
+    const customer = tableData.customers[customerIdx];
+    const orderEntry = customer.orders[orderIdx];
+
+    this._activeTableNum = tableNum;
+    this._activeCustomerIdx = customerIdx;
+    this._activeOrderIdx = orderIdx;
+    this.currentOrder = orderEntry.order;
+    this.selectedRecipe = orderEntry.recipe;
+
+    // Hide picker, show craft elements
+    this.orderPicker.classList.add("hidden");
+    document.getElementById("card-slots-row").style.display = "";
+    document.getElementById("ingredient-deck").style.display = "";
+    this.fuseBtn.style.display = "";
+
+    // Set up craft view
+    if (this.selectedRecipe) {
+      this.slots = this.selectedRecipe.ingredients.map(() => ({ ingredientId: null }));
+    } else {
+      this.slots = [];
+    }
+    this.usedCardEls = new Set();
+    this._deckCardUsage = {};
+    this.activeDeckTab = "all";
+    this._deckCache = this.selectedRecipe ? this.buildDeck() : [];
+
+    this.renderCustomerOrder();
+    this.renderSlots();
+    this.renderDeckTabs();
+    this.renderDeck();
+    this.updateFuseButton();
   }
 
   async deliverFood(tableNum, success) {
@@ -445,11 +552,18 @@ class CafeEngine {
   backToTables() {
     // Return to table zone, cancel current crafting
     if (this._activeTableNum && this.tables[this._activeTableNum]) {
-      this.tables[this._activeTableNum].state = "ordering"; // reset to waiting
+      this.tables[this._activeTableNum].state = "ordering";
+      this.renderTable(this._activeTableNum);
     }
     this._activeTableNum = null;
+    this._activeOrderIdx = null;
+    this._activeCustomerIdx = null;
     this.currentOrder = null;
     this.selectedRecipe = null;
+    this.orderPicker.classList.add("hidden");
+    document.getElementById("card-slots-row").style.display = "";
+    document.getElementById("ingredient-deck").style.display = "";
+    this.fuseBtn.style.display = "";
     this.showTableZone();
   }
 
@@ -542,7 +656,10 @@ class CafeEngine {
     if (!this.currentOrder) return;
     const recipe = RECIPES[this.currentOrder.recipeId];
     const tableData = this.tables[this._activeTableNum];
-    this.orderAvatar.textContent = tableData ? tableData.avatar : "\uD83D\uDC64";
+    const customer = tableData && this._activeCustomerIdx != null
+      ? tableData.customers[this._activeCustomerIdx]
+      : null;
+    this.orderAvatar.textContent = customer ? customer.avatar : "\uD83D\uDC64";
     this.orderName.textContent    = this.currentOrder.customer;
     this.orderDialogue.textContent = `\u201C${this.currentOrder.dialogue}\u201D`;
     this.orderRecipeIcon.textContent = recipe ? recipe.icon : "";
@@ -1071,13 +1188,56 @@ class CafeEngine {
     }
 
     const tableNum = this._activeTableNum;
-    this._activeTableNum = null;
+    const tableData = this.tables[tableNum];
 
-    // Switch to table zone for the delivery animation
+    // Mark the current order as completed
+    if (tableData && this._activeCustomerIdx != null && this._activeOrderIdx != null) {
+      const customer = tableData.customers[this._activeCustomerIdx];
+      if (customer && customer.orders[this._activeOrderIdx]) {
+        customer.orders[this._activeOrderIdx].completed = true;
+      }
+    }
+
+    // Check if the table has more pending orders
+    const pendingOrders = [];
+    if (tableData) {
+      tableData.customers.forEach((c, ci) => {
+        c.orders.forEach((o, oi) => {
+          if (!o.completed) pendingOrders.push({ customerIdx: ci, orderIdx: oi, ...o });
+        });
+      });
+    }
+
+    if (pendingOrders.length > 0 && this._lastFuseSuccess) {
+      // More orders at this table — show delivery then return to order picker
+      this._lastDeliveredRecipe = this.selectedRecipe;
+      tableData.state = "served";
+      this.renderTable(tableNum);
+      await this.sleep(600);
+      tableData.state = "eating";
+      this.renderTable(tableNum);
+      await this.sleep(800);
+      tableData.state = "crafting";
+
+      // Return to order picker for remaining orders
+      if (pendingOrders.length === 1) {
+        this._selectOrder(tableNum, pendingOrders[0].customerIdx, pendingOrders[0].orderIdx);
+      } else {
+        this._showOrderPicker(tableNum, pendingOrders);
+        this.showCraftView();
+      }
+      return;
+    }
+
+    // All orders done (or failed) — go to table zone with delivery animation
+    this._activeTableNum = null;
+    this._activeOrderIdx = null;
+    this._activeCustomerIdx = null;
+
     this.showTableZone();
 
-    // Play delivery animation on the table
-    if (tableNum && this.tables[tableNum]) {
+    if (tableNum && tableData) {
+      this._lastDeliveredRecipe = this.selectedRecipe;
       await this.deliverFood(tableNum, this._lastFuseSuccess);
     }
 

@@ -963,6 +963,12 @@
     color: var(--text-light);
 }
 
+.table-order-bubble .bubble-count {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--text-light);
+}
+
 @keyframes bubble-pop {
     from { transform: translateX(-50%) scale(0); opacity: 0; }
     to   { transform: translateX(-50%) scale(1); opacity: 1; }
@@ -1037,6 +1043,75 @@
 }
 
 #craft-view.hidden { display: none; }
+
+/* ---- Order Picker ---- */
+#order-picker {
+    padding: 8px 16px;
+    flex-shrink: 0;
+}
+
+#order-picker.hidden { display: none; }
+
+#order-picker-label {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 6px;
+}
+
+#order-picker-list {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.order-pick-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: linear-gradient(135deg, rgba(255, 248, 240, 0.9), rgba(253, 220, 186, 0.3));
+    border: 1.5px solid rgba(200, 168, 130, 0.3);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.order-pick-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--gold);
+    box-shadow: 0 3px 10px rgba(212, 168, 67, 0.2);
+}
+
+.order-pick-card.completed {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.order-pick-icon {
+    font-size: 1.3rem;
+}
+
+.order-pick-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.order-pick-name {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--cocoa);
+}
+
+.order-pick-customer {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.58rem;
+    color: var(--text-light);
+    font-style: italic;
+}
 
 /* ---- Card Slots ---- */
 #card-slots-row {
