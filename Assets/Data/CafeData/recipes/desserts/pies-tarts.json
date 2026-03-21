@@ -1,0 +1,4 @@
+[
+  { "id": "apple_pie", "name": "Apple Pie", "category": "dessert-pies-tarts", "icon": "\uD83E\uDD67", "ingredients": ["flour", "apple", "cinnamon", "sugar"], "illustration": "A warm slice of apple pie with a lattice crust and cinnamon-spiced filling." },
+  { "id": "cherry_tart", "name": "Cherry Tart", "category": "dessert-pies-tarts", "icon": "\uD83C\uDF52", "ingredients": ["flour", "cherry", "cream", "sugar"], "illustration": "A delicate tart shell filled with glossy cherry compote and fresh cream." }
+]

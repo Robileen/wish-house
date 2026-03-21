@@ -239,7 +239,7 @@ class CafeEngine {
 
     const available = this.shiftData.availableRecipes
       .map(id => RECIPES[id])
-      .filter(r => r && r.category === this.activeTab);
+      .filter(r => r && r.category.startsWith(this.activeTab));
 
     this.recipePages.innerHTML = "";
 
@@ -500,8 +500,8 @@ class CafeEngine {
     overlay.className = "fuse-animation-overlay";
 
     const category = recipe.category;
-    const animIcon = category === "drink" ? "\u2615\u2728" : "\uD83E\uDDD9\u2728";
-    const animText = category === "drink" ? "Brewing..." : "Conjuring...";
+    const animIcon = category.startsWith("drink") ? "\u2615\u2728" : "\uD83E\uDDD9\u2728";
+    const animText = category.startsWith("drink") ? "Brewing..." : "Conjuring...";
 
     overlay.innerHTML = `
       <div class="fuse-anim-content">

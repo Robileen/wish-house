@@ -1,0 +1,4 @@
+[
+  { "id": "tomato_soup", "name": "Tomato Soup", "category": "food-soups", "icon": "\uD83C\uDF45", "ingredients": ["tomato", "hot", "butter"], "illustration": "A bowl of creamy tomato soup with a swirl of butter melting on top." },
+  { "id": "mushroom_soup", "name": "Mushroom Soup", "category": "food-soups", "icon": "\uD83C\uDF44", "ingredients": ["mushroom", "cream", "hot"], "illustration": "A hearty bowl of earthy mushroom soup with a dollop of cream." }
+]
