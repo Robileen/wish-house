@@ -528,8 +528,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 24px;
-    padding: 20px 16px 8px;
+    gap: 52px;
+    padding: 40px 16px 8px;
 }
 
 .table-row {
@@ -1226,5 +1226,5 @@
     .table-surface { width: 120px; height: 85px; }
     .seat { width: 30px; height: 40px; font-size: 1rem; }
     .table-row { gap: 12px; }
-    #cafe-room { gap: 16px; padding: 12px 10px 6px; }
+    #cafe-room { gap: 40px; padding: 30px 10px 6px; }
 }
