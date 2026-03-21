@@ -265,6 +265,7 @@ class CafeEngine {
 
     // Seat up to 3 new customers (or however many orders remain / tables available)
     const toSeat = Math.min(3, this.orderQueue.length, shuffledEmpty.length);
+    const seatedTables = [];
 
     for (let i = 0; i < toSeat; i++) {
       const order = this.orderQueue.shift();
@@ -277,9 +278,11 @@ class CafeEngine {
         avatar: this._avatarEmojis[avatarIdx],
         recipe: RECIPES[order.recipeId] || null
       };
+      seatedTables.push(tableNum);
     }
 
-    this.renderAllTables();
+    // Only render the newly seated tables
+    seatedTables.forEach(n => this.renderTable(n));
   }
 
   renderAllTables() {
