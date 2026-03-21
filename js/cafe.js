@@ -599,13 +599,11 @@ class CafeEngine {
     pageEl.innerHTML = "";
     if (texture) pageEl.appendChild(texture);
 
-    // Add category header
-    if (recipes.length > 0) {
+    // Add category header (subcategories only, main category is on the tab)
+    if (recipes.length > 0 && subcategories.length > 0) {
       const header = document.createElement("div");
       header.className = "recipe-page-header";
-      header.textContent = subcategories.length > 0
-        ? `${tabName} — ${subcategories.join(", ")}`
-        : tabName;
+      header.textContent = subcategories.join(", ");
       pageEl.appendChild(header);
     }
 
