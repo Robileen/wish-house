@@ -626,15 +626,34 @@
 }
 
 .recipe-ingredient-icon {
-    width: 24px;
-    height: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.recipe-ingredient-icon .ri-icon {
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     background: linear-gradient(135deg, rgba(200, 168, 130, 0.12), rgba(244, 184, 193, 0.15));
     border: 1px solid rgba(200, 168, 130, 0.15);
+}
+
+.recipe-ingredient-icon .ri-name {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.42rem;
+    font-weight: 600;
+    color: var(--text-light);
+    line-height: 1.1;
+    text-align: center;
+    max-width: 38px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Empty page message */

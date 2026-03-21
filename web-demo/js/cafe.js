@@ -608,7 +608,7 @@ class CafeEngine {
       const ingredientIcons = recipe.ingredients
         .map(ingId => {
           const ing = INGREDIENTS[ingId];
-          return ing ? `<span class="recipe-ingredient-icon" title="${ing.name}">${ing.icon}</span>` : "";
+          return ing ? `<span class="recipe-ingredient-icon"><span class="ri-icon">${ing.icon}</span><span class="ri-name">${ing.name}</span></span>` : "";
         })
         .join("");
 
