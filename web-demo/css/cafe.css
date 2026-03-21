@@ -447,90 +447,89 @@
     min-width: 0;
 }
 
-/* Right-edge bookmark tabs — colourful ribbon style */
+/* Right-edge index tabs — semicircular divider style */
 #recipe-book-tabs {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding-top: 16px;
-    gap: 6px;
+    padding-top: 20px;
+    gap: 2px;
     flex-shrink: 0;
     z-index: 2;
 }
 
 .recipe-tab {
     position: relative;
-    padding: 10px 10px 16px 10px;
+    padding: 12px 12px 12px 8px;
     font-family: 'Quicksand', sans-serif;
     font-size: 0.6rem;
-    font-weight: 700;
-    color: #fff;
-    background: var(--dusty-rose);
-    border: none;
-    border-radius: 0 6px 0 0;
+    font-weight: 600;
+    color: var(--text-light);
+    background: #F0E6D6;
+    border: 1px solid rgba(200, 168, 130, 0.25);
+    border-left: none;
+    border-radius: 0 20px 20px 0;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s, padding-right 0.2s;
+    transition: transform 0.15s, background 0.15s, color 0.15s, box-shadow 0.15s;
     white-space: nowrap;
-    min-width: 42px;
-    text-align: center;
+    min-width: 48px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 2px;
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.12);
-    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), 50% 100%, 0 calc(100% - 8px));
+    gap: 5px;
 }
 
-/* Each tab gets its own colour */
-.recipe-tab[data-category="drink"] {
-    background: linear-gradient(180deg, #B8D4E3, #8CB4CE);
+/* Coloured left edge strip on each tab */
+.recipe-tab::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 4px;
+    bottom: 4px;
+    width: 3px;
+    border-radius: 0 2px 2px 0;
 }
-.recipe-tab[data-category="food"] {
-    background: linear-gradient(180deg, #F5CBA7, #E8A87C);
-}
-.recipe-tab[data-category="dessert"] {
-    background: linear-gradient(180deg, #F4B8C1, #E091A3);
-}
-.recipe-tab[data-category="specials"] {
-    background: linear-gradient(180deg, #D4C5F9, #B8A4E8);
-}
+
+.recipe-tab[data-category="drink"]::before  { background: #7BAFD4; }
+.recipe-tab[data-category="food"]::before    { background: #E8A87C; }
+.recipe-tab[data-category="dessert"]::before { background: #E091A3; }
+.recipe-tab[data-category="specials"]::before { background: #B8A4E8; }
 
 .tab-emoji {
-    font-size: 1rem;
+    font-size: 0.9rem;
     line-height: 1;
-    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
 }
 
 .tab-label {
-    font-size: 0.52rem;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-    opacity: 0.9;
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
 }
 
-/* Active bookmark — extends further right, brighter */
+/* Active index tab — pops out, white background, bold colour */
 .recipe-tab.active {
-    padding-right: 16px;
-    transform: translateX(4px);
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.18);
+    background: #FFF8F0;
+    color: var(--cocoa);
+    font-weight: 700;
+    transform: translateX(6px);
+    border-color: rgba(200, 168, 130, 0.3);
+    box-shadow: -2px 1px 6px rgba(74, 55, 40, 0.1);
 }
 
-.recipe-tab[data-category="drink"].active {
-    background: linear-gradient(180deg, #C8E0EE, #A0C8DD);
-}
-.recipe-tab[data-category="food"].active {
-    background: linear-gradient(180deg, #FDDCBA, #F0B892);
-}
-.recipe-tab[data-category="dessert"].active {
-    background: linear-gradient(180deg, #F9CDD4, #F0A4B5);
-}
-.recipe-tab[data-category="specials"].active {
-    background: linear-gradient(180deg, #E2D6FC, #C8B4F2);
-}
+.recipe-tab[data-category="drink"].active    { color: #4A8AB0; }
+.recipe-tab[data-category="food"].active     { color: #C07840; }
+.recipe-tab[data-category="dessert"].active  { color: #C06880; }
+.recipe-tab[data-category="specials"].active { color: #8070C0; }
+
+.recipe-tab[data-category="drink"].active::before  { width: 4px; background: #4A8AB0; }
+.recipe-tab[data-category="food"].active::before    { width: 4px; background: #C07840; }
+.recipe-tab[data-category="dessert"].active::before { width: 4px; background: #C06880; }
+.recipe-tab[data-category="specials"].active::before { width: 4px; background: #8070C0; }
 
 .recipe-tab:hover:not(.active) {
+    background: #F5EEDF;
+    color: var(--cocoa);
     transform: translateX(3px);
-    box-shadow: 3px 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Two-page spread */
@@ -1411,7 +1410,7 @@
     .recipe-page { padding: 10px 8px; gap: 10px; }
     .recipe-card-icon { font-size: 2rem; }
     .recipe-card-name { font-size: 0.72rem; }
-    .recipe-tab { padding: 8px 6px 14px; min-width: 36px; }
-    .tab-emoji { font-size: 0.85rem; }
-    .tab-label { font-size: 0.45rem; }
+    .recipe-tab { padding: 9px 8px 9px 6px; min-width: 40px; }
+    .tab-emoji { font-size: 0.8rem; }
+    .tab-label { font-size: 0.5rem; }
 }
