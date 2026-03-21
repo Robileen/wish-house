@@ -390,7 +390,9 @@
     position: relative;
     width: 92%;
     max-width: 640px;
-    max-height: 88vh;
+    height: 75vh;
+    max-height: 520px;
+    min-height: 360px;
     background: linear-gradient(145deg, #D4A060, #C8946A, #B8845A);
     border-radius: 6px 4px 4px 6px;
     padding: 6px 0 6px 14px;
