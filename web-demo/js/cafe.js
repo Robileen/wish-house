@@ -1207,6 +1207,7 @@ class CafeEngine {
       this.successCount++;
       this.streak++;
       if (this.streak > this.bestStreak) this.bestStreak = this.streak;
+      this._shiftTips++;  // +1 button for correct order
       this.showServeResult(true, this.selectedRecipe);
     } else {
       this.mistakeCount++;
