@@ -671,50 +671,72 @@
     opacity: 0.6;
 }
 
-/* Pagination nav */
-.recipe-book-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    padding: 8px 12px;
-    border-top: 1px solid rgba(200, 168, 130, 0.2);
-    background: linear-gradient(180deg, #FFF8F0, #F5E6C8);
-    flex-shrink: 0;
-}
-
-.recipe-nav-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 1px solid rgba(200, 168, 130, 0.3);
-    background: var(--warm-white);
-    color: var(--cocoa);
-    font-size: 0.9rem;
-    font-weight: 700;
+/* Page arrows — faded overlays on left/right sides of book */
+.recipe-page-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 80px;
+    border: none;
+    background: rgba(200, 168, 130, 0.15);
+    color: var(--milk-tea);
+    font-size: 1.8rem;
+    font-weight: 300;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s, color 0.2s, transform 0.15s;
+    z-index: 5;
+    opacity: 0.5;
+    transition: opacity 0.2s, background 0.2s;
 }
 
-.recipe-nav-btn:hover:not(:disabled) {
-    background: var(--gold);
-    color: var(--warm-white);
-    transform: scale(1.08);
+.recipe-arrow-left {
+    left: 14px;
+    border-radius: 8px 0 0 8px;
 }
 
-.recipe-nav-btn:disabled {
-    opacity: 0.3;
+.recipe-arrow-right {
+    right: 0;
+    border-radius: 0;
+}
+
+.recipe-page-arrow:hover:not(:disabled) {
+    opacity: 0.85;
+    background: rgba(200, 168, 130, 0.25);
+}
+
+.recipe-page-arrow:disabled {
+    opacity: 0.15;
     cursor: default;
 }
 
-#recipe-page-indicator {
+/* Category header at top of each page */
+.recipe-page-header {
+    position: relative;
+    z-index: 1;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--dusty-rose);
+    text-align: center;
+    padding-bottom: 6px;
+    margin-bottom: 2px;
+    border-bottom: 1px solid rgba(244, 184, 193, 0.25);
+    letter-spacing: 0.3px;
+}
+
+/* Page number — sits at bottom of the tabs column */
+.recipe-page-num {
     font-family: 'Quicksand', sans-serif;
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     font-weight: 600;
     color: var(--text-light);
+    text-align: center;
+    margin-top: auto;
+    padding: 8px 0 4px;
+    opacity: 0.7;
 }
 
 /* ---- Table Zone ---- */
