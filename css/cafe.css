@@ -445,6 +445,7 @@
     flex-direction: column;
     overflow: hidden;
     min-width: 0;
+    position: relative;
 }
 
 /* Right-edge index tabs — semicircular divider style */
@@ -671,35 +672,35 @@
     opacity: 0.6;
 }
 
-/* Page arrows — faded overlays on left/right sides of book */
+/* Page arrows — faded overlays on left/right sides of content */
 .recipe-page-arrow {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 36px;
+    width: 28px;
     height: 80px;
     border: none;
-    background: rgba(200, 168, 130, 0.15);
+    background: rgba(200, 168, 130, 0.12);
     color: var(--milk-tea);
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     font-weight: 300;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 5;
+    z-index: 8;
     opacity: 0.5;
     transition: opacity 0.2s, background 0.2s;
 }
 
 .recipe-arrow-left {
-    left: 14px;
-    border-radius: 8px 0 0 8px;
+    left: 0;
+    border-radius: 0 6px 6px 0;
 }
 
 .recipe-arrow-right {
     right: 0;
-    border-radius: 0;
+    border-radius: 6px 0 0 6px;
 }
 
 .recipe-page-arrow:hover:not(:disabled) {
