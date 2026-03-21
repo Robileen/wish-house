@@ -512,6 +512,273 @@
     background: rgba(200, 168, 130, 0.15);
 }
 
+/* ---- Table Zone ---- */
+#table-zone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#table-zone.hidden { display: none; }
+
+#cafe-room {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    padding: 20px 16px 8px;
+}
+
+.table-row {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* Individual table module */
+.cafe-table {
+    width: 160px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-align: center;
+}
+
+.cafe-table:hover {
+    transform: translateY(-3px);
+}
+
+.cafe-table.has-customer {
+    animation: table-pulse 2s ease-in-out infinite;
+}
+
+@keyframes table-pulse {
+    0%, 100% { box-shadow: none; }
+    50%      { box-shadow: 0 0 16px rgba(212, 168, 67, 0.35); border-radius: 12px; }
+}
+
+.cafe-table.served .table-surface {
+    border-color: var(--pale-mint);
+}
+
+.cafe-table.messy .table-surface {
+    border-color: var(--dusty-rose);
+    opacity: 0.7;
+}
+
+.table-surface {
+    position: relative;
+    width: 160px;
+    height: 110px;
+    background: linear-gradient(180deg, #FFF8F0 0%, #FDDCBA 50%, #F5E6C8 100%);
+    border: 2px solid rgba(200, 168, 130, 0.4);
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(74, 55, 40, 0.1);
+    overflow: hidden;
+}
+
+.table-label {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-top: 4px;
+}
+
+/* Seats: left and right positions */
+.seat {
+    position: absolute;
+    width: 38px;
+    height: 50px;
+    bottom: 4px;
+    border-radius: 8px 8px 4px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    transition: opacity 0.3s;
+}
+
+.seat.seat-a {
+    left: 10px;
+}
+
+.seat.seat-b {
+    right: 10px;
+}
+
+.seat.occupied {
+    background: linear-gradient(180deg, rgba(244, 184, 193, 0.25), rgba(253, 220, 186, 0.3));
+    border: 1.5px solid rgba(244, 184, 193, 0.4);
+}
+
+.seat.empty {
+    background: rgba(200, 168, 130, 0.08);
+    border: 1.5px dashed rgba(200, 168, 130, 0.2);
+}
+
+/* Food slot: center of table */
+.food-slot {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.food-slot.has-food {
+    background: rgba(255, 248, 240, 0.9);
+    border: 1.5px solid rgba(200, 230, 208, 0.5);
+    animation: food-appear 0.4s ease;
+}
+
+@keyframes food-appear {
+    from { transform: translateX(-50%) scale(0); opacity: 0; }
+    to   { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+/* Overlay: glow / hearts / order bubble */
+.table-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.table-overlay.glow {
+    background: radial-gradient(circle, rgba(200, 230, 208, 0.3), transparent 70%);
+    animation: overlay-glow 1.5s ease-in-out infinite;
+}
+
+@keyframes overlay-glow {
+    0%, 100% { opacity: 0.6; }
+    50%      { opacity: 1; }
+}
+
+.table-overlay.hearts::after {
+    content: "\2764\FE0F";
+    font-size: 1.4rem;
+    animation: hearts-float 1.2s ease-out forwards;
+}
+
+@keyframes hearts-float {
+    0%   { transform: translateY(0) scale(0.5); opacity: 0; }
+    30%  { opacity: 1; }
+    100% { transform: translateY(-30px) scale(1.2); opacity: 0; }
+}
+
+/* Order speech bubble on table */
+.table-order-bubble {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--warm-white);
+    border: 1.5px solid var(--gold);
+    border-radius: 10px;
+    padding: 3px 8px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--cocoa);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    z-index: 5;
+    animation: bubble-pop 0.3s ease;
+}
+
+@keyframes bubble-pop {
+    from { transform: scale(0); }
+    to   { transform: scale(1); }
+}
+
+/* Cleanup button on messy table */
+.table-cleanup-btn {
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 3px 14px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--warm-white);
+    background: var(--dusty-rose);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 5;
+    box-shadow: 0 2px 6px rgba(196, 139, 159, 0.4);
+    transition: transform 0.2s;
+}
+
+.table-cleanup-btn:hover {
+    transform: translateX(-50%) scale(1.05);
+}
+
+/* Barista / Magician Zone */
+#barista-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: linear-gradient(180deg, rgba(253, 220, 186, 0.4), rgba(255, 248, 240, 0.6));
+    border-top: 1px solid rgba(200, 168, 130, 0.25);
+    flex-shrink: 0;
+}
+
+#barista-sprite {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--soft-peach), var(--blush));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 2px 8px var(--shadow);
+    transition: transform 0.4s ease;
+}
+
+#barista-sprite.sliding {
+    animation: barista-slide 0.6s ease;
+}
+
+@keyframes barista-slide {
+    0%   { transform: translateY(0); }
+    50%  { transform: translateY(-20px) scale(1.05); }
+    100% { transform: translateY(0); }
+}
+
+#barista-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--cocoa);
+}
+
+/* ---- Craft View Container ---- */
+#craft-view {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+#craft-view.hidden { display: none; }
+
 /* ---- Card Slots ---- */
 #card-slots {
     display: flex;
@@ -919,4 +1186,9 @@
     #back-to-tables-btn { font-size: 0.6rem; padding: 4px 10px; }
     .deck-tab { font-size: 0.6rem; padding: 3px 8px; }
     .quit-confirm-box { padding: 20px 24px; }
+    .cafe-table { width: 120px; }
+    .table-surface { width: 120px; height: 85px; }
+    .seat { width: 30px; height: 40px; font-size: 1rem; }
+    .table-row { gap: 12px; }
+    #cafe-room { gap: 16px; padding: 12px 10px 6px; }
 }
