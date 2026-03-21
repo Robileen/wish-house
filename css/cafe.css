@@ -393,7 +393,7 @@
     max-height: 88vh;
     background: linear-gradient(145deg, #D4A060, #C8946A, #B8845A);
     border-radius: 6px 16px 16px 6px;
-    padding: 6px 6px 6px 14px;
+    padding: 6px 12px 6px 14px;
     box-shadow:
         0 12px 40px rgba(74, 55, 40, 0.35),
         inset 0 1px 0 rgba(255, 255, 255, 0.15);
