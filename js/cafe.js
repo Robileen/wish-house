@@ -718,9 +718,11 @@ class CafeEngine {
     btns[0].textContent = dialogue.choices[flip ? 1 : 0];
     btns[0].dataset.choice = flip ? 1 : 0;
     btns[0].className = "chat-choice";
+    btns[0].style.pointerEvents = "";
     btns[1].textContent = dialogue.choices[flip ? 0 : 1];
     btns[1].dataset.choice = flip ? 0 : 1;
     btns[1].className = "chat-choice";
+    btns[1].style.pointerEvents = "";
 
     this.customerChat.classList.remove("hidden");
   }
