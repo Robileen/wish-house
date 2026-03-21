@@ -106,9 +106,11 @@ class CafeEngine {
 
     // Ingredient group -> deck tab mapping
     this._groupToTab = {
-      base: "drink", dairy: "drink", temp: "drink",
-      fruit: "food", vegetable: "food", protein: "food", grain: "food",
-      topping: "dessert", sweetener: "dessert", spice: "dessert",
+      base: "base",
+      fruit: "produce", vegetable: "produce",
+      topping: "toppings", sweetener: "toppings", spice: "toppings",
+      dairy: "dairy", protein: "dairy", grain: "dairy",
+      temp: "temp",
       special: "special"
     };
 
@@ -851,16 +853,19 @@ class CafeEngine {
     // Include ALL non-special ingredients plus required specials
     const allIngIds = Object.keys(INGREDIENTS).filter(id => {
       const ing = INGREDIENTS[id];
-      // Always include required ingredients
       if (required.includes(id)) return true;
-      // Include all non-special ingredients
       if (!ing.isSpecial) return true;
       return false;
     });
 
-    // Add wild card
+    // Add wild card, sort alphabetically by ingredient name
     const deck = [...new Set([...allIngIds, "wild"])];
-    return this.shuffle(deck);
+    deck.sort((a, b) => {
+      const na = INGREDIENTS[a] ? INGREDIENTS[a].name : a;
+      const nb = INGREDIENTS[b] ? INGREDIENTS[b].name : b;
+      return na.localeCompare(nb);
+    });
+    return deck;
   }
 
   highlightMatchingCards() {
