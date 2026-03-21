@@ -146,18 +146,33 @@
 
         <!-- Recipe Book Modal -->
         <div id="recipe-book-modal" class="hidden">
-            <div class="recipe-book-content">
-                <div class="recipe-book-header">
-                    <h3>Recipe Book</h3>
-                    <button id="recipe-book-close">&times;</button>
+            <div class="recipe-book-outer">
+                <button id="recipe-book-close" title="Close">&times;</button>
+                <div class="recipe-book-spine"></div>
+                <div class="recipe-book-content">
+                    <!-- Tabs along the top edge like bookmarks -->
+                    <div id="recipe-book-tabs">
+                        <button class="recipe-tab active" data-category="drink">Drinks</button>
+                        <button class="recipe-tab" data-category="food">Food</button>
+                        <button class="recipe-tab" data-category="dessert">Desserts</button>
+                        <button class="recipe-tab" data-category="specials">Specials</button>
+                    </div>
+                    <!-- Two-page spread -->
+                    <div class="recipe-book-spread">
+                        <div class="recipe-page recipe-page-left">
+                            <div class="page-texture"></div>
+                        </div>
+                        <div class="recipe-page recipe-page-right">
+                            <div class="page-texture"></div>
+                        </div>
+                    </div>
+                    <!-- Pagination -->
+                    <div class="recipe-book-nav">
+                        <button id="recipe-page-prev" class="recipe-nav-btn">&laquo;</button>
+                        <span id="recipe-page-indicator">1 / 1</span>
+                        <button id="recipe-page-next" class="recipe-nav-btn">&raquo;</button>
+                    </div>
                 </div>
-                <div id="recipe-book-tabs">
-                    <button class="recipe-tab active" data-category="drink">Drinks</button>
-                    <button class="recipe-tab" data-category="food">Food</button>
-                    <button class="recipe-tab" data-category="dessert">Desserts</button>
-                    <button class="recipe-tab" data-category="specials">Specials</button>
-                </div>
-                <div id="recipe-book-pages"></div>
             </div>
         </div>
 

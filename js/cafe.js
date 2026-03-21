@@ -69,8 +69,12 @@ class CafeEngine {
     // DOM — recipe book modal
     this.recipeBookModal = document.getElementById("recipe-book-modal");
     this.recipeBookTabs  = document.getElementById("recipe-book-tabs");
-    this.recipeBookPages = document.getElementById("recipe-book-pages");
     this.recipeBookClose = document.getElementById("recipe-book-close");
+    this.recipePageLeft  = this.recipeBookModal.querySelector(".recipe-page-left");
+    this.recipePageRight = this.recipeBookModal.querySelector(".recipe-page-right");
+    this.recipePagePrev  = document.getElementById("recipe-page-prev");
+    this.recipePageNext  = document.getElementById("recipe-page-next");
+    this.recipePageIndicator = document.getElementById("recipe-page-indicator");
 
     // State
     this.shiftData       = null;
@@ -86,6 +90,8 @@ class CafeEngine {
     this.totalServed     = 0;
     this.activeDeckTab   = "all";
     this.activeBookTab   = "drink";
+    this._bookPage       = 0;         // current page spread index
+    this._bookRecipes    = [];        // filtered recipe list for current tab
     this._deckCache      = [];
     this._deckCardUsage  = {};
 
@@ -132,8 +138,16 @@ class CafeEngine {
       const tab = e.target.closest(".recipe-tab");
       if (tab) {
         this.activeBookTab = tab.dataset.category;
+        this._bookPage = 0;
         this.renderRecipeBookModal();
       }
+    });
+    this.recipePagePrev.addEventListener("click", () => {
+      if (this._bookPage > 0) { this._bookPage--; this.renderRecipeBookModal(); }
+    });
+    this.recipePageNext.addEventListener("click", () => {
+      const totalPages = Math.ceil(this._bookRecipes.length / 4);
+      if (this._bookPage < totalPages - 1) { this._bookPage++; this.renderRecipeBookModal(); }
     });
 
     // Back to Tables
@@ -519,6 +533,7 @@ class CafeEngine {
 
   openRecipeBook() {
     this.activeBookTab = "drink";
+    this._bookPage = 0;
     this.recipeBookModal.classList.remove("hidden");
     this.renderRecipeBookModal();
   }
@@ -527,27 +542,68 @@ class CafeEngine {
     this.recipeBookModal.classList.add("hidden");
   }
 
+  /**
+   * Renders the recipe book using ALL recipes from the RECIPES global,
+   * filtered by the active category tab. 4 recipes per spread (2 per page),
+   * with prev/next pagination.
+   */
   renderRecipeBookModal() {
+    // Update tab highlights
     this.recipeBookTabs.querySelectorAll(".recipe-tab").forEach(tab => {
       tab.classList.toggle("active", tab.dataset.category === this.activeBookTab);
     });
 
-    if (!this.shiftData) return;
+    // Gather ALL recipes matching the active tab from the global RECIPES dict
+    this._bookRecipes = Object.values(RECIPES)
+      .filter(r => r && r.category && r.category.startsWith(this.activeBookTab))
+      .sort((a, b) => a.name.localeCompare(b.name));
 
-    const available = this.shiftData.availableRecipes
-      .map(id => RECIPES[id])
-      .filter(r => r && r.category.startsWith(this.activeBookTab));
+    const recipes = this._bookRecipes;
+    const perSpread = 4; // 2 per page, 2 pages
+    const totalPages = Math.max(1, Math.ceil(recipes.length / perSpread));
 
-    this.recipeBookPages.innerHTML = "";
+    // Clamp page
+    if (this._bookPage >= totalPages) this._bookPage = totalPages - 1;
+    if (this._bookPage < 0) this._bookPage = 0;
 
-    if (available.length === 0) {
-      this.recipeBookPages.innerHTML = `<div style="padding:16px;color:var(--text-light);font-size:0.82rem;font-style:italic;">No ${this.activeBookTab} recipes this shift.</div>`;
+    const start = this._bookPage * perSpread;
+    const pageRecipes = recipes.slice(start, start + perSpread);
+    const leftRecipes = pageRecipes.slice(0, 2);
+    const rightRecipes = pageRecipes.slice(2, 4);
+
+    // Render left page
+    this._renderBookPage(this.recipePageLeft, leftRecipes);
+    // Render right page
+    this._renderBookPage(this.recipePageRight, rightRecipes);
+
+    // Pagination controls
+    this.recipePagePrev.disabled = this._bookPage <= 0;
+    this.recipePageNext.disabled = this._bookPage >= totalPages - 1;
+    this.recipePageIndicator.textContent = `${this._bookPage + 1} / ${totalPages}`;
+  }
+
+  _renderBookPage(pageEl, recipes) {
+    // Keep the page-texture div, remove everything else
+    const texture = pageEl.querySelector(".page-texture");
+    pageEl.innerHTML = "";
+    if (texture) pageEl.appendChild(texture);
+
+    if (recipes.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "recipe-page-empty";
+      empty.textContent = "No recipes here yet...";
+      pageEl.appendChild(empty);
       return;
     }
 
-    available.forEach(recipe => {
+    recipes.forEach(recipe => {
       const card = document.createElement("div");
       card.className = "recipe-card";
+
+      // Format subcategory label (e.g. "drink-coffee" -> "Coffee")
+      const subcat = recipe.category.includes("-")
+        ? recipe.category.split("-").slice(1).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
+        : "";
 
       const ingredientIcons = recipe.ingredients
         .map(ingId => {
@@ -559,10 +615,11 @@ class CafeEngine {
       card.innerHTML = `
         <div class="recipe-card-icon">${recipe.icon}</div>
         <div class="recipe-card-name">${recipe.name}</div>
+        ${subcat ? `<div class="recipe-card-subcategory">${subcat}</div>` : ""}
         <div class="recipe-card-ingredients">${ingredientIcons}</div>
       `;
 
-      this.recipeBookPages.appendChild(card);
+      pageEl.appendChild(card);
     });
   }
 
