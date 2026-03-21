@@ -306,11 +306,13 @@ class CafeEngine {
       seatA.textContent = avatar;
 
       if (state === "ordering") {
-        // Show order bubble
+        // Show speech bubble outside the table
         const bubble = document.createElement("div");
         bubble.className = "table-order-bubble";
-        bubble.textContent = recipe ? `${recipe.icon} ${recipe.name}` : order.dialogue;
-        surface.appendChild(bubble);
+        bubble.innerHTML = recipe
+          ? `<span class="bubble-icon">${recipe.icon}</span> ${recipe.name}`
+          : `<span class="bubble-dialogue">${order.dialogue}</span>`;
+        el.appendChild(bubble);
       }
     }
 
