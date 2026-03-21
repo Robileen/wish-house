@@ -554,9 +554,10 @@ class CafeEngine {
     });
 
     // Gather ALL recipes matching the active tab from the global RECIPES dict
+    // Sort by subcategory then name for grouping
     this._bookRecipes = Object.values(RECIPES)
       .filter(r => r && r.category && r.category.startsWith(this.activeBookTab))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name));
 
     const recipes = this._bookRecipes;
     const perSpread = 4; // 2 per page, 2 pages
@@ -571,10 +572,20 @@ class CafeEngine {
     const leftRecipes = pageRecipes.slice(0, 2);
     const rightRecipes = pageRecipes.slice(2, 4);
 
+    // Get tab display name
+    const tabNames = { drink: "Drinks", food: "Food", dessert: "Desserts", specials: "Specials" };
+    const tabName = tabNames[this.activeBookTab] || this.activeBookTab;
+
+    // Collect subcategories for each page's recipes
+    const getSubcats = (arr) => [...new Set(arr.map(r => {
+      if (!r.category.includes("-")) return tabName;
+      return r.category.split("-").slice(1).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+    }))];
+
     // Render left page
-    this._renderBookPage(this.recipePageLeft, leftRecipes);
+    this._renderBookPage(this.recipePageLeft, leftRecipes, tabName, getSubcats(leftRecipes));
     // Render right page
-    this._renderBookPage(this.recipePageRight, rightRecipes);
+    this._renderBookPage(this.recipePageRight, rightRecipes, tabName, getSubcats(rightRecipes));
 
     // Pagination controls
     this.recipePagePrev.disabled = this._bookPage <= 0;
@@ -582,11 +593,21 @@ class CafeEngine {
     this.recipePageIndicator.textContent = `${this._bookPage + 1} / ${totalPages}`;
   }
 
-  _renderBookPage(pageEl, recipes) {
+  _renderBookPage(pageEl, recipes, tabName, subcategories) {
     // Keep the page-texture div, remove everything else
     const texture = pageEl.querySelector(".page-texture");
     pageEl.innerHTML = "";
     if (texture) pageEl.appendChild(texture);
+
+    // Add category header
+    if (recipes.length > 0) {
+      const header = document.createElement("div");
+      header.className = "recipe-page-header";
+      header.textContent = subcategories.length > 0
+        ? `${tabName} — ${subcategories.join(", ")}`
+        : tabName;
+      pageEl.appendChild(header);
+    }
 
     if (recipes.length === 0) {
       const empty = document.createElement("div");
