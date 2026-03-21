@@ -940,7 +940,22 @@ class CafeEngine {
         ? `Wrong recipe! ${this.currentOrder.customer} ordered ${RECIPES[this.currentOrder.recipeId].name}.`
         : "Wrong ingredients! The recipe didn\u2019t turn out right.";
 
-      // At 5 mistakes, show dialogue per spec
+      // Barista quip on every failure
+      const baristaQuips = [
+        `Edward: "\u2026our budget, boss\u2026 \uD83D\uDE12"`,
+        `Edward: "That\u2019s coming out of our supplies\u2026"`,
+        `Edward: "I\u2019m not cleaning that up."`,
+        `Edward: "Maybe check the recipe book?"`,
+        `Edward: "\u2026you sure about that one?"`,
+        `Edward: "The customers can see us, you know."`,
+        `Edward: "I\u2019ll pretend I didn\u2019t see that."`,
+        `Edward: "We\u2019re running low on ingredients\u2026"`,
+        `Edward: "Deep breaths. Try again."`,
+        `Edward: "\u2026that was creative, at least."`,
+      ];
+      reason += "\n" + baristaQuips[Math.floor(Math.random() * baristaQuips.length)];
+
+      // At 5+ mistakes, add the special dialogue
       if (this.mistakeCount >= 5) {
         reason += `\nEdward: "Uh boss\u2026 more practice?"\nKit: "Why?!"`;
       }
@@ -1008,9 +1023,20 @@ class CafeEngine {
 
   showServeResult(success, recipe, reason) {
     this.serveResultIcon.textContent = success ? "\u2728" : "\uD83D\uDE1E";
-    this.serveResultText.textContent = success
-      ? `${recipe.name} served successfully!`
-      : reason || "Something went wrong...";
+
+    if (success) {
+      this.serveResultText.textContent = `${recipe.name} served successfully!`;
+    } else {
+      // Render with line breaks for barista dialogue
+      const text = reason || "Something went wrong...";
+      this.serveResultText.innerHTML = text.split("\n")
+        .map(line => {
+          const el = document.createElement("span");
+          el.textContent = line;
+          return el.outerHTML;
+        })
+        .join("<br>");
+    }
 
     const shiftDone = this.successCount >= this.shiftData.ordersRequired && this.orderQueue.length === 0;
     this.serveNextBtn.textContent = shiftDone ? "Finish Shift" : "Back to Tables";
