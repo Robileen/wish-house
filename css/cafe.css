@@ -389,10 +389,10 @@
 .recipe-book-outer {
     position: relative;
     width: 92%;
-    max-width: 640px;
-    height: 75vh;
-    max-height: 520px;
-    min-height: 360px;
+    max-width: 600px;
+    height: 60vh;
+    max-height: 420px;
+    min-height: 320px;
     background: linear-gradient(145deg, #D4A060, #C8946A, #B8845A);
     border-radius: 6px 4px 4px 6px;
     padding: 6px 0 6px 14px;
@@ -546,11 +546,11 @@
 
 .recipe-page {
     flex: 1;
-    padding: 16px 14px;
+    padding: 12px 14px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 14px;
+    justify-content: flex-start;
+    gap: 12px;
     overflow-y: auto;
     position: relative;
 }
