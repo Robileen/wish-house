@@ -245,6 +245,7 @@ class CafeEngine {
     this._activeTableNum = null;
     this._activeOrderIdx = null;
     this._activeCustomerIdx = null;
+    this._shiftTips      = 0;  // tips earned this shift, saved only on completion
 
     // Show intro
     this.shiftIntroTitle.textContent = this.shiftData.name;
@@ -652,11 +653,27 @@ class CafeEngine {
     document.getElementById("shift-streak-final").textContent  = `Best streak: ${this.bestStreak}`;
     document.getElementById("shift-rating").textContent        = `${ratingIcon} ${ratingLabel}`;
 
+    // Show tips earned
+    let tipsEl = document.getElementById("shift-tips-earned");
+    if (!tipsEl) {
+      tipsEl = document.createElement("p");
+      tipsEl.id = "shift-tips-earned";
+      document.getElementById("shift-summary").appendChild(tipsEl);
+    }
+    tipsEl.textContent = this._shiftTips > 0
+      ? `Tips earned: ${this._shiftTips} \uD83E\uDEA3`
+      : "No tips this shift";
+
     this.shiftComplete.classList.remove("hidden");
   }
 
   exitShift() {
     this.cafeScreen.classList.add("hidden-screen");
+
+    // Save earned tips only on successful shift completion
+    if (window.journal && this._shiftTips > 0) {
+      window.journal.addButtons(this._shiftTips);
+    }
 
     if (window.journal) {
       window.journal.onCafeShiftComplete(this._chapter, this._episode);
@@ -687,9 +704,10 @@ class CafeEngine {
 
     this.endShiftBtn.disabled = this.successCount < req;
 
-    // Update button counter
+    // Update button counter — show saved + pending shift tips
     if (this.hudButtonCount && window.journal) {
-      this.hudButtonCount.textContent = window.journal.getButtons();
+      const saved = window.journal.getButtons();
+      this.hudButtonCount.textContent = saved + this._shiftTips;
     }
   }
 
@@ -758,9 +776,7 @@ class CafeEngine {
   }
 
   awardTip() {
-    if (window.journal) {
-      window.journal.addButtons(1);
-    }
+    this._shiftTips++;
     this.updateHud();
 
     // Floating +1 animation
