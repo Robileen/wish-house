@@ -1090,6 +1090,8 @@
 #customer-chat {
     padding: 8px 16px;
     flex-shrink: 0;
+    position: relative;
+    z-index: 12;
 }
 
 #customer-chat.hidden { display: none; }
@@ -1113,6 +1115,8 @@
 #chat-choices {
     display: flex;
     gap: 8px;
+    position: relative;
+    z-index: 13;
 }
 
 .chat-choice {
