@@ -1,13 +1,15 @@
 /**
  * Wish House - Cafe Shift Game Engine
  *
- * Implements the card-matching mini-game from GAMEPLAY_SPECS.md:
- * - Customer orders appear one at a time
- * - Recipe is auto-selected from the customer's order (icon + name display)
- * - Player drags / clicks ingredient cards into slots
- * - Clicks FUSE to prepare the dish/drink
- * - Correct dishes advance the shift; mistakes are tracked
- * - Shift ends after ordersRequired successful dishes or all orders served
+ * Flow: Shift Intro -> Table Zone -> Craft View -> Table Zone (loop)
+ *
+ * Table Zone: 6 cafe tables in a 2x3 grid. Customers appear at tables
+ * with speech bubbles. Player clicks a table to take the order and
+ * transition to the Craft View.
+ *
+ * Craft View: Recipe auto-selected from order, player fills ingredient
+ * slots, clicks FUSE. After serving, returns to Table Zone with food
+ * delivery animation (hearts, customer eats, cleanup).
  *
  * Relies on: cafe-data.js (INGREDIENTS, RECIPES, SHIFTS)
  *            journal.js  (window.journal for return flow)
@@ -37,7 +39,13 @@ class CafeEngine {
     this.hudMistakes     = document.getElementById("hud-mistakes");
     this.endShiftBtn     = document.getElementById("end-shift-btn");
 
-    // DOM — customer order
+    // DOM — table zone
+    this.tableZone       = document.getElementById("table-zone");
+    this.cafeRoom        = document.getElementById("cafe-room");
+    this.baristaSprite   = document.getElementById("barista-sprite");
+
+    // DOM — craft view
+    this.craftView       = document.getElementById("craft-view");
     this.orderAvatar     = document.getElementById("order-avatar");
     this.orderName       = document.getElementById("order-customer-name");
     this.orderDialogue   = document.getElementById("order-dialogue");
@@ -50,7 +58,7 @@ class CafeEngine {
     this.deckTabsEl      = document.getElementById("deck-tabs");
     this.fuseBtn         = document.getElementById("fuse-btn");
 
-    // DOM — new buttons
+    // DOM — buttons
     this.recipeBookBtn   = document.getElementById("recipe-book-btn");
     this.backToTablesBtn = document.getElementById("back-to-tables-btn");
     this.quitShiftBtn    = document.getElementById("quit-shift-btn");
@@ -69,7 +77,7 @@ class CafeEngine {
     this.orderQueue      = [];
     this.currentOrder    = null;
     this.selectedRecipe  = null;
-    this.slots           = [];       // { ingredientId: string | null } per slot
+    this.slots           = [];
     this.usedCardEls     = new Set();
     this.successCount    = 0;
     this.mistakeCount    = 0;
@@ -78,10 +86,16 @@ class CafeEngine {
     this.totalServed     = 0;
     this.activeDeckTab   = "all";
     this.activeBookTab   = "drink";
+    this._deckCache      = [];
+    this._deckCardUsage  = {};
 
-    // Deck cache: shuffled once per order, filtered by tab
-    this._deckCache      = [];   // full shuffled deck for current order
-    this._deckCardUsage  = {};   // { ingredientId: timesPlaced } for multi-click
+    // Table state: tracks which table has which order
+    // { tableNum: { order, state: 'waiting'|'ordering'|'crafting'|'served'|'eating'|'messy'|'clean' } }
+    this.tables          = {};
+    this._activeTableNum = null;  // which table the player is crafting for
+
+    // Avatars for customers
+    this._avatarEmojis = ["\uD83D\uDC64", "\uD83E\uDDD1", "\uD83D\uDC69", "\uD83D\uDC68", "\uD83D\uDC66", "\uD83D\uDC67", "\uD83E\uDDD3"];
 
     // Ingredient group -> deck tab mapping
     this._groupToTab = {
@@ -94,7 +108,7 @@ class CafeEngine {
     // Bind events
     this.shiftStartBtn.addEventListener("click", () => this.beginShift());
     this.fuseBtn.addEventListener("click", () => this.fuse());
-    this.serveNextBtn.addEventListener("click", () => this.nextOrder());
+    this.serveNextBtn.addEventListener("click", () => this.afterServeResult());
     this.shiftDoneBtn.addEventListener("click", () => this.exitShift());
     this.endShiftBtn.addEventListener("click", () => this.endShiftEarly());
 
@@ -129,15 +143,20 @@ class CafeEngine {
     this.quitShiftBtn.addEventListener("click", () => this.showQuitConfirm());
     this.quitYesBtn.addEventListener("click", () => this.confirmQuit());
     this.quitNoBtn.addEventListener("click", () => this.cancelQuit());
+
+    // Table clicks (delegated)
+    this.cafeRoom.addEventListener("click", (e) => {
+      const tableEl = e.target.closest(".cafe-table");
+      if (!tableEl) return;
+      const num = parseInt(tableEl.dataset.table);
+      this.onTableClick(num);
+    });
   }
 
   /* ══════════════════════════════════
      Shift Lifecycle
      ══════════════════════════════════ */
 
-  /**
-   * Called by journal.js when opening an episode with a shiftId.
-   */
   openShift(shiftId, chapter, episode) {
     this.shiftData = SHIFTS[shiftId];
     if (!this.shiftData) {
@@ -149,19 +168,21 @@ class CafeEngine {
     this._episode = episode;
 
     // Reset state
-    this.orderQueue   = [...this.shiftData.customerOrders];
-    this.currentOrder = null;
+    this.orderQueue     = [...this.shiftData.customerOrders];
+    this.currentOrder   = null;
     this.selectedRecipe = null;
-    this.slots        = [];
-    this.usedCardEls  = new Set();
-    this.successCount = 0;
-    this.mistakeCount = 0;
-    this.streak       = 0;
-    this.bestStreak   = 0;
-    this.totalServed  = 0;
-    this.activeDeckTab = "all";
-    this._deckCache   = [];
+    this.slots          = [];
+    this.usedCardEls    = new Set();
+    this.successCount   = 0;
+    this.mistakeCount   = 0;
+    this.streak         = 0;
+    this.bestStreak     = 0;
+    this.totalServed    = 0;
+    this.activeDeckTab  = "all";
+    this._deckCache     = [];
     this._deckCardUsage = {};
+    this.tables         = {};
+    this._activeTableNum = null;
 
     // Show intro
     this.shiftIntroTitle.textContent = this.shiftData.name;
@@ -181,40 +202,261 @@ class CafeEngine {
     this.shiftIntro.classList.add("hidden");
     this.updateHud();
     this.endShiftBtn.disabled = true;
-    this.nextOrder();
+
+    // Set barista sprite
+    this.baristaSprite.textContent = "\u2615";
+
+    // Show table zone, hide craft view
+    this.showTableZone();
+
+    // Seat the first batch of customers
+    this.seatNextCustomers();
   }
 
-  nextOrder() {
-    this.serveResult.classList.add("hidden");
+  /* ══════════════════════════════════
+     Table Zone
+     ══════════════════════════════════ */
 
-    if (this.orderQueue.length === 0 || this.successCount >= this.shiftData.ordersRequired) {
+  showTableZone() {
+    this.tableZone.classList.remove("hidden");
+    this.craftView.classList.add("hidden");
+    this.renderAllTables();
+  }
+
+  showCraftView() {
+    this.tableZone.classList.add("hidden");
+    this.craftView.classList.remove("hidden");
+  }
+
+  /**
+   * Seat customers at empty tables from the order queue.
+   * Up to 3 customers at a time across the 6 tables.
+   */
+  seatNextCustomers() {
+    const emptyTables = [1, 2, 3, 4, 5, 6].filter(n => !this.tables[n]);
+    const shuffledEmpty = this.shuffle([...emptyTables]);
+
+    // Seat up to 3 new customers (or however many orders remain)
+    const toSeat = Math.min(3, this.orderQueue.length, shuffledEmpty.length);
+
+    for (let i = 0; i < toSeat; i++) {
+      const order = this.orderQueue.shift();
+      const tableNum = shuffledEmpty[i];
+      const avatarIdx = (this.totalServed + i) % this._avatarEmojis.length;
+
+      this.tables[tableNum] = {
+        order,
+        state: "ordering",      // customer is seated and ready to order
+        avatar: this._avatarEmojis[avatarIdx],
+        recipe: RECIPES[order.recipeId] || null
+      };
+    }
+
+    this.renderAllTables();
+
+    // Check if we're done (no customers anywhere, queue empty)
+    const hasCustomers = Object.values(this.tables).some(t => t);
+    if (!hasCustomers && this.orderQueue.length === 0) {
       this.completeShift();
-      return;
+    }
+  }
+
+  renderAllTables() {
+    for (let n = 1; n <= 6; n++) {
+      this.renderTable(n);
+    }
+  }
+
+  renderTable(tableNum) {
+    const el = this.cafeRoom.querySelector(`.cafe-table[data-table="${tableNum}"]`);
+    if (!el) return;
+
+    const surface = el.querySelector(".table-surface");
+    const seatA = el.querySelector(".seat-a");
+    const seatB = el.querySelector(".seat-b");
+    const foodSlot = el.querySelector(".food-slot");
+    const overlay = el.querySelector(".table-overlay");
+
+    // Clear dynamic elements
+    el.classList.remove("has-customer", "served", "messy");
+    seatA.className = "seat seat-a empty";
+    seatA.textContent = "";
+    seatB.className = "seat seat-b empty";
+    seatB.textContent = "";
+    foodSlot.className = "food-slot";
+    foodSlot.textContent = "";
+    overlay.className = "table-overlay";
+    overlay.textContent = "";
+
+    // Remove any bubble or cleanup btn
+    const existingBubble = el.querySelector(".table-order-bubble");
+    if (existingBubble) existingBubble.remove();
+    const existingCleanup = el.querySelector(".table-cleanup-btn");
+    if (existingCleanup) existingCleanup.remove();
+
+    const tableData = this.tables[tableNum];
+    if (!tableData) return; // empty table
+
+    const { order, state, avatar, recipe } = tableData;
+
+    // Customer seated
+    if (state === "ordering" || state === "crafting") {
+      el.classList.add("has-customer");
+      seatA.className = "seat seat-a occupied";
+      seatA.textContent = avatar;
+
+      if (state === "ordering") {
+        // Show order bubble
+        const bubble = document.createElement("div");
+        bubble.className = "table-order-bubble";
+        bubble.textContent = recipe ? `${recipe.icon} ${recipe.name}` : order.dialogue;
+        surface.appendChild(bubble);
+      }
     }
 
-    this.currentOrder = this.orderQueue.shift();
+    if (state === "served") {
+      el.classList.add("served");
+      seatA.className = "seat seat-a occupied";
+      seatA.textContent = avatar;
+      foodSlot.className = "food-slot has-food";
+      foodSlot.textContent = recipe ? recipe.icon : "\uD83C\uDF7D";
+      overlay.className = "table-overlay glow";
+    }
 
-    // Auto-select recipe from order
-    this.selectedRecipe = RECIPES[this.currentOrder.recipeId] || null;
+    if (state === "eating") {
+      seatA.className = "seat seat-a occupied";
+      seatA.textContent = avatar;
+      foodSlot.className = "food-slot has-food";
+      foodSlot.textContent = recipe ? recipe.icon : "\uD83C\uDF7D";
+      overlay.className = "table-overlay hearts";
+    }
 
-    // Set up slots
-    if (this.selectedRecipe) {
-      this.slots = this.selectedRecipe.ingredients.map(() => ({ ingredientId: null }));
+    if (state === "messy") {
+      el.classList.add("messy");
+      foodSlot.className = "food-slot has-food";
+      foodSlot.textContent = "\uD83E\uDDFD";  // sponge emoji
+
+      const cleanBtn = document.createElement("button");
+      cleanBtn.className = "table-cleanup-btn";
+      cleanBtn.textContent = "Clean";
+      cleanBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.cleanTable(tableNum);
+      });
+      surface.appendChild(cleanBtn);
+    }
+  }
+
+  onTableClick(tableNum) {
+    const tableData = this.tables[tableNum];
+    if (!tableData) return;
+
+    if (tableData.state === "ordering") {
+      // Take this order -> go to craft view
+      this._activeTableNum = tableNum;
+      tableData.state = "crafting";
+      this.currentOrder = tableData.order;
+      this.selectedRecipe = tableData.recipe;
+
+      // Set up craft view
+      if (this.selectedRecipe) {
+        this.slots = this.selectedRecipe.ingredients.map(() => ({ ingredientId: null }));
+      } else {
+        this.slots = [];
+      }
+      this.usedCardEls = new Set();
+      this._deckCardUsage = {};
+      this.activeDeckTab = "all";
+      this._deckCache = this.selectedRecipe ? this.buildDeck() : [];
+
+      this.renderCustomerOrder();
+      this.renderSlots();
+      this.renderDeckTabs();
+      this.renderDeck();
+      this.updateFuseButton();
+
+      // Transition to craft view
+      this.showCraftView();
+    }
+  }
+
+  async deliverFood(tableNum, success) {
+    const tableData = this.tables[tableNum];
+    if (!tableData) return;
+
+    if (success) {
+      // Barista slide animation
+      this.baristaSprite.classList.add("sliding");
+      await this.sleep(600);
+      this.baristaSprite.classList.remove("sliding");
+
+      // Food placed
+      tableData.state = "served";
+      this.renderTable(tableNum);
+      await this.sleep(800);
+
+      // Customer eating
+      tableData.state = "eating";
+      this.renderTable(tableNum);
+      await this.sleep(1200);
+
+      // Customer leaves, table messy
+      tableData.state = "messy";
+      this.renderTable(tableNum);
     } else {
-      this.slots = [];
+      // Failed dish — customer leaves disappointed, table goes messy
+      tableData.state = "messy";
+      this.renderTable(tableNum);
     }
-    this.usedCardEls = new Set();
-    this._deckCardUsage = {};
-    this.activeDeckTab = "all";
+  }
 
-    // Build and cache the shuffled deck for this order
-    this._deckCache = this.selectedRecipe ? this.buildDeck() : [];
+  cleanTable(tableNum) {
+    delete this.tables[tableNum];
+    this.renderTable(tableNum);
 
-    this.renderCustomerOrder();
-    this.renderSlots();
-    this.renderDeckTabs();
-    this.renderDeck();
-    this.updateFuseButton();
+    // Seat more customers if queue has orders
+    if (this.orderQueue.length > 0) {
+      this.seatNextCustomers();
+    } else {
+      // Check if all tables are clear -> shift may be done
+      const hasActive = Object.values(this.tables).some(t => t);
+      if (!hasActive && this.successCount >= this.shiftData.ordersRequired) {
+        this.completeShift();
+      }
+    }
+  }
+
+  /* ══════════════════════════════════
+     Back to Tables / Quit Shift
+     ══════════════════════════════════ */
+
+  backToTables() {
+    // Return to table zone, cancel current crafting
+    if (this._activeTableNum && this.tables[this._activeTableNum]) {
+      this.tables[this._activeTableNum].state = "ordering"; // reset to waiting
+    }
+    this._activeTableNum = null;
+    this.currentOrder = null;
+    this.selectedRecipe = null;
+    this.showTableZone();
+  }
+
+  showQuitConfirm() {
+    this.quitConfirm.classList.remove("hidden");
+  }
+
+  cancelQuit() {
+    this.quitConfirm.classList.add("hidden");
+  }
+
+  confirmQuit() {
+    this.quitConfirm.classList.add("hidden");
+    this.cafeScreen.classList.add("hidden-screen");
+
+    if (window.journal) {
+      const journalScreen = document.getElementById("journal-screen");
+      if (journalScreen) journalScreen.classList.remove("hidden-screen");
+    }
   }
 
   endShiftEarly() {
@@ -224,7 +466,6 @@ class CafeEngine {
   }
 
   completeShift() {
-    // Rating based on mistakes (Chapter 1 is explorative, forgiving)
     let ratingIcon;
     if (this.mistakeCount === 0) ratingIcon = "\u2728\u2728\u2728";
     else if (this.mistakeCount <= 2) ratingIcon = "\u2728\u2728";
@@ -241,45 +482,8 @@ class CafeEngine {
   exitShift() {
     this.cafeScreen.classList.add("hidden-screen");
 
-    // Tell journal this episode is done
     if (window.journal) {
       window.journal.onCafeShiftComplete(this._chapter, this._episode);
-    }
-  }
-
-  /* ══════════════════════════════════
-     Back to Tables / Quit Shift
-     ══════════════════════════════════ */
-
-  backToTables() {
-    // Return to the tables/order view — for now re-renders current order
-    // (Future: multi-table view. Currently single-customer flow, so this
-    //  just clears slots and lets the player re-approach the same order.)
-    if (!this.selectedRecipe) return;
-    this.slots = this.selectedRecipe.ingredients.map(() => ({ ingredientId: null }));
-    this.usedCardEls = new Set();
-    this._deckCardUsage = {};
-    this.renderSlots();
-    this.renderDeck();
-    this.updateFuseButton();
-  }
-
-  showQuitConfirm() {
-    this.quitConfirm.classList.remove("hidden");
-  }
-
-  cancelQuit() {
-    this.quitConfirm.classList.add("hidden");
-  }
-
-  confirmQuit() {
-    this.quitConfirm.classList.add("hidden");
-    this.cafeScreen.classList.add("hidden-screen");
-
-    // Discard progress — return to journal without marking complete
-    if (window.journal) {
-      const journalScreen = document.getElementById("journal-screen");
-      if (journalScreen) journalScreen.classList.remove("hidden-screen");
     }
   }
 
@@ -295,25 +499,23 @@ class CafeEngine {
     this.hudStreak.textContent     = `Streak: ${this.streak}`;
     this.hudMistakes.textContent   = this.mistakeCount > 0 ? "\u2753".repeat(Math.min(this.mistakeCount, 5)) : "";
 
-    // Allow ending shift early once goal met
     this.endShiftBtn.disabled = this.successCount < req;
   }
 
   /* ══════════════════════════════════
-     Customer Order
+     Customer Order (craft view banner)
      ══════════════════════════════════ */
 
   renderCustomerOrder() {
     if (!this.currentOrder) return;
     const recipe = RECIPES[this.currentOrder.recipeId];
-    const avatarEmojis = ["\uD83D\uDC64", "\uD83E\uDDD1", "\uD83D\uDC69", "\uD83D\uDC68", "\uD83D\uDC66", "\uD83D\uDC67", "\uD83E\uDDD3"];
-    this.orderAvatar.textContent = avatarEmojis[this.totalServed % avatarEmojis.length];
+    const tableData = this.tables[this._activeTableNum];
+    this.orderAvatar.textContent = tableData ? tableData.avatar : "\uD83D\uDC64";
     this.orderName.textContent    = this.currentOrder.customer;
     this.orderDialogue.textContent = `\u201C${this.currentOrder.dialogue}\u201D`;
     this.orderRecipeIcon.textContent = recipe ? recipe.icon : "";
     this.orderRecipeName.textContent = recipe ? recipe.name : "";
 
-    // Re-trigger slide animation
     const orderEl = document.getElementById("customer-order");
     orderEl.style.animation = "none";
     void orderEl.offsetHeight;
@@ -335,7 +537,6 @@ class CafeEngine {
   }
 
   renderRecipeBookModal() {
-    // Update tab highlights
     this.recipeBookTabs.querySelectorAll(".recipe-tab").forEach(tab => {
       tab.classList.toggle("active", tab.dataset.category === this.activeBookTab);
     });
@@ -394,7 +595,6 @@ class CafeEngine {
         const ing = INGREDIENTS[slot.ingredientId];
         slotEl.classList.add("filled");
 
-        // Check correctness
         const requiredId = this.selectedRecipe.ingredients[idx];
         const isCorrect = slot.ingredientId === requiredId || slot.ingredientId === "wild";
         if (isCorrect) slotEl.classList.add("correct");
@@ -404,12 +604,10 @@ class CafeEngine {
           <span class="slot-name">${ing ? ing.name : ""}</span>
         </div>`;
 
-        // Click to remove
         slotEl.addEventListener("click", () => this.removeFromSlot(idx));
       } else {
         slotEl.textContent = "+";
 
-        // Click to place the next selected card (if using click-to-place)
         slotEl.addEventListener("click", () => {
           if (this._pendingIngredient) {
             this.placeInSlot(idx, this._pendingIngredient.id, this._pendingIngredient.el);
@@ -431,7 +629,6 @@ class CafeEngine {
         slotEl.classList.remove("drag-over");
         const ingId = e.dataTransfer.getData("text/plain");
         if (ingId && !slot.ingredientId) {
-          // Find the card element in the deck
           const cardEl = this.deckScroll.querySelector(`.ingredient-card[data-ingredient-id="${ingId}"]:not(.used)`);
           this.placeInSlot(idx, ingId, cardEl);
         }
@@ -442,7 +639,7 @@ class CafeEngine {
   }
 
   placeInSlot(slotIdx, ingredientId, cardEl) {
-    if (this.slots[slotIdx].ingredientId) return; // already filled
+    if (this.slots[slotIdx].ingredientId) return;
 
     this.slots[slotIdx].ingredientId = ingredientId;
 
@@ -451,9 +648,8 @@ class CafeEngine {
 
     if (cardEl) {
       if (isMultiUse) {
-        // Track usage count for multi-click cards
         this._deckCardUsage[ingredientId] = (this._deckCardUsage[ingredientId] || 0) + 1;
-        this.renderDeck(); // re-render to update badge
+        this.renderDeck();
       } else {
         cardEl.classList.add("used");
         this.usedCardEls.add(cardEl);
@@ -468,7 +664,6 @@ class CafeEngine {
     const removed = this.slots[slotIdx].ingredientId;
     this.slots[slotIdx].ingredientId = null;
 
-    // Un-mark the card in the deck
     if (removed) {
       const ing = INGREDIENTS[removed];
       const isMultiUse = ing && !ing.isSpecial && ing.group !== "temp";
@@ -508,7 +703,6 @@ class CafeEngine {
 
     if (!this.selectedRecipe) return;
 
-    // Filter cached deck by active tab
     const filtered = this.activeDeckTab === "all"
       ? this._deckCache
       : this._deckCache.filter(ingId => {
@@ -535,11 +729,6 @@ class CafeEngine {
         ${usageCount > 0 ? `<span class="card-use-count">${usageCount}</span>` : ""}
       `;
 
-      // Mark single-use cards as used
-      if (!isMultiUse && this.usedCardEls.has(card)) {
-        card.classList.add("used");
-      }
-      // Restore used state for non-multi-use cards from previous renders
       if (!isMultiUse) {
         const isUsed = [...this.usedCardEls].some(
           el => el.dataset.ingredientId === ingId
@@ -547,10 +736,9 @@ class CafeEngine {
         if (isUsed) card.classList.add("used");
       }
 
-      // Click to place in first empty slot
+      // Click to place
       card.addEventListener("click", () => {
         if (card.classList.contains("used")) return;
-
         const emptyIdx = this.slots.findIndex(s => s.ingredientId === null);
         if (emptyIdx !== -1) {
           this.placeInSlot(emptyIdx, ingId, card);
@@ -581,7 +769,6 @@ class CafeEngine {
   buildDeck() {
     const required = [...this.selectedRecipe.ingredients];
 
-    // Add distractor ingredients (some from the full pool)
     const allIngIds = Object.keys(INGREDIENTS).filter(id => !INGREDIENTS[id].isSpecial);
     const distractors = [];
     const shuffled = allIngIds.sort(() => Math.random() - 0.5);
@@ -592,7 +779,6 @@ class CafeEngine {
       }
     }
 
-    // Combine and shuffle
     const deck = [...required, ...distractors, "wild"];
     return this.shuffle(deck);
   }
@@ -628,16 +814,15 @@ class CafeEngine {
   async fuse() {
     if (this.fuseBtn.disabled) return;
 
-    // Determine correctness
     const isCorrect = this.checkRecipeCorrect();
     const isTargetRecipe = this.selectedRecipe.id === this.currentOrder.recipeId;
 
-    // Play fuse animation
     await this.playFuseAnimation(this.selectedRecipe);
 
     this.totalServed++;
+    this._lastFuseSuccess = isCorrect && isTargetRecipe;
 
-    if (isCorrect && isTargetRecipe) {
+    if (this._lastFuseSuccess) {
       this.successCount++;
       this.streak++;
       if (this.streak > this.bestStreak) this.bestStreak = this.streak;
@@ -689,11 +874,38 @@ class CafeEngine {
       ? `${recipe.name} served successfully!`
       : reason || "Something went wrong...";
 
-    // Change button text if shift is complete
-    const shiftDone = this.successCount >= this.shiftData.ordersRequired || this.orderQueue.length === 0;
-    this.serveNextBtn.textContent = shiftDone ? "Finish Shift" : "Next Order";
+    const shiftDone = this.successCount >= this.shiftData.ordersRequired && this.orderQueue.length === 0;
+    this.serveNextBtn.textContent = shiftDone ? "Finish Shift" : "Back to Tables";
 
     this.serveResult.classList.remove("hidden");
+  }
+
+  /**
+   * Called when player clicks the serve result button.
+   * Returns to table zone with food delivery animation.
+   */
+  async afterServeResult() {
+    this.serveResult.classList.add("hidden");
+
+    const tableNum = this._activeTableNum;
+    this._activeTableNum = null;
+
+    // Switch to table zone for the delivery animation
+    this.showTableZone();
+
+    // Play delivery animation on the table
+    if (tableNum && this.tables[tableNum]) {
+      await this.deliverFood(tableNum, this._lastFuseSuccess);
+    }
+
+    // Check if shift is complete
+    const hasOrdering = Object.values(this.tables).some(t => t && (t.state === "ordering" || t.state === "crafting"));
+    const hasMessy = Object.values(this.tables).some(t => t && t.state === "messy");
+
+    if (this.successCount >= this.shiftData.ordersRequired && !hasOrdering && !hasMessy && this.orderQueue.length === 0) {
+      await this.sleep(400);
+      this.completeShift();
+    }
   }
 
   sleep(ms) {
