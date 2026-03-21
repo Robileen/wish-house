@@ -475,15 +475,25 @@ class CafeEngine {
   }
 
   completeShift() {
-    let ratingIcon;
-    if (this.mistakeCount === 0) ratingIcon = "\u2728\u2728\u2728";
-    else if (this.mistakeCount <= 2) ratingIcon = "\u2728\u2728";
-    else if (this.mistakeCount <= 4) ratingIcon = "\u2728";
-    else ratingIcon = "\uD83D\uDCA5";
+    // Rating per mistake meter spec
+    let ratingIcon, ratingLabel;
+    if (this.mistakeCount === 0) {
+      ratingIcon = "\u2728\u2728\u2728";
+      ratingLabel = "Perfect shift!";
+    } else if (this.mistakeCount <= 2) {
+      ratingIcon = "\u2728\u2728";
+      ratingLabel = "Great work!";
+    } else if (this.mistakeCount <= 4) {
+      ratingIcon = "\u2728";
+      ratingLabel = "Not bad!";
+    } else {
+      ratingIcon = "\uD83D\uDCA5";
+      ratingLabel = "Rough shift...";
+    }
 
     document.getElementById("shift-dishes-served").textContent = `Dishes served: ${this.successCount}`;
     document.getElementById("shift-streak-final").textContent  = `Best streak: ${this.bestStreak}`;
-    document.getElementById("shift-rating").textContent        = `Shift rating: ${ratingIcon}`;
+    document.getElementById("shift-rating").textContent        = `${ratingIcon} ${ratingLabel}`;
 
     this.shiftComplete.classList.remove("hidden");
   }
@@ -506,7 +516,17 @@ class CafeEngine {
     this.hudFill.style.width      = `${(this.successCount / req) * 100}%`;
     this.hudDishCount.textContent  = `${this.successCount} / ${req}`;
     this.hudStreak.textContent     = `Streak: ${this.streak}`;
-    this.hudMistakes.textContent   = this.mistakeCount > 0 ? "\u2753".repeat(Math.min(this.mistakeCount, 5)) : "";
+
+    // Mistake meter per spec: sparkles at 0, faded ? at 1-4, explosion at 5+
+    if (this.mistakeCount === 0) {
+      this.hudMistakes.textContent = "\u2728";
+    } else if (this.mistakeCount < 5) {
+      this.hudMistakes.textContent = "\u2753".repeat(this.mistakeCount);
+      this.hudMistakes.style.opacity = `${0.4 + this.mistakeCount * 0.15}`;
+    } else {
+      this.hudMistakes.textContent = "\uD83D\uDCA5";
+      this.hudMistakes.style.opacity = "1";
+    }
 
     this.endShiftBtn.disabled = this.successCount < req;
   }
@@ -916,9 +936,14 @@ class CafeEngine {
     } else {
       this.mistakeCount++;
       this.streak = 0;
-      const reason = !isTargetRecipe
+      let reason = !isTargetRecipe
         ? `Wrong recipe! ${this.currentOrder.customer} ordered ${RECIPES[this.currentOrder.recipeId].name}.`
         : "Wrong ingredients! The recipe didn\u2019t turn out right.";
+
+      // At 5 mistakes, show dialogue per spec
+      if (this.mistakeCount >= 5) {
+        reason += `\nEdward: "Uh boss\u2026 more practice?"\nKit: "Why?!"`;
+      }
       this.showServeResult(false, this.selectedRecipe, reason);
     }
 
