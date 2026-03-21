@@ -900,7 +900,7 @@
 .table-overlay.hearts::after {
     content: "\2764\FE0F";
     font-size: 1.4rem;
-    animation: hearts-float 1.2s ease-out forwards;
+    animation: hearts-float 5s ease-out forwards;
 }
 
 @keyframes hearts-float {
