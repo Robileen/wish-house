@@ -836,17 +836,18 @@ class CafeEngine {
   buildDeck() {
     const required = [...this.selectedRecipe.ingredients];
 
-    const allIngIds = Object.keys(INGREDIENTS).filter(id => !INGREDIENTS[id].isSpecial);
-    const distractors = [];
-    const shuffled = allIngIds.sort(() => Math.random() - 0.5);
+    // Include ALL non-special ingredients plus required specials
+    const allIngIds = Object.keys(INGREDIENTS).filter(id => {
+      const ing = INGREDIENTS[id];
+      // Always include required ingredients
+      if (required.includes(id)) return true;
+      // Include all non-special ingredients
+      if (!ing.isSpecial) return true;
+      return false;
+    });
 
-    for (const id of shuffled) {
-      if (!required.includes(id) && distractors.length < 5) {
-        distractors.push(id);
-      }
-    }
-
-    const deck = [...required, ...distractors, "wild"];
+    // Add wild card
+    const deck = [...new Set([...allIngIds, "wild"])];
     return this.shuffle(deck);
   }
 
