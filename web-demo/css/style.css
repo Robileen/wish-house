@@ -13,6 +13,36 @@
     box-sizing: border-box;
 }
 
+/* ---- Custom Scrollbar ---- */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(200, 168, 130, 0.4) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--blush), var(--milk-tea));
+    border-radius: 3px;
+    border: 1px solid rgba(255, 248, 240, 0.4);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--dusty-rose), var(--milk-tea));
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
 :root {
     --cream: #FFF8F0;
     --soft-peach: #FDDCBA;
