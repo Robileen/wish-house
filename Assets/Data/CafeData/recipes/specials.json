@@ -1,0 +1,7 @@
+[
+  { "id": "moonlight_cocoa", "name": "Moonlight Cocoa", "category": "specials", "icon": "\uD83C\uDF19", "ingredients": ["chocolate", "milk", "vanilla", "hot", "wild"], "illustration": "A shimmering cocoa that glows faintly under moonlight, swirled with silver." },
+  { "id": "wishing_star_parfait", "name": "Wishing Star Parfait", "category": "specials", "icon": "\u2B50", "ingredients": ["strawberry", "blueberry", "cream", "vanilla", "wild"], "illustration": "A layered parfait of red and blue berries with cream that sparkles like stardust." },
+  { "id": "dreamers_tea", "name": "Dreamer\u2019s Tea", "category": "specials", "icon": "\uD83D\uDC9C", "ingredients": ["tea", "lavender", "honey", "hot", "wild"], "illustration": "A fragrant lavender tea that fills the room with a dreamy, calming haze." },
+  { "id": "aurora_smoothie", "name": "Aurora Smoothie", "category": "specials", "icon": "\uD83C\uDF0C", "ingredients": ["blueberry", "banana", "milk", "cold", "wild"], "illustration": "A swirling smoothie of purple and gold that shifts colors like the northern lights." },
+  { "id": "enchanted_toast", "name": "Enchanted Toast", "category": "specials", "icon": "\u2728", "ingredients": ["bread", "honey", "stardust", "cinnamon", "wild"], "illustration": "A golden toast dusted with glittering stardust that hums with faint warmth." }
+]

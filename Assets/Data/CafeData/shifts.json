@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "First Shift \u2014 Trial, Error, and Too Much Sugar",
+    "description": "Your first day! Kit guides you through making simple drinks and snacks.",
+    "ordersRequired": 5,
+    "availableRecipes": ["house_blend", "honey_latte", "matcha_latte", "toast_honey", "rice_ball"],
+    "customerOrders": [
+      { "customer": "Office Worker",  "recipeId": "house_blend",  "dialogue": "Just a simple coffee, please. Strong." },
+      { "customer": "Student",        "recipeId": "honey_latte",  "dialogue": "Something sweet and warm? Like a hug in a cup!" },
+      { "customer": "Tired Teacher",  "recipeId": "matcha_latte", "dialogue": "I need energy\u2026 but gentle energy. Do you have matcha?" },
+      { "customer": "Hungry Kid",     "recipeId": "toast_honey",  "dialogue": "Do you have anything to eat? I\u2019m so hungry\u2026" },
+      { "customer": "Old Man",        "recipeId": "house_blend",  "dialogue": "Ah, a classic. Black coffee, nothing fancy." },
+      { "customer": "Artist",         "recipeId": "rice_ball",    "dialogue": "Something light? I\u2019m running on fumes." },
+      { "customer": "Bookworm",       "recipeId": "honey_latte",  "dialogue": "A latte would be lovely. With honey if you have it!" }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Afternoon Rush \u2014 3:07 PM",
+    "description": "School\u2019s out! The student crowd floods in. Keep up!",
+    "ordersRequired": 5,
+    "availableRecipes": ["house_blend", "strawberry_milk", "iced_tea", "honey_latte", "toast_honey", "strawberry_cake"],
+    "customerOrders": [
+      { "customer": "Energetic Girl",  "recipeId": "strawberry_milk", "dialogue": "Strawberry milk!! Pretty please!" },
+      { "customer": "Cool Boy",        "recipeId": "iced_tea",        "dialogue": "Something cold. Surprise me." },
+      { "customer": "Study Group",     "recipeId": "house_blend",     "dialogue": "We need fuel. Coffee. Now." },
+      { "customer": "Sweet Tooth",     "recipeId": "strawberry_cake", "dialogue": "Ooh\u2026 is that strawberry cake? I\u2019ll take it!" },
+      { "customer": "Shy Girl",        "recipeId": "honey_latte",     "dialogue": "Um\u2026 c-can I have something warm\u2026?" },
+      { "customer": "Track Runner",    "recipeId": "iced_tea",        "dialogue": "Iced tea! Quick! I have practice!" },
+      { "customer": "Class Rep",       "recipeId": "toast_honey",     "dialogue": "A small snack would be nice. Something with honey?" }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "A Quiet Evening \u2014 A Scared and Hungry Boy",
+    "description": "The cafe is quiet. A small boy in a dirty school uniform slips inside\u2026",
+    "ordersRequired": 5,
+    "availableRecipes": ["house_blend", "matcha_latte", "rice_ball", "toast_honey", "choco_banana", "strawberry_milk", "matcha_cake"],
+    "customerOrders": [
+      { "customer": "Regular",         "recipeId": "house_blend",     "dialogue": "The usual, please." },
+      { "customer": "Kind Lady",       "recipeId": "matcha_latte",    "dialogue": "Matcha latte\u2026 it\u2019s been a long day." },
+      { "customer": "The Boy",         "recipeId": "rice_ball",       "dialogue": "\u2026" },
+      { "customer": "Couple",          "recipeId": "choco_banana",    "dialogue": "Can we share a chocolate banana?" },
+      { "customer": "The Boy",         "recipeId": "toast_honey",     "dialogue": "\u2026t-thank you\u2026" },
+      { "customer": "Evening Walker",  "recipeId": "matcha_cake",     "dialogue": "I heard you have matcha cake? I\u2019d love a slice." },
+      { "customer": "The Boy",         "recipeId": "strawberry_milk", "dialogue": "\u2026this is\u2026 really good\u2026" }
+    ]
+  }
+]
