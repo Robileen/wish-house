@@ -666,8 +666,9 @@ class CafeEngine {
         const ing = INGREDIENTS[slot.ingredientId];
         slotEl.classList.add("filled");
 
-        const requiredId = this.selectedRecipe.ingredients[idx];
-        const isCorrect = slot.ingredientId === requiredId || slot.ingredientId === "wild";
+        // Check if this ingredient is in the recipe (order doesn't matter)
+        const isCorrect = slot.ingredientId === "wild" ||
+          this.selectedRecipe.ingredients.includes(slot.ingredientId);
         if (isCorrect) slotEl.classList.add("correct");
 
         slotEl.innerHTML = `<div class="slot-ingredient">
@@ -927,10 +928,37 @@ class CafeEngine {
   checkRecipeCorrect() {
     if (!this.selectedRecipe) return false;
 
-    return this.slots.every((slot, idx) => {
-      const required = this.selectedRecipe.ingredients[idx];
-      return slot.ingredientId === required || slot.ingredientId === "wild";
-    });
+    // Order doesn't matter — just check all required ingredients are present
+    const placed = this.slots.map(s => s.ingredientId);
+    const required = [...this.selectedRecipe.ingredients];
+
+    // For each required ingredient, find a matching placed ingredient
+    // Wild cards can substitute for any ingredient
+    const used = new Array(placed.length).fill(false);
+
+    for (const reqId of required) {
+      // First try to find an exact match
+      let matched = false;
+      for (let i = 0; i < placed.length; i++) {
+        if (!used[i] && placed[i] === reqId) {
+          used[i] = true;
+          matched = true;
+          break;
+        }
+      }
+      // If no exact match, try a wild card
+      if (!matched) {
+        for (let i = 0; i < placed.length; i++) {
+          if (!used[i] && placed[i] === "wild") {
+            used[i] = true;
+            matched = true;
+            break;
+          }
+        }
+      }
+      if (!matched) return false;
+    }
+    return true;
   }
 
   async playFuseAnimation(recipe) {
