@@ -953,13 +953,15 @@ class CafeEngine {
         `Edward: "Deep breaths. Try again."`,
         `Edward: "\u2026that was creative, at least."`,
       ];
-      reason += "\n" + baristaQuips[Math.floor(Math.random() * baristaQuips.length)];
 
-      // At 5+ mistakes, add the special dialogue
+      // At 5+ mistakes, show only the special dialogue and force end shift
       if (this.mistakeCount >= 5) {
         reason += `\nEdward: "Uh boss\u2026 more practice?"\nKit: "Why?!"`;
+        this.showServeResult(false, this.selectedRecipe, reason, true);
+      } else {
+        reason += "\n" + baristaQuips[Math.floor(Math.random() * baristaQuips.length)];
+        this.showServeResult(false, this.selectedRecipe, reason, false);
       }
-      this.showServeResult(false, this.selectedRecipe, reason);
     }
 
     this.updateHud();
@@ -1021,7 +1023,7 @@ class CafeEngine {
     overlay.remove();
   }
 
-  showServeResult(success, recipe, reason) {
+  showServeResult(success, recipe, reason, forceEnd) {
     this.serveResultIcon.textContent = success ? "\u2728" : "\uD83D\uDE1E";
 
     if (success) {
@@ -1038,8 +1040,15 @@ class CafeEngine {
         .join("<br>");
     }
 
-    const shiftDone = this.successCount >= this.shiftData.ordersRequired && this.orderQueue.length === 0;
-    this.serveNextBtn.textContent = shiftDone ? "Finish Shift" : "Back to Tables";
+    if (forceEnd) {
+      // 5+ mistakes — force player to end the shift
+      this.serveNextBtn.textContent = "End Shift";
+      this._forceEndShift = true;
+    } else {
+      const shiftDone = this.successCount >= this.shiftData.ordersRequired && this.orderQueue.length === 0;
+      this.serveNextBtn.textContent = shiftDone ? "Finish Shift" : "Back to Tables";
+      this._forceEndShift = false;
+    }
 
     this.serveResult.classList.remove("hidden");
   }
@@ -1050,6 +1059,13 @@ class CafeEngine {
    */
   async afterServeResult() {
     this.serveResult.classList.add("hidden");
+
+    // Forced end shift at 5+ mistakes
+    if (this._forceEndShift) {
+      this._forceEndShift = false;
+      this.completeShift();
+      return;
+    }
 
     const tableNum = this._activeTableNum;
     this._activeTableNum = null;
