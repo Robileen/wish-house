@@ -37,6 +37,10 @@
                         </div>
                         <div class="progress-text" id="memory-text">0 / 6</div>
                     </div>
+                    <div id="journal-buttons" class="button-counter">
+                        <span class="button-icon">&#128992;</span>
+                        <span id="journal-button-count">0</span>
+                    </div>
                     <!-- Scrapbook decorations -->
                     <div class="deco deco-flower-1"></div>
                     <div class="deco deco-paperclip-1"></div>
@@ -124,6 +128,10 @@
                     <div class="hud-progress-fill" id="hud-progress-fill"></div>
                 </div>
                 <span id="hud-dish-count">0 / 5</span>
+                <span id="hud-buttons" class="button-counter button-counter-sm">
+                    <span class="button-icon">&#128992;</span>
+                    <span id="hud-button-count">0</span>
+                </span>
             </div>
             <div class="hud-right">
                 <span id="hud-streak" class="hud-streak">Streak: 0</span>
@@ -261,6 +269,17 @@
             </div>
             <button id="recipe-book-btn" title="Recipe Book"><em>?</em></button>
             <button id="back-to-tables-btn" title="Back to Tables">Back to Tables</button>
+        </div>
+
+        <!-- Customer chat / tip choice (Papers Please style) -->
+        <div id="customer-chat" class="hidden">
+            <div id="chat-bubble">
+                <div id="chat-customer-line"></div>
+            </div>
+            <div id="chat-choices">
+                <button class="chat-choice" data-choice="0"></button>
+                <button class="chat-choice" data-choice="1"></button>
+            </div>
         </div>
 
         <!-- Order picker (when table has multiple orders) -->

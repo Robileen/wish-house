@@ -165,6 +165,10 @@
     text-align: right;
 }
 
+#journal-buttons {
+    margin-top: 10px;
+}
+
 /* ---- Right Page Content ---- */
 .page-header {
     display: flex;

@@ -49,10 +49,14 @@ class JournalBook {
     this.prevBtn        = document.getElementById("prev-chapter-btn");
     this.nextBtn        = document.getElementById("next-chapter-btn");
     this.backToJournal  = document.getElementById("back-to-journal-btn");
+    this.buttonCountEl  = document.getElementById("journal-button-count");
 
     // State
     this.currentChapter = 1;
     this.progress = this.loadProgress();
+
+    // Render button count
+    this.updateButtonDisplay();
 
     // Bind
     this.prevBtn.addEventListener("click", () => this.showChapter(this.currentChapter - 1));
@@ -67,14 +71,36 @@ class JournalBook {
 
   loadProgress() {
     const saved = localStorage.getItem("wishhouse_journal");
-    if (saved) return JSON.parse(saved);
+    if (saved) {
+      const data = JSON.parse(saved);
+      if (data.buttons === undefined) data.buttons = 0;
+      return data;
+    }
 
     // Default: Episode 1 unlocked, rest locked
-    return { completedEpisodes: [], currentChapter: 1 };
+    return { completedEpisodes: [], currentChapter: 1, buttons: 0 };
   }
 
   saveProgress() {
     localStorage.setItem("wishhouse_journal", JSON.stringify(this.progress));
+  }
+
+  // ── Button Currency ──
+
+  getButtons() {
+    return this.progress.buttons || 0;
+  }
+
+  addButtons(amount) {
+    this.progress.buttons = (this.progress.buttons || 0) + amount;
+    this.saveProgress();
+    this.updateButtonDisplay();
+  }
+
+  updateButtonDisplay() {
+    if (this.buttonCountEl) {
+      this.buttonCountEl.textContent = this.getButtons();
+    }
   }
 
   getEpisodeState(chapter, episode) {
