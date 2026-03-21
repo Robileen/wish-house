@@ -233,32 +233,35 @@ class CafeEngine {
    * Up to 3 customers at a time across the 6 tables.
    */
   seatNextCustomers() {
+    if (this.orderQueue.length === 0) {
+      // No more orders — check if shift is done
+      const hasActive = Object.values(this.tables).some(t => t);
+      if (!hasActive && this.successCount >= this.shiftData.ordersRequired) {
+        this.completeShift();
+      }
+      return;
+    }
+
     const emptyTables = [1, 2, 3, 4, 5, 6].filter(n => !this.tables[n]);
     const shuffledEmpty = this.shuffle([...emptyTables]);
 
-    // Seat up to 3 new customers (or however many orders remain)
+    // Seat up to 3 new customers (or however many orders remain / tables available)
     const toSeat = Math.min(3, this.orderQueue.length, shuffledEmpty.length);
 
     for (let i = 0; i < toSeat; i++) {
       const order = this.orderQueue.shift();
       const tableNum = shuffledEmpty[i];
-      const avatarIdx = (this.totalServed + i) % this._avatarEmojis.length;
+      const avatarIdx = (this.totalServed + Object.keys(this.tables).length + i) % this._avatarEmojis.length;
 
       this.tables[tableNum] = {
         order,
-        state: "ordering",      // customer is seated and ready to order
+        state: "ordering",
         avatar: this._avatarEmojis[avatarIdx],
         recipe: RECIPES[order.recipeId] || null
       };
     }
 
     this.renderAllTables();
-
-    // Check if we're done (no customers anywhere, queue empty)
-    const hasCustomers = Object.values(this.tables).some(t => t);
-    if (!hasCustomers && this.orderQueue.length === 0) {
-      this.completeShift();
-    }
   }
 
   renderAllTables() {
@@ -343,9 +346,10 @@ class CafeEngine {
       cleanBtn.textContent = "Clean";
       cleanBtn.addEventListener("click", (e) => {
         e.stopPropagation();
+        e.preventDefault();
         this.cleanTable(tableNum);
       });
-      surface.appendChild(cleanBtn);
+      el.appendChild(cleanBtn);
     }
   }
 
@@ -416,16 +420,8 @@ class CafeEngine {
     delete this.tables[tableNum];
     this.renderTable(tableNum);
 
-    // Seat more customers if queue has orders
-    if (this.orderQueue.length > 0) {
-      this.seatNextCustomers();
-    } else {
-      // Check if all tables are clear -> shift may be done
-      const hasActive = Object.values(this.tables).some(t => t);
-      if (!hasActive && this.successCount >= this.shiftData.ordersRequired) {
-        this.completeShift();
-      }
-    }
+    // Seat more customers at any empty tables
+    this.seatNextCustomers();
   }
 
   /* ══════════════════════════════════
