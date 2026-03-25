@@ -1,0 +1,10 @@
+[
+  { "id": "toast_honey", "name": "Honey Toast", "category": "food-bread", "icon": "\uD83C\uDF5E", "ingredients": ["bread", "honey", "cinnamon"], "illustration": "Golden toast drizzled with honey and a sprinkle of cinnamon." },
+  { "id": "egg_sandwich", "name": "Egg Sandwich", "category": "food-bread", "icon": "\uD83E\uDD5A", "ingredients": ["bread", "egg", "butter"], "illustration": "A fluffy egg sandwich on toasted bread with melted butter." },
+  { "id": "cheese_toast", "name": "Cheese Toast", "category": "food-bread", "icon": "\uD83E\uDDC0", "ingredients": ["bread", "cheese", "hot"], "illustration": "A crispy toast with bubbly melted cheese on top." },
+  { "id": "grilled_cheese", "name": "Grilled Cheese", "category": "food-bread", "icon": "\uD83E\uDDC0", "ingredients": ["bread", "cheese", "butter", "hot"], "illustration": "A perfectly golden grilled cheese sandwich with stretchy cheese pull." },
+  { "id": "honey_pancakes", "name": "Honey Pancakes", "category": "food-bread", "icon": "\uD83E\uDD5E", "ingredients": ["flour", "honey", "butter", "milk"], "illustration": "A fluffy stack of golden pancakes drizzled with warm honey." },
+  { "id": "cinnamon_roll", "name": "Cinnamon Roll", "category": "food-bread", "icon": "\uD83C\uDF30", "ingredients": ["flour", "cinnamon", "sugar", "butter"], "illustration": "A warm, spiraling cinnamon roll with sweet glaze dripping down the sides." },
+  { "id": "banana_bread", "name": "Banana Bread", "category": "food-bread", "icon": "\uD83C\uDF4C", "ingredients": ["flour", "banana", "honey"], "illustration": "A thick slice of moist banana bread with a golden crust." },
+  { "id": "veggie_wrap", "name": "Veggie Wrap", "category": "food-bread", "icon": "\uD83E\uDD6C", "ingredients": ["bread", "lettuce", "tomato"], "illustration": "A light flatbread wrap stuffed with crisp lettuce and juicy tomato." }
+]

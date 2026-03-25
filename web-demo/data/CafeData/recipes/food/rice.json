@@ -1,0 +1,4 @@
+[
+  { "id": "rice_ball", "name": "Rice Ball", "category": "food-rice", "icon": "\uD83C\uDF59", "ingredients": ["rice", "hot"], "illustration": "A simple, warm triangular rice ball." },
+  { "id": "seaweed_rice", "name": "Seaweed Rice Roll", "category": "food-rice", "icon": "\uD83C\uDF63", "ingredients": ["rice", "seaweed", "hot"], "illustration": "Neatly rolled rice wrapped in dark seaweed, cut into little rounds." }
+]

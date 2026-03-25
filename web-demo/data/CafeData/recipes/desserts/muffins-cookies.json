@@ -1,0 +1,4 @@
+[
+  { "id": "blueberry_muffin", "name": "Blueberry Muffin", "category": "dessert-muffins-cookies", "icon": "\uD83E\uDED0", "ingredients": ["flour", "blueberry", "sugar"], "illustration": "A golden muffin bursting with plump blueberries, topped with sugar crystals." },
+  { "id": "honey_cookie", "name": "Honey Cookie", "category": "dessert-muffins-cookies", "icon": "\uD83C\uDF6A", "ingredients": ["flour", "honey", "butter"], "illustration": "A chewy golden cookie with a crackled top, sweetened with honey." }
+]

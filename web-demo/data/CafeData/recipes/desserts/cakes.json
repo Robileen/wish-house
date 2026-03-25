@@ -1,0 +1,5 @@
+[
+  { "id": "strawberry_cake", "name": "Strawberry Cake", "category": "dessert-cakes", "icon": "\uD83C\uDF70", "ingredients": ["flour", "strawberry", "cream", "sugar"], "illustration": "A slice of layered strawberry cake with whipped cream." },
+  { "id": "matcha_cake", "name": "Matcha Honey Cake", "category": "dessert-cakes", "icon": "\uD83C\uDF75", "ingredients": ["flour", "matcha", "honey", "sugar"], "illustration": "A soft green matcha cake with honey glaze." },
+  { "id": "chocolate_cake", "name": "Chocolate Cake", "category": "dessert-cakes", "icon": "\uD83C\uDF82", "ingredients": ["flour", "chocolate", "cream", "sugar"], "illustration": "A rich, moist chocolate cake with glossy ganache and cream layers." }
+]

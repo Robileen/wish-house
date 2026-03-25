@@ -1,0 +1,54 @@
+{
+  "_doc": "All cafe ingredients. Groups: base, fruit, topping, temp, sweetener, dairy, protein, vegetable, grain, spice, special",
+
+  "coffee":       { "id": "coffee",       "name": "Coffee",        "icon": "\u2615",     "group": "base",       "color": "#8B4513" },
+  "tea":          { "id": "tea",          "name": "Tea",           "icon": "\uD83C\uDF75", "group": "base",     "color": "#90A955" },
+  "matcha":       { "id": "matcha",       "name": "Matcha",        "icon": "\uD83C\uDF35", "group": "base",     "color": "#7DB46C" },
+  "milk":         { "id": "milk",         "name": "Milk",          "icon": "\uD83E\uDD5B", "group": "base",     "color": "#FFFDD0" },
+  "flour":        { "id": "flour",        "name": "Flour",         "icon": "\uD83C\uDF3E", "group": "base",     "color": "#F5DEB3" },
+  "bread":        { "id": "bread",        "name": "Bread",         "icon": "\uD83C\uDF5E", "group": "base",     "color": "#D2A96A" },
+  "rice":         { "id": "rice",         "name": "Rice",          "icon": "\uD83C\uDF5A", "group": "base",     "color": "#FAFAFA" },
+
+  "strawberry":   { "id": "strawberry",   "name": "Strawberry",    "icon": "\uD83C\uDF53", "group": "fruit",    "color": "#FF6B6B" },
+  "blueberry":    { "id": "blueberry",    "name": "Blueberry",     "icon": "\uD83E\uDED0", "group": "fruit",    "color": "#6C63FF" },
+  "cherry":       { "id": "cherry",       "name": "Cherry",        "icon": "\uD83C\uDF52", "group": "fruit",    "color": "#DC143C" },
+  "lemon":        { "id": "lemon",        "name": "Lemon",         "icon": "\uD83C\uDF4B", "group": "fruit",    "color": "#FFF44F" },
+  "banana":       { "id": "banana",       "name": "Banana",        "icon": "\uD83C\uDF4C", "group": "fruit",    "color": "#FFE135" },
+  "apple":        { "id": "apple",        "name": "Apple",         "icon": "\uD83C\uDF4E", "group": "fruit",    "color": "#FF6961" },
+
+  "cream":        { "id": "cream",        "name": "Whipped Cream", "icon": "\uD83E\uDDC1", "group": "topping",  "color": "#FFFDD0" },
+  "chocolate":    { "id": "chocolate",    "name": "Chocolate",     "icon": "\uD83C\uDF6B", "group": "topping",  "color": "#7B3F00" },
+  "honey":        { "id": "honey",        "name": "Honey",         "icon": "\uD83C\uDF6F", "group": "topping",  "color": "#EB9605" },
+  "cinnamon":     { "id": "cinnamon",     "name": "Cinnamon",      "icon": "\uD83C\uDF30", "group": "topping",  "color": "#D2691E" },
+  "caramel":      { "id": "caramel",      "name": "Caramel",       "icon": "\uD83E\uDD64", "group": "topping",  "color": "#FFD700" },
+
+  "hot":          { "id": "hot",          "name": "Hot",           "icon": "\uD83D\uDD25", "group": "temp",     "color": "#FF4500" },
+  "cold":         { "id": "cold",         "name": "Cold",          "icon": "\u2744\uFE0F", "group": "temp",     "color": "#87CEEB" },
+
+  "sugar":        { "id": "sugar",        "name": "Sugar",         "icon": "\uD83E\uDDC2", "group": "sweetener","color": "#FFFFFF" },
+  "vanilla":      { "id": "vanilla",      "name": "Vanilla",       "icon": "\uD83C\uDF3C", "group": "sweetener","color": "#F3E5AB" },
+
+  "butter":       { "id": "butter",       "name": "Butter",        "icon": "\uD83E\uDDC8", "group": "dairy",    "color": "#FFFACD" },
+  "cheese":       { "id": "cheese",       "name": "Cheese",        "icon": "\uD83E\uDDC0", "group": "dairy",    "color": "#FFD700" },
+
+  "egg":          { "id": "egg",          "name": "Egg",           "icon": "\uD83E\uDD5A", "group": "protein",  "color": "#FFEFD5" },
+
+  "tomato":       { "id": "tomato",       "name": "Tomato",        "icon": "\uD83C\uDF45", "group": "vegetable","color": "#FF6347" },
+  "lettuce":      { "id": "lettuce",      "name": "Lettuce",       "icon": "\uD83E\uDD6C", "group": "vegetable","color": "#90EE90" },
+  "seaweed":      { "id": "seaweed",      "name": "Seaweed",       "icon": "\uD83C\uDF3F", "group": "vegetable","color": "#2E8B57" },
+  "mushroom":     { "id": "mushroom",     "name": "Mushroom",      "icon": "\uD83C\uDF44", "group": "vegetable","color": "#D2B48C" },
+
+  "oats":         { "id": "oats",         "name": "Oats",          "icon": "\uD83E\uDD63", "group": "grain",    "color": "#DEB887" },
+
+  "lavender":     { "id": "lavender",     "name": "Lavender",      "icon": "\uD83D\uDC9C", "group": "spice",    "color": "#E6E6FA" },
+
+  "stardust":     { "id": "stardust",     "name": "Stardust",      "icon": "\u2728",       "group": "special",  "color": "#E8D5F5", "isSpecial": true },
+
+  "wild":         { "id": "wild",         "name": "Wild Card",     "icon": "\uD83C\uDCCF", "group": "special",  "color": "#FFD700", "isSpecial": true },
+  "cat_fruit":    { "id": "cat_fruit",    "name": "Any Fruit",     "icon": "\uD83C\uDF4A\uD83C\uDCCF", "group": "special", "color": "#FFCBA4", "isSpecial": true, "categoryFor": "fruit" },
+  "cat_base":     { "id": "cat_base",     "name": "Any Base",      "icon": "\u2615\uD83C\uDCCF",       "group": "special", "color": "#D2B48C", "isSpecial": true, "categoryFor": "base" },
+  "cat_topping":  { "id": "cat_topping",  "name": "Any Topping",   "icon": "\uD83C\uDF6F\uD83C\uDCCF", "group": "special", "color": "#FFD59A", "isSpecial": true, "categoryFor": "topping" },
+  "combo":        { "id": "combo",        "name": "Combo Card",    "icon": "\uD83C\uDCCF\uD83C\uDCCF", "group": "special", "color": "#C8A2FF", "isSpecial": true, "isCombo": true },
+  "premade_dish": { "id": "premade_dish", "name": "Premade Dish",  "icon": "\uD83C\uDF7D\uFE0F\u2728", "group": "special", "color": "#FFD700", "isSpecial": true, "isPremade": true },
+  "premade_drink":{ "id": "premade_drink","name": "Premade Drink", "icon": "\uD83E\uDD64\u2728",       "group": "special", "color": "#FFD700", "isSpecial": true, "isPremade": true }
+}
