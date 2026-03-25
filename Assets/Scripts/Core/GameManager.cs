@@ -36,6 +36,8 @@ namespace WishHouse.Core
             DontDestroyOnLoad(gameObject);
 
             _progress = LoadProgress();
+            currentChapter = _progress.chapter;
+            currentEpisode = _progress.episode;
         }
 
         private void Start()
@@ -47,7 +49,7 @@ namespace WishHouse.Core
                 dialogueManager.OnDialogueComplete += HandleDialogueComplete;
             }
 
-            // Start the game at current progress
+            // Start the game at saved progress
             StartEpisode(currentChapter, currentEpisode);
         }
 
