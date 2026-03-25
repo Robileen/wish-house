@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using WishHouse.Data;
 using WishHouse.Dialogue;
+using WishHouse.Journal;
 
 namespace WishHouse.Core
 {
@@ -21,6 +22,7 @@ namespace WishHouse.Core
         [Header("References")]
         [SerializeField] private DialogueManager dialogueManager;
         [SerializeField] private DialogueLoader dialogueLoader;
+        [SerializeField] private JournalUI journalUI;
 
         // Player progress
         private GameProgress _progress;
@@ -47,6 +49,14 @@ namespace WishHouse.Core
             {
                 dialogueManager.OnSceneTransition += HandleSceneTransition;
                 dialogueManager.OnDialogueComplete += HandleDialogueComplete;
+            }
+
+            // Subscribe to journal episode selection
+            if (journalUI == null)
+                journalUI = FindObjectOfType<JournalUI>();
+            if (journalUI != null)
+            {
+                journalUI.OnEpisodeSelected += HandleEpisodeSelected;
             }
 
             // Start the game at saved progress
@@ -97,6 +107,20 @@ namespace WishHouse.Core
         private void HandleDialogueComplete()
         {
             Debug.Log("[GameManager] Dialogue complete for current block.");
+        }
+
+        /// <summary>
+        /// Handle episode selection from the Journal UI.
+        /// </summary>
+        private void HandleEpisodeSelected(int chapter, int episode)
+        {
+            Debug.Log($"[GameManager] Episode selected from journal: Ch{chapter} Ep{episode}");
+
+            // Hide journal when starting an episode
+            if (journalUI != null)
+                journalUI.Hide();
+
+            StartEpisode(chapter, episode);
         }
 
         #region Save/Load
