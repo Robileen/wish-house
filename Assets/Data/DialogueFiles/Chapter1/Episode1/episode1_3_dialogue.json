@@ -1,0 +1,58 @@
+{
+  "chapter": 1,
+  "episodes": {
+    "1.3": {
+      "episode": 1.3,
+      "dialogueLines": [
+        {
+          "id": 1,
+          "speaker": "Kit (Wizard)",
+          "text": "Have you ever visited a place like this before?"
+        },
+        {
+          "id": 2,
+          "speaker": "Claire",
+          "text": "No… not really. I usually go straight home after work. There’s never time for anything else."
+        },
+        {
+          "id": 3,
+          "speaker": "Claire",
+          "text": "But today felt different. Like I needed to step somewhere unfamiliar."
+        },
+        {
+          "id": 4,
+          "speaker": "Kit (Wizard)",
+          "text": "Then welcome to a small corner of the world where unfamiliar things happen often."
+        },
+        {
+          "id": 5,
+          "speaker": "Claire",
+          "text": "I can tell… this place feels magical somehow. Warm. Mysterious."
+        },
+        {
+          "id": 6,
+          "speaker": "Kit (Wizard)",
+          "text": "Magic, hm? Well… you're not entirely wrong."
+        },
+        {
+          "id": 7,
+          "speaker": "Claire",
+          "text": "I’d like to learn more about this café. Maybe next time?"
+        },
+        {
+          "id": 8,
+          "speaker": "Kit (Wizard)",
+          "text": "We’ll be here. Always."
+        }
+      ],
+      "choices": [],
+      "cafeOrders": [],
+      "sceneTransition": {
+        "next": {
+          "chapter": 1,
+          "episode": 2
+        }
+      }
+    }
+  }
+}
