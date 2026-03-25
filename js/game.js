@@ -1,111 +1,19 @@
 /**
  * Wish House Visual Novel - Web Demo Engine
- * Chapter 1, Episode 1: "That'll Be 1 Button."
  *
- * Loads episode dialogue JSON data and drives the visual novel:
+ * Loads episode dialogue JSON data dynamically and drives the visual novel:
  * typewriter text, character sprites, branching choices, scene transitions.
  *
  * Character name format: "Kit (Wizard)", "Edward (Barista)", "Claire"
  */
 
-// ── Episode 1 Dialogue Data (embedded from episode1_dialogue.json) ──
-const EPISODE_DATA = {
-  chapter: 1,
-  episodes: {
-    "1": {
-      episode: 1,
-      dialogueLines: [
-        { id: 1, speaker: "Narrator", text: "A soft chime rings as the café door opens. A young woman steps inside, shoulders heavy, expression tired yet hopeful." },
-        { id: 2, speaker: "Narrator", text: "Her uniform—simple, modest, and unmistakably that of a maid—carries faint wrinkles of a day far longer than most could bear." },
-        { id: 3, speaker: "Narrator", text: "She works in one of the wealthiest estates in town. A place where perfection is demanded, gratitude is rare, and mistakes are not forgiven." },
-        { id: 4, speaker: "Narrator", text: "Today is her off day. A fleeting breath of freedom she desperately needed." },
-        { id: 5, speaker: "Claire", text: "...Hello? Is—Is it alright for me to come in?" },
-        { id: 6, speaker: "Kit (Wizard)", text: "Of course. Welcome to the Wish House. A seat is yours if you wish to rest." },
-        { id: 7, speaker: "Kit (Wizard)", text: "What brings you here on this fine evening? You look like you've walked through an entire storm." },
-        { id: 8, speaker: "Claire", text: "Sorry... It's been a long day. A long week. Maybe a long life." },
-        { id: 9, speaker: "Claire", text: "I work at a rich household nearby. They're… demanding. Everything has to be spotless. Timed. Perfect." },
-        { id: 10, speaker: "Claire", text: "And on my off day, I just wanted somewhere new. Somewhere quiet. Somewhere the world can't find me for a while." },
-        { id: 11, speaker: "Kit (Wizard)", text: "Then you've found the right corner of the world. What can I brew to help you forget your troubles?" },
-        { id: 12, speaker: "Claire", text: "Just… coffee. Something warm. Something simple." },
-        { id: 13, speaker: "Stage", text: "[Kit begins brewing—gentle, steady movements, like a small ritual written in steam and warmth.]" },
-        { id: 14, speaker: "Kit (Wizard)", text: "Here you go—one house blend. Let it warm more than just your hands." },
-        { id: 15, speaker: "Claire", text: "Thank you. Um… how much is it?" },
-        { id: 16, speaker: "Kit (Wizard)", text: "That'll be a button, miss. But for today, it's on the house." },
-        { id: 17, speaker: "Claire", text: "A… button? That's… oddly adorable." },
-        { id: 18, speaker: "Kit (Wizard)", text: "Think of it as a tradition here. One small token, one small wish." }
-      ],
-      choices: [
-        {
-          id: "EP1-CHOICE-1",
-          prompt: "Claire hesitates, holding the warm cup. What should Kit say next?",
-          options: [
-            { text: "\u201CIf you\u2019d like\u2026 you can tell me what\u2019s been weighing on you.\u201D", next: { chapter: 1, episode: 1.1 } },
-            { text: "\u201CYou don\u2019t have to talk. Just rest. The world can wait.\u201D", next: { chapter: 1, episode: 1.2 } },
-            { text: "\u201CHave you ever visited a place like this before?\u201D", next: { chapter: 1, episode: 1.3 } }
-          ]
-        }
-      ],
-      sceneTransition: { next: { chapter: 1, episode: 2 }, effect: "fade", music: "cafe_theme", delayMs: 1200 }
-    },
-
-    "1.1": {
-      episode: 1.1,
-      dialogueLines: [
-        { id: 1, speaker: "Kit (Wizard)", text: "If you'd like… you can tell me what's been weighing on you." },
-        { id: 2, speaker: "Claire", text: "I… don't usually talk about it. People don't really listen." },
-        { id: 3, speaker: "Claire", text: "But today… I feel like if I don't let it out, I might just disappear." },
-        { id: 4, speaker: "Stage", text: "[She grips the cup gently, drawing warmth from it.]" },
-        { id: 5, speaker: "Claire", text: "The household I work for… they're strict. Cruel, sometimes. I'm one mistake away from being yelled at—or replaced." },
-        { id: 6, speaker: "Claire", text: "I keep my head down. Smile when spoken to. Hide when needed. It's suffocating." },
-        { id: 7, speaker: "Kit (Wizard)", text: "No one should have to live under fear." },
-        { id: 8, speaker: "Claire", text: "I know. But quitting isn't an option. I need the money… badly." },
-        { id: 9, speaker: "Claire", text: "This café… it feels different. Quiet. Safe." },
-        { id: 10, speaker: "Kit (Wizard)", text: "You're welcome here anytime. For rest, warmth… or just silence." }
-      ],
-      choices: [],
-      sceneTransition: { next: { chapter: 1, episode: 2 } }
-    },
-
-    "1.2": {
-      episode: 1.2,
-      dialogueLines: [
-        { id: 1, speaker: "Kit (Wizard)", text: "You don't have to talk. Just rest. The world can wait." },
-        { id: 2, speaker: "Stage", text: "[Claire closes her eyes, letting the warmth of the cup seep into her tired hands.]" },
-        { id: 3, speaker: "Narrator", text: "The quiet hum of the café fills the space—soft, gentle, and healing." },
-        { id: 4, speaker: "Claire", text: "…Thank you. People don't usually say things like that to me." },
-        { id: 5, speaker: "Kit (Wizard)", text: "Then perhaps you're overdue for a little kindness." },
-        { id: 6, speaker: "Claire", text: "It's strange… I feel safe here. Like no one can find me." },
-        { id: 7, speaker: "Kit (Wizard)", text: "That's the magic of a place built to grant rest to weary souls." }
-      ],
-      choices: [],
-      sceneTransition: { next: { chapter: 1, episode: 2 } }
-    },
-
-    "1.3": {
-      episode: 1.3,
-      dialogueLines: [
-        { id: 1, speaker: "Kit (Wizard)", text: "Have you ever visited a place like this before?" },
-        { id: 2, speaker: "Claire", text: "No… not really. I usually go straight home after work. There's never time for anything else." },
-        { id: 3, speaker: "Claire", text: "But today felt different. Like I needed to step somewhere unfamiliar." },
-        { id: 4, speaker: "Kit (Wizard)", text: "Then welcome to a small corner of the world where unfamiliar things happen often." },
-        { id: 5, speaker: "Claire", text: "I can tell… this place feels magical somehow. Warm. Mysterious." },
-        { id: 6, speaker: "Kit (Wizard)", text: "Magic, hm? Well… you're not entirely wrong." },
-        { id: 7, speaker: "Claire", text: "I'd like to learn more about this café. Maybe next time?" },
-        { id: 8, speaker: "Kit (Wizard)", text: "We'll be here. Always." }
-      ],
-      choices: [],
-      sceneTransition: { next: { chapter: 1, episode: 2 } }
-    }
-  }
-};
-
 // ── Character Definitions ──
 const CHARACTERS = {
-  "Kit (Wizard)":     { id: "kit",     color: "#D4A843", icon: "🎩", cssClass: "char-kit",     side: "left"  },
-  "Edward (Barista)": { id: "edward",  color: "#8B4513", icon: "☕", cssClass: "char-edward",  side: "right" },
-  "Claire":           { id: "claire",  color: "#C48B9F", icon: "🌸", cssClass: "char-claire",  side: "right" },
-  "Narrator":         { id: "narrator",color: "#7A6455", icon: "",   cssClass: "",              side: null    },
-  "Stage":            { id: "stage",   color: "#999999", icon: "",   cssClass: "",              side: null    }
+  "Kit (Wizard)":     { id: "kit",     color: "#D4A843", icon: "\uD83C\uDFA9", cssClass: "char-kit",     side: "left"  },
+  "Edward (Barista)": { id: "edward",  color: "#8B4513", icon: "\u2615",       cssClass: "char-edward",  side: "right" },
+  "Claire":           { id: "claire",  color: "#C48B9F", icon: "\uD83C\uDF38", cssClass: "char-claire",  side: "right" },
+  "Narrator":         { id: "narrator",color: "#7A6455", icon: "",             cssClass: "",              side: null    },
+  "Stage":            { id: "stage",   color: "#999999", icon: "",             cssClass: "",              side: null    }
 };
 
 // ── Game Engine ──
@@ -128,12 +36,16 @@ class WishHouseEngine {
     this.skipStoryBtn    = document.getElementById("skip-story-btn");
 
     // State
+    this.episodeData     = null;   // Currently loaded episode data
+    this.currentChapter  = 1;
+    this.currentEpisode  = 1;
     this.currentBlock    = null;
     this.currentLineIdx  = 0;
     this.isTyping        = false;
     this.skipRequested   = false;
     this.typewriterSpeed = 30; // ms per character
     this.choiceHistory   = [];
+    this.activeCharacters = {};  // Track which characters appear in current episode
 
     // Bind events
     this.startBtn.addEventListener("click", () => this.startGame());
@@ -148,18 +60,105 @@ class WishHouseEngine {
     });
   }
 
+  // ── Episode Loading ──
+
+  /**
+   * Load episode data from JSON files.
+   * Tries split layout (main + branch files), merges them.
+   */
+  async loadEpisode(chapter, episode) {
+    const folder = `data/Chapter${chapter}/Episode${episode}`;
+
+    // Try split layout: main + branch files
+    let mainData = null;
+    try {
+      const mainResp = await fetch(`${folder}/episode${episode}_main_dialogue.json`);
+      if (mainResp.ok) {
+        mainData = await mainResp.json();
+      }
+    } catch (e) { /* fall through */ }
+
+    if (mainData) {
+      // Merge branch files
+      for (let b = 1; b <= 9; b++) {
+        try {
+          const branchResp = await fetch(`${folder}/episode${episode}_${b}_dialogue.json`);
+          if (!branchResp.ok) continue;
+          const branchData = await branchResp.json();
+          if (branchData && branchData.episodes) {
+            for (const [key, block] of Object.entries(branchData.episodes)) {
+              if (!mainData.episodes[key]) {
+                mainData.episodes[key] = block;
+              }
+            }
+          }
+        } catch (e) { continue; }
+      }
+
+      console.log(`[Engine] Loaded split Ch${chapter} Ep${episode}: keys=[${Object.keys(mainData.episodes).join(", ")}]`);
+      return mainData;
+    }
+
+    // Fallback: monolithic file
+    try {
+      const resp = await fetch(`${folder}/episode${episode}_dialogue.json`);
+      if (resp.ok) {
+        const data = await resp.json();
+        console.log(`[Engine] Loaded monolithic Ch${chapter} Ep${episode}`);
+        return data;
+      }
+    } catch (e) { /* fall through */ }
+
+    console.error(`[Engine] Could not load Ch${chapter} Ep${episode}`);
+    return null;
+  }
+
+  /**
+   * Called by journal to load and prepare a specific episode.
+   */
+  async loadAndPrepareEpisode(chapter, episode) {
+    this.currentChapter = chapter;
+    this.currentEpisode = episode;
+    this.episodeData = await this.loadEpisode(chapter, episode);
+
+    if (!this.episodeData) {
+      console.error(`[Engine] Failed to load episode data for Ch${chapter} Ep${episode}`);
+      return false;
+    }
+
+    // Scan all dialogue lines to find which characters appear
+    this.activeCharacters = {};
+    for (const block of Object.values(this.episodeData.episodes)) {
+      if (!block.dialogueLines) continue;
+      for (const line of block.dialogueLines) {
+        const charData = CHARACTERS[line.speaker];
+        if (charData && charData.side) {
+          this.activeCharacters[line.speaker] = charData;
+        }
+      }
+    }
+
+    return true;
+  }
+
   // ── Game Flow ──
 
   startGame() {
     this.titleScreen.classList.add("hidden");
     this.skipStoryBtn.style.display = "block";
-    this.startBlock("1");
+    // Start the main block (block key = episode number)
+    this.startBlock(String(this.currentEpisode));
   }
 
   startBlock(blockKey) {
-    const block = EPISODE_DATA.episodes[blockKey];
+    if (!this.episodeData) {
+      console.error("[Engine] No episode data loaded.");
+      return;
+    }
+
+    const block = this.episodeData.episodes[blockKey];
     if (!block) {
-      console.error(`Block "${blockKey}" not found.`);
+      console.error(`[Engine] Block "${blockKey}" not found. Available: [${Object.keys(this.episodeData.episodes).join(", ")}]`);
       return;
     }
 
@@ -226,27 +225,26 @@ class WishHouseEngine {
   }
 
   updateCharacters(activeSpeaker) {
-    const charData = CHARACTERS[activeSpeaker];
-    const isNarrator = !charData || !charData.side;
+    // Find which characters should be on left/right based on active characters
+    let leftChar = null;
+    let rightChar = null;
 
-    // Determine which characters are in scene
-    // Episode 1: Kit is always present, Claire appears from line 5 onward
-    // In branching sub-episodes (1.1, 1.2, 1.3), Claire is already on screen
-    const kitVisible = true;
-    const episodeKey = String(this.currentBlock.episode);
-    const claireVisible = this.currentLineIdx >= 5 || episodeKey !== "1";
+    for (const [name, data] of Object.entries(this.activeCharacters)) {
+      if (data.side === "left") leftChar = name;
+      if (data.side === "right") rightChar = name;
+    }
 
-    // Kit placeholder
-    if (kitVisible) {
-      this.charLeft.innerHTML = this.createCharacterPlaceholder("Kit (Wizard)", activeSpeaker);
+    // Left character
+    if (leftChar) {
+      this.charLeft.innerHTML = this.createCharacterPlaceholder(leftChar, activeSpeaker);
       this.charLeft.style.opacity = "1";
     } else {
       this.charLeft.style.opacity = "0";
     }
 
-    // Claire placeholder
-    if (claireVisible) {
-      this.charRight.innerHTML = this.createCharacterPlaceholder("Claire", activeSpeaker);
+    // Right character
+    if (rightChar) {
+      this.charRight.innerHTML = this.createCharacterPlaceholder(rightChar, activeSpeaker);
       this.charRight.style.opacity = "1";
     } else {
       this.charRight.style.opacity = "0";

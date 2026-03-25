@@ -214,7 +214,7 @@ class JournalBook {
 
   // ── Episode Launch ──
 
-  openEpisode(chapter, episode) {
+  async openEpisode(chapter, episode) {
     // Store current episode info for completion callback
     this._activeChapter = chapter;
     this._activeEpisode = episode.episode;
@@ -226,6 +226,15 @@ class JournalBook {
         window.cafe.openShift(episode.shiftId, chapter, episode.episode);
       }
       return;
+    }
+
+    // Load episode dialogue data from JSON files
+    if (window.game) {
+      const loaded = await window.game.loadAndPrepareEpisode(chapter, episode.episode);
+      if (!loaded) {
+        console.error(`[Journal] Failed to load episode ${episode.episode} data`);
+        return;
+      }
     }
 
     // Update the VN player title card
