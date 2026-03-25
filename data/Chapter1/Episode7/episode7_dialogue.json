@@ -1,0 +1,14 @@
+{
+  "chapter": 1,
+  "episodes": {
+    "7": {
+      "episode": 7,
+      "dialogueLines": [
+        { "id": 1, "speaker": "Narrator", "text": "Episode 7 coming soon..." }
+      ],
+      "choices": [],
+      "cafeOrders": [],
+      "sceneTransition": null
+    }
+  }
+}
