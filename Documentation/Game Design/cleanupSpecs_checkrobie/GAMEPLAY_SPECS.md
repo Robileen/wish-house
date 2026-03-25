@@ -134,7 +134,7 @@
 * Enabled: gold gradient, pulsing glow
 * Triggers animation:
   * **Drinks:** "Brewing..." (☕✨)
-  * **Food/Desserts:** "Conjuring..." (🧙✨)
+  * **Food/Desserts:** "Fusing..." (🧙✨)
 
 ---
 
