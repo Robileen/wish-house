@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 using WishHouse.Data;
 
@@ -54,7 +55,7 @@ namespace WishHouse.Dialogue
                 return null;
             }
 
-            EpisodeData legacyData = JsonUtility.FromJson<EpisodeData>(legacyFile.text);
+            EpisodeData legacyData = JsonConvert.DeserializeObject<EpisodeData>(legacyFile.text);
             _cache[key] = legacyData;
 
             Debug.Log($"[DialogueLoader] Loaded Chapter {chapter}, Episode {episode} ({legacyData.episodes?.Count ?? 0} blocks)");
@@ -68,7 +69,7 @@ namespace WishHouse.Dialogue
         /// </summary>
         private EpisodeData LoadSplitEpisode(TextAsset mainFile, string folder, int episode)
         {
-            EpisodeData merged = JsonUtility.FromJson<EpisodeData>(mainFile.text);
+            EpisodeData merged = JsonConvert.DeserializeObject<EpisodeData>(mainFile.text);
             if (merged.episodes == null)
                 merged.episodes = new Dictionary<string, EpisodeBlock>();
 
@@ -80,7 +81,7 @@ namespace WishHouse.Dialogue
                 if (branchFile == null)
                     continue;
 
-                EpisodeData branchData = JsonUtility.FromJson<EpisodeData>(branchFile.text);
+                EpisodeData branchData = JsonConvert.DeserializeObject<EpisodeData>(branchFile.text);
                 if (branchData?.episodes == null)
                     continue;
 
@@ -105,7 +106,7 @@ namespace WishHouse.Dialogue
         /// </summary>
         public EpisodeData LoadFromJson(string json)
         {
-            return JsonUtility.FromJson<EpisodeData>(json);
+            return JsonConvert.DeserializeObject<EpisodeData>(json);
         }
 
         public void ClearCache()
