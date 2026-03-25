@@ -44,6 +44,14 @@ namespace WishHouse.Core
 
         private void Start()
         {
+            // Auto-discover references if not assigned in Inspector
+            if (dialogueManager == null)
+                dialogueManager = FindObjectOfType<DialogueManager>();
+            if (dialogueLoader == null)
+                dialogueLoader = FindObjectOfType<DialogueLoader>();
+            if (journalUI == null)
+                journalUI = FindObjectOfType<JournalUI>();
+
             // Subscribe to dialogue events
             if (dialogueManager != null)
             {
@@ -52,8 +60,6 @@ namespace WishHouse.Core
             }
 
             // Subscribe to journal episode selection
-            if (journalUI == null)
-                journalUI = FindObjectOfType<JournalUI>();
             if (journalUI != null)
             {
                 journalUI.OnEpisodeSelected += HandleEpisodeSelected;

@@ -48,6 +48,11 @@ namespace WishHouse.Dialogue
             _dialogueUI = GetComponentInChildren<DialogueUI>();
             _choiceHandler = GetComponentInChildren<ChoiceHandler>();
             _loader = GetComponentInChildren<DialogueLoader>();
+
+            // Fallback: search the entire scene if not found on this GameObject
+            if (_dialogueUI == null) _dialogueUI = FindObjectOfType<DialogueUI>();
+            if (_choiceHandler == null) _choiceHandler = FindObjectOfType<ChoiceHandler>();
+            if (_loader == null) _loader = FindObjectOfType<DialogueLoader>();
         }
 
         /// <summary>
@@ -75,12 +80,24 @@ namespace WishHouse.Dialogue
         /// </summary>
         public void StartEpisode(int chapter, int episode, string blockKey = null)
         {
+            if (_loader == null)
+            {
+                Debug.LogError("[DialogueManager] DialogueLoader is null! Cannot load episode.");
+                return;
+            }
+
             EpisodeData data = _loader.LoadEpisode(chapter, episode);
-            if (data == null) return;
+            if (data == null)
+            {
+                Debug.LogError($"[DialogueManager] LoadEpisode returned null for Ch{chapter} Ep{episode}");
+                return;
+            }
 
             // Default block key is the episode number (e.g. episode 2 → "2")
             if (string.IsNullOrEmpty(blockKey))
                 blockKey = episode.ToString();
+
+            Debug.Log($"[DialogueManager] Starting Ch{chapter} Ep{episode}, blockKey='{blockKey}', available keys: [{string.Join(", ", data.episodes.Keys)}]");
 
             if (data.episodes.TryGetValue(blockKey, out EpisodeBlock block))
             {
