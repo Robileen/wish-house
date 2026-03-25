@@ -27,7 +27,7 @@ Chapter (Location)
 
 ## 2. Washi Tape Timeline
 - every chapter has 8 episodes.
-- each chapter has 4 shifts in 1 of the 8 episodes. for now you can randomize to mark an episode as a Shift based on the [shiftId](../../../Assets/Data/DialogueFiles/Chapter1/chapter1_episodelist_spec.json) . if ShiftId shows a number. then that means its a VN and cafe game.
+- each chapter has 4 shifts in 1 of the 8 episodes. for now you can randomize to mark an episode as a Shift based on the [shiftId](../../../Assets/Resources/DialogueFiles/Chapter1/chapter1_episodelist_spec.json) . if ShiftId shows a number. then that means its a VN and cafe game.
 
 ### Visual Elements
 

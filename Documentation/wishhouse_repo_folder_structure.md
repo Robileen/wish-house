@@ -106,7 +106,7 @@ CafeData/
 }
 ```
 
-### `Assets/Data/DialogueFiles/` — Episode Dialogue JSONs
+### `Assets/Resources/DialogueFiles/` — Episode Dialogue JSONs
 
 8 chapters, 8 episodes each (64 dialogue files).
 

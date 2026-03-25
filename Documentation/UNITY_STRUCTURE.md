@@ -159,7 +159,7 @@ Ingredient order does **not** matter. `checkRecipeCorrect()` verifies all requir
 ### Dialogue System
 - **DialogueManager** — Handle dialogue display and flow
 - **DialogueData** — ScriptableObjects for dialogue content
-- **DialogueLoader** — Load dialogue JSON files from `Assets/Data/DialogueFiles/`
+- **DialogueLoader** — Load dialogue JSON files from `Assets/Resources/DialogueFiles/`
 - **ChoiceHandler** — Process player choices and branching
 
 ### Journal System
