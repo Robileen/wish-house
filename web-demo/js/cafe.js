@@ -217,7 +217,10 @@ class CafeEngine {
      Shift Lifecycle
      ══════════════════════════════════ */
 
-  openShift(shiftId, chapter, episode) {
+  async openShift(shiftId, chapter, episode) {
+    // Ensure cafe data (ingredients, recipes, shifts) is loaded
+    await cafeDataReady;
+
     this.shiftData = SHIFTS[shiftId];
     if (!this.shiftData) {
       console.error(`Shift ${shiftId} not found`);
