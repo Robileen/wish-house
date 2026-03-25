@@ -55,8 +55,13 @@ namespace WishHouse.Dialogue
         /// </summary>
         public void StartBlock(EpisodeBlock block)
         {
+            // Stop any in-progress typewriter from a previous block
+            if (_typewriterCoroutine != null)
+                StopCoroutine(_typewriterCoroutine);
+
             _currentBlock = block;
             _currentLineIndex = 0;
+            _isTyping = false;
             _skipRequested = false;
 
             if (_dialogueUI != null)

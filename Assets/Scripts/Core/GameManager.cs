@@ -71,6 +71,10 @@ namespace WishHouse.Core
             currentChapter = chapter;
             currentEpisode = episode;
 
+            // Clear dialogue cache to ensure fresh data
+            if (dialogueLoader != null)
+                dialogueLoader.ClearCache();
+
             Debug.Log($"[GameManager] Starting Chapter {chapter}, Episode {episode}");
 
             if (dialogueManager != null)
