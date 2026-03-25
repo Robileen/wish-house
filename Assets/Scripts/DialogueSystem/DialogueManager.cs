@@ -68,10 +68,14 @@ namespace WishHouse.Dialogue
         /// <summary>
         /// Load and start a full episode from JSON.
         /// </summary>
-        public void StartEpisode(int chapter, int episode, string blockKey = "1")
+        public void StartEpisode(int chapter, int episode, string blockKey = null)
         {
             EpisodeData data = _loader.LoadEpisode(chapter, episode);
             if (data == null) return;
+
+            // Default block key is the episode number (e.g. episode 2 → "2")
+            if (string.IsNullOrEmpty(blockKey))
+                blockKey = episode.ToString();
 
             if (data.episodes.TryGetValue(blockKey, out EpisodeBlock block))
             {
@@ -191,13 +195,15 @@ namespace WishHouse.Dialogue
         /// </summary>
         public void OnChoiceSelected(NavigationTarget target)
         {
-            string blockKey = target.episode.ToString();
+            // Format block key with invariant culture so 2.1 is always "2.1", not "2,1"
+            string blockKey = target.episode.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            int episodeInt = (int)target.episode;
 
             // Try to find the block in current episode data
             // The choice might point to a sub-block like "1.1"
             if (_loader != null)
             {
-                EpisodeData data = _loader.LoadEpisode(target.chapter, (int)target.episode);
+                EpisodeData data = _loader.LoadEpisode(target.chapter, episodeInt);
                 if (data != null && data.episodes.TryGetValue(blockKey, out EpisodeBlock block))
                 {
                     StartBlock(block);

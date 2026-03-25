@@ -1,0 +1,74 @@
+{
+  "chapter": 1,
+  "episodes": {
+    "2.2": {
+      "episode": 2.2,
+      "title": "A Curious Arrival",
+      "dialogueLines": [
+        {
+          "id": 1,
+          "speaker": "Narrator",
+          "text": "Edward walks through the old district, drawn by a strange mix of curiosity and hope. The poster’s warm, whimsical design lingers in his mind."
+        },
+        {
+          "id": 2,
+          "speaker": "Edward (Barista)",
+          "text": "If this place really is hiring… it could help Mom. She’s been doing everything alone for too long."
+        },
+        {
+          "id": 3,
+          "speaker": "Narrator",
+          "text": "Despite his exhaustion, there’s a spark in his eyes—a rare moment of optimism."
+        },
+        {
+          "id": 4,
+          "speaker": "Stage",
+          "text": "[He opens the café door. Soft, almost magical bells echo gently.]"
+        },
+        {
+          "id": 5,
+          "speaker": "Kit (Wizard)",
+          "text": "Ah! I sense curiosity—bright, swirling, lively! What a delightful visitor."
+        },
+        {
+          "id": 6,
+          "speaker": "Edward (Barista)",
+          "text": "I saw your job posting. And… well, I want to see if this place could be a good opportunity."
+        },
+        {
+          "id": 7,
+          "speaker": "Kit (Wizard)",
+          "text": "Opportunity! A beautiful word. But your heart also hums with responsibility, does it not?"
+        },
+        {
+          "id": 8,
+          "speaker": "Edward (Barista)",
+          "text": "My family needs the support. Especially my mom. If I can help ease her load… I have to try."
+        },
+        {
+          "id": 9,
+          "speaker": "Narrator",
+          "text": "Kit’s eyes soften, filled with a warm kind of understanding."
+        },
+        {
+          "id": 10,
+          "speaker": "Kit (Wizard)",
+          "text": "A noble reason. You’ll find the Wish House welcomes noble hearts—and curious ones."
+        },
+        {
+          "id": 11,
+          "speaker": "Kit (Wizard)",
+          "text": "Come! The workshop awaits you."
+        }
+      ],
+      "choices": [],
+      "cafeOrders": [],
+      "sceneTransition": {
+        "next": {
+          "chapter": 1,
+          "episode": 3
+        }
+      }
+    }
+  }
+}

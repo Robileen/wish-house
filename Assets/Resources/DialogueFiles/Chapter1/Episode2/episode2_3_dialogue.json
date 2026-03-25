@@ -1,0 +1,74 @@
+{
+  "chapter": 1,
+  "episodes": {
+    "2.3": {
+      "episode": 2.3,
+      "title": "A Cautious Visit",
+      "dialogueLines": [
+        {
+          "id": 1,
+          "speaker": "Narrator",
+          "text": "Edward double-checks the map as he walks, analyzing the route and storefronts. He’s tired, but determination keeps him steady."
+        },
+        {
+          "id": 2,
+          "speaker": "Edward (Barista)",
+          "text": "Everything matches the coordinates. Good. If this pans out, Mom won’t have to stretch herself so thin."
+        },
+        {
+          "id": 3,
+          "speaker": "Narrator",
+          "text": "Even while cautious, his motivation stays the same: he wants to support his family—no matter what."
+        },
+        {
+          "id": 4,
+          "speaker": "Stage",
+          "text": "[He opens the café door. Musical chimes ring out—unnaturally harmonious.]"
+        },
+        {
+          "id": 5,
+          "speaker": "Kit (Wizard)",
+          "text": "A cautious aura enters! Sharp eyes, logical posture—intriguing!"
+        },
+        {
+          "id": 6,
+          "speaker": "Edward (Barista)",
+          "text": "I’m here about your job posting. I wanted to verify everything first."
+        },
+        {
+          "id": 7,
+          "speaker": "Kit (Wizard)",
+          "text": "Caution usually hides fear, but yours stems from responsibility. Admirable!"
+        },
+        {
+          "id": 8,
+          "speaker": "Edward (Barista)",
+          "text": "I’m the eldest in my family. I have to make sure I take the right steps—for my siblings, and for my mom."
+        },
+        {
+          "id": 9,
+          "speaker": "Narrator",
+          "text": "Kit nods slowly, expression bright with interest and respect."
+        },
+        {
+          "id": 10,
+          "speaker": "Kit (Wizard)",
+          "text": "A grounded soul with a strong sense of duty—excellent material for the Wish House!"
+        },
+        {
+          "id": 11,
+          "speaker": "Kit (Wizard)",
+          "text": "Come, Edward! Let’s begin your introduction to our delightful chaos."
+        }
+      ],
+      "choices": [],
+      "cafeOrders": [],
+      "sceneTransition": {
+        "next": {
+          "chapter": 1,
+          "episode": 3
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "chapter": 1,
+  "episodes": {
+    "2": {
+      "episode": 2,
+      "title": "Help Wanted, No Experience Required?",
+      "dialogueLines": [
+        {
+          "id": 1,
+          "speaker": "Narrator",
+          "text": "School finally ends. Edward walks down the familiar cracked sidewalk, backpack heavier than it looks — weighed down by textbooks, deadlines, and responsibility."
+        },
+        {
+          "id": 2,
+          "speaker": "Narrator",
+          "text": "Being the eldest in his family means never having the luxury of giving up. His younger siblings look up to him. His mother depends on him."
+        },
+        {
+          "id": 3,
+          "speaker": "Edward (Barista)",
+          "text": "Mom’s probably exhausted again today… I need to do more. I have to step up."
+        },
+        {
+          "id": 4,
+          "speaker": "Narrator",
+          "text": "His part-time job cut his hours. Tuition fees circle him like sharks. Rent nips at his heels. But even under all that pressure, a small spark of hope pushes him forward."
+        },
+        {
+          "id": 5,
+          "speaker": "Edward (Barista)",
+          "text": "I’ll make this work. Somehow. I have to."
+        },
+        {
+          "id": 6,
+          "speaker": "Stage",
+          "text": "[A paper flutters loose on a lamppost ahead. Edward pauses.]"
+        },
+        {
+          "id": 7,
+          "speaker": "Edward (Barista)",
+          "text": "…‘Help Wanted. No Experience Required.’"
+        },
+        {
+          "id": 8,
+          "speaker": "Narrator",
+          "text": "The poster is old-fashioned — a hand-drawn logo of a teacup with tiny stars spiraling upward."
+        },
+        {
+          "id": 9,
+          "speaker": "Edward (Barista)",
+          "text": "The Wish House…? Never heard of it."
+        },
+        {
+          "id": 10,
+          "speaker": "Narrator",
+          "text": "He takes a slow breath. His legs ache from the long day, but his heart refuses to let him walk past this chance."
+        },
+        {
+          "id": 11,
+          "speaker": "Edward (Barista)",
+          "text": "If there’s even a small chance I can help Mom… I should try."
+        }
+      ],
+      "choices": [
+        {
+          "id": "EP2-CHOICE-1",
+          "prompt": "What pushes Edward to take the poster?",
+          "options": [
+            {
+              "text": "“I need the money. My family needs me.”",
+              "next": {
+                "chapter": 1,
+                "episode": 2.1
+              }
+            },
+            {
+              "text": "“A new opportunity… maybe this is a sign.”",
+              "next": {
+                "chapter": 1,
+                "episode": 2.2
+              }
+            },
+            {
+              "text": "“Better check if it’s legit first.”",
+              "next": {
+                "chapter": 1,
+                "episode": 2.3
+              }
+            }
+          ]
+        }
+      ],
+      "cafeOrders": [],
+      "sceneTransition": {
+        "next": {
+          "chapter": 1,
+          "episode": 3
+        },
+        "effect": "fade",
+        "music": "evening_walk",
+        "delayMs": 1200
+      }
+    }
+  }
+}

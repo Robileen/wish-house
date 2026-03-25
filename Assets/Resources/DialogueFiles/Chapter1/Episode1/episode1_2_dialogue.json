@@ -1,0 +1,53 @@
+{
+  "chapter": 1,
+  "episodes": {
+    "1.2": {
+      "episode": 1.2,
+      "dialogueLines": [
+        {
+          "id": 1,
+          "speaker": "Kit (Wizard)",
+          "text": "You don’t have to talk. Just rest. The world can wait."
+        },
+        {
+          "id": 2,
+          "speaker": "Stage",
+          "text": "[Claire closes her eyes, letting the warmth of the cup seep into her tired hands.]"
+        },
+        {
+          "id": 3,
+          "speaker": "Narrator",
+          "text": "The quiet hum of the café fills the space—soft, gentle, and healing."
+        },
+        {
+          "id": 4,
+          "speaker": "Claire",
+          "text": "…Thank you. People don’t usually say things like that to me."
+        },
+        {
+          "id": 5,
+          "speaker": "Kit (Wizard)",
+          "text": "Then perhaps you're overdue for a little kindness."
+        },
+        {
+          "id": 6,
+          "speaker": "Claire",
+          "text": "It’s strange… I feel safe here. Like no one can find me."
+        },
+        {
+          "id": 7,
+          "speaker": "Kit (Wizard)",
+          "text": "That’s the magic of a place built to grant rest to weary souls."
+        }
+      ],
+      "choices": [],
+      "cafeOrders": [],
+      "sceneTransition": {
+        "next": {
+          "chapter": 1,
+          "episode": 2
+        }
+      }
+    }
+  }
+}
