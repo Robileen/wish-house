@@ -14,7 +14,7 @@
  *   loadThemeRecipes(themePath) – load additional themed recipes at runtime.
  */
 
-const DATA_ROOT = "../Assets/Data/CafeData";
+const DATA_ROOT = "data/CafeData";
 
 // Globals consumed by the rest of the app
 const INGREDIENTS = {};

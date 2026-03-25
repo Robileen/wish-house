@@ -1,0 +1,7 @@
+[
+  { "id": "house_blend", "name": "House Blend", "category": "drink-coffee", "icon": "\u2615", "ingredients": ["coffee", "hot", "sugar"], "illustration": "A simple, warm cup of coffee with gentle steam rising." },
+  { "id": "honey_latte", "name": "Honey Latte", "category": "drink-coffee", "icon": "\uD83C\uDF6F", "ingredients": ["coffee", "milk", "honey", "hot"], "illustration": "A creamy latte drizzled with golden honey swirls." },
+  { "id": "vanilla_latte", "name": "Vanilla Latte", "category": "drink-coffee", "icon": "\uD83C\uDF3C", "ingredients": ["coffee", "milk", "vanilla", "hot"], "illustration": "A smooth latte kissed with vanilla, topped with delicate foam art." },
+  { "id": "caramel_mocha", "name": "Caramel Mocha", "category": "drink-coffee", "icon": "\uD83E\uDD64", "ingredients": ["coffee", "milk", "caramel", "chocolate", "hot"], "illustration": "A rich mocha swirled with ribbons of caramel and melted chocolate." },
+  { "id": "cinnamon_coffee", "name": "Cinnamon Coffee", "category": "drink-coffee", "icon": "\uD83C\uDF30", "ingredients": ["coffee", "cinnamon", "hot"], "illustration": "A bold coffee dusted with warm cinnamon, smelling like autumn." }
+]
