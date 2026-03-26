@@ -1289,7 +1289,28 @@
 .card-slot.filled {
     border-style: solid;
     border-color: var(--blush);
-    background: linear-gradient(180deg, rgba(244, 184, 193, 0.15), rgba(253, 220, 186, 0.2));
+    background: linear-gradient(180deg, #FFF8F0, #FFFAF5);
+    border-width: 1.5px;
+    color: inherit;
+}
+
+.card-slot.filled .slot-ingredient {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.card-slot.filled .slot-icon {
+    font-size: 1.5rem;
+}
+
+.card-slot.filled .slot-name {
+    font-size: 0.55rem;
+    color: var(--text-dark);
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.1;
 }
 
 .card-slot.correct {
@@ -1328,7 +1349,7 @@
 
 .slot-ingredient .slot-name {
     font-size: 0.55rem;
-    color: var(--text-light);
+    color: var(--text-dark);
     font-weight: 600;
 }
 
