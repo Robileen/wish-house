@@ -13,7 +13,10 @@
         {
           "id": 2,
           "speaker": "Edward (Barista)",
-          "text": "Everything matches the coordinates. Good. If this pans out, Mom won’t have to stretch herself so thin."
+          "text": "Everything matches the coordinates. Good. If this pans out, Mom won’t have to stretch herself so thin.",
+          "expression": "determined",
+          "expressionEmoji": "😤",
+          "expressionImage": "sprites/edward/determined.png"
         },
         {
           "id": 3,
@@ -28,22 +31,34 @@
         {
           "id": 5,
           "speaker": "Kit (Wizard)",
-          "text": "A cautious aura enters! Sharp eyes, logical posture—intriguing!"
+          "text": "A cautious aura enters! Sharp eyes, logical posture—intriguing!",
+          "expression": "curious",
+          "expressionEmoji": "🤔",
+          "expressionImage": "sprites/kit/curious.png"
         },
         {
           "id": 6,
           "speaker": "Edward (Barista)",
-          "text": "I’m here about your job posting. I wanted to verify everything first."
+          "text": "I’m here about your job posting. I wanted to verify everything first.",
+          "expression": "hopeful",
+          "expressionEmoji": "🙂",
+          "expressionImage": "sprites/edward/hopeful.png"
         },
         {
           "id": 7,
           "speaker": "Kit (Wizard)",
-          "text": "Caution usually hides fear, but yours stems from responsibility. Admirable!"
+          "text": "Caution usually hides fear, but yours stems from responsibility. Admirable!",
+          "expression": "proud",
+          "expressionEmoji": "😤",
+          "expressionImage": "sprites/kit/proud.png"
         },
         {
           "id": 8,
           "speaker": "Edward (Barista)",
-          "text": "I’m the eldest in my family. I have to make sure I take the right steps—for my siblings, and for my mom."
+          "text": "I’m the eldest in my family. I have to make sure I take the right steps—for my siblings, and for my mom.",
+          "expression": "determined",
+          "expressionEmoji": "😤",
+          "expressionImage": "sprites/edward/determined.png"
         },
         {
           "id": 9,
@@ -53,12 +68,18 @@
         {
           "id": 10,
           "speaker": "Kit (Wizard)",
-          "text": "A grounded soul with a strong sense of duty—excellent material for the Wish House!"
+          "text": "A grounded soul with a strong sense of duty—excellent material for the Wish House!",
+          "expression": "curious",
+          "expressionEmoji": "🤔",
+          "expressionImage": "sprites/kit/curious.png"
         },
         {
           "id": 11,
           "speaker": "Kit (Wizard)",
-          "text": "Come, Edward! Let’s begin your introduction to our delightful chaos."
+          "text": "Come, Edward! Let’s begin your introduction to our delightful chaos.",
+          "expression": "whimsical",
+          "expressionEmoji": "🌀",
+          "expressionImage": "sprites/kit/whimsical.png"
         }
       ],
       "choices": [],

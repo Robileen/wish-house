@@ -1,0 +1,57 @@
+{
+  "_comment": "Master expression catalog. Add new characters/expressions here — game.js loads this at runtime.",
+  "characters": {
+    "kit": {
+      "name": "Kit (Wizard)",
+      "expressions": {
+        "neutral":            { "emoji": "😐", "image": "sprites/kit/neutral.png" },
+        "professional_smile": { "emoji": "😊", "image": "sprites/kit/professional_smile.png" },
+        "mischievous":        { "emoji": "😏", "image": "sprites/kit/mischievous.png" },
+        "concerned":          { "emoji": "😟", "image": "sprites/kit/concerned.png" },
+        "crying":             { "emoji": "😢", "image": "sprites/kit/crying.png" },
+        "bawling":            { "emoji": "😭", "image": "sprites/kit/bawling.png" },
+        "surprised":          { "emoji": "😲", "image": "sprites/kit/surprised.png" },
+        "serious":            { "emoji": "😐", "image": "sprites/kit/serious.png" },
+        "grandiose":          { "emoji": "✨", "image": "sprites/kit/grandiose.png" },
+        "whimsical":          { "emoji": "🌀", "image": "sprites/kit/whimsical.png" },
+        "warm":               { "emoji": "🤗", "image": "sprites/kit/warm.png" },
+        "gentle":             { "emoji": "😌", "image": "sprites/kit/gentle.png" },
+        "curious":            { "emoji": "🤔", "image": "sprites/kit/curious.png" },
+        "proud":              { "emoji": "😤", "image": "sprites/kit/proud.png" }
+      }
+    },
+    "edward": {
+      "name": "Edward (Barista)",
+      "expressions": {
+        "neutral":            { "emoji": "😐", "image": "sprites/edward/neutral.png" },
+        "professional_smile": { "emoji": "😊", "image": "sprites/edward/professional_smile.png" },
+        "concerned":          { "emoji": "😟", "image": "sprites/edward/concerned.png" },
+        "angry":              { "emoji": "😠", "image": "sprites/edward/angry.png" },
+        "facepalm":           { "emoji": "🤦", "image": "sprites/edward/facepalm.png" },
+        "surprised":          { "emoji": "😲", "image": "sprites/edward/surprised.png" },
+        "serious":            { "emoji": "😐", "image": "sprites/edward/serious.png" },
+        "thoughtful":         { "emoji": "🤔", "image": "sprites/edward/thoughtful.png" },
+        "calm":               { "emoji": "😌", "image": "sprites/edward/calm.png" },
+        "encouraging":        { "emoji": "💪", "image": "sprites/edward/encouraging.png" },
+        "determined":         { "emoji": "😤", "image": "sprites/edward/determined.png" },
+        "tired":              { "emoji": "😩", "image": "sprites/edward/tired.png" },
+        "hopeful":            { "emoji": "🙂", "image": "sprites/edward/hopeful.png" }
+      }
+    },
+    "claire": {
+      "name": "Claire",
+      "expressions": {
+        "neutral":   { "emoji": "😐", "image": "sprites/claire/neutral.png" },
+        "sad":       { "emoji": "😢", "image": "sprites/claire/sad.png" },
+        "tired":     { "emoji": "😩", "image": "sprites/claire/tired.png" },
+        "hopeful":   { "emoji": "🙂", "image": "sprites/claire/hopeful.png" },
+        "shy":       { "emoji": "😳", "image": "sprites/claire/shy.png" },
+        "grateful":  { "emoji": "🥹", "image": "sprites/claire/grateful.png" },
+        "curious":   { "emoji": "🤔", "image": "sprites/claire/curious.png" },
+        "warm":      { "emoji": "😊", "image": "sprites/claire/warm.png" },
+        "surprised": { "emoji": "😲", "image": "sprites/claire/surprised.png" },
+        "relieved":  { "emoji": "😌", "image": "sprites/claire/relieved.png" }
+      }
+    }
+  }
+}
