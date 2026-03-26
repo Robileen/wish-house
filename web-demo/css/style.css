@@ -143,6 +143,33 @@ body {
     box-shadow: 0 6px 20px rgba(196, 139, 159, 0.55);
 }
 
+/* ---- Title Screen: Skip to Choice (gold outline) ---- */
+#skip-to-choice-btn-title {
+    margin-top: 12px;
+    padding: 10px 36px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--gold);
+    background: transparent;
+    border: 2px solid var(--gold);
+    border-radius: 26px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+#skip-to-choice-btn-title:hover {
+    color: var(--warm-white);
+    background: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(212, 168, 67, 0.4);
+}
+
+/* ---- Title Screen: Back to Journal spacing ---- */
+#back-to-journal-title-btn {
+    margin-top: 12px;
+}
+
 /* ---- Scene Area ---- */
 #scene {
     position: absolute;
@@ -412,6 +439,38 @@ body {
     transform: scale(0.97);
 }
 
+/* ---- Skip to Choice Button (in-VN, below Skip Story) ---- */
+#skip-to-choice-btn {
+    position: absolute;
+    top: 44px;
+    right: 16px;
+    z-index: 60;
+    padding: 6px 18px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--dusty-rose);
+    background: transparent;
+    border: 1px solid rgba(196, 139, 159, 0.3);
+    border-radius: 16px;
+    cursor: pointer;
+    opacity: 0.45;
+    transition: opacity 0.3s, color 0.3s, background 0.3s, border-color 0.3s, font-weight 0.3s;
+}
+
+#skip-to-choice-btn:hover,
+#skip-to-choice-btn:focus {
+    opacity: 1;
+    color: var(--cocoa);
+    font-weight: 700;
+    background: rgba(255, 248, 240, 0.85);
+    border-color: var(--dusty-rose);
+}
+
+#skip-to-choice-btn:active {
+    transform: scale(0.97);
+}
+
 /* ---- Fade Overlay ---- */
 #fade-overlay {
     position: absolute;
@@ -460,22 +519,24 @@ body {
     margin-bottom: 1.5rem;
 }
 
-#restart-btn {
-    padding: 12px 36px;
+#next-episode-btn {
+    padding: 14px 40px;
     font-family: 'Quicksand', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.05rem;
+    font-weight: 700;
     color: var(--warm-white);
     background: linear-gradient(135deg, var(--dusty-rose), var(--blush));
     border: none;
-    border-radius: 24px;
+    border-radius: 28px;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(196,139,159,0.4);
-    transition: transform 0.2s;
+    box-shadow: 0 4px 16px rgba(196,139,159,0.45);
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 10px;
 }
 
-#restart-btn:hover {
+#next-episode-btn:hover {
     transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(196,139,159,0.6);
 }
 
 /* ---- Responsive ---- */

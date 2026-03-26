@@ -37,8 +37,11 @@ class WishHouseEngine {
     this.charRight       = document.getElementById("character-right");
     this.fadeOverlay     = document.getElementById("fade-overlay");
     this.episodeComplete = document.getElementById("episode-complete");
-    this.restartBtn      = document.getElementById("restart-btn");
+    this.nextEpisodeBtn  = document.getElementById("next-episode-btn");
     this.skipStoryBtn    = document.getElementById("skip-story-btn");
+    this.skipToChoiceBtn = document.getElementById("skip-to-choice-btn");
+    this.skipToChoiceBtnTitle = document.getElementById("skip-to-choice-btn-title");
+    this.backToJournalTitleBtn = document.getElementById("back-to-journal-title-btn");
 
     // State
     this.episodeData     = null;   // Currently loaded episode data
@@ -57,8 +60,11 @@ class WishHouseEngine {
     // Bind events
     this.startBtn.addEventListener("click", () => this.startGame());
     this.dialogueBox.addEventListener("click", () => this.advance());
-    this.restartBtn.addEventListener("click", () => this.restart());
+    this.nextEpisodeBtn.addEventListener("click", () => this.goToNextEpisode());
     this.skipStoryBtn.addEventListener("click", () => this.skipStory());
+    this.skipToChoiceBtn.addEventListener("click", () => this.skipToChoice());
+    this.skipToChoiceBtnTitle.addEventListener("click", () => this.skipToChoice());
+    this.backToJournalTitleBtn.addEventListener("click", () => this.backToJournalFromTitle());
     document.addEventListener("keydown", (e) => {
       if (e.key === " " || e.key === "Enter") {
         e.preventDefault();
@@ -107,20 +113,24 @@ class WishHouseEngine {
     } catch (e) { /* fall through */ }
 
     if (mainData) {
-      // Merge branch files
+      // Merge branch files (fetch all in parallel)
+      const branchPromises = [];
       for (let b = 1; b <= 9; b++) {
-        try {
-          const branchResp = await fetch(`${folder}/episode${episode}_${b}_dialogue.json`);
-          if (!branchResp.ok) continue;
-          const branchData = await branchResp.json();
-          if (branchData && branchData.episodes) {
-            for (const [key, block] of Object.entries(branchData.episodes)) {
-              if (!mainData.episodes[key]) {
-                mainData.episodes[key] = block;
-              }
+        branchPromises.push(
+          fetch(`${folder}/episode${episode}_${b}_dialogue.json`)
+            .then(r => r.ok ? r.json() : null)
+            .catch(() => null)
+        );
+      }
+      const branchResults = await Promise.all(branchPromises);
+      for (const branchData of branchResults) {
+        if (branchData && branchData.episodes) {
+          for (const [key, block] of Object.entries(branchData.episodes)) {
+            if (!mainData.episodes[key]) {
+              mainData.episodes[key] = block;
             }
           }
-        } catch (e) { continue; }
+        }
       }
 
       console.log(`[Engine] Loaded split Ch${chapter} Ep${episode}: keys=[${Object.keys(mainData.episodes).join(", ")}]`);
@@ -170,6 +180,14 @@ class WishHouseEngine {
       }
     }
 
+    // Show "Skip to Choice" buttons if episode was already completed and has choices
+    const mainBlock = this.episodeData.episodes[String(episode)];
+    const hasChoices = mainBlock?.choices?.length > 0;
+    const wasCompleted = window.journal?.getEpisodeState(chapter, episode) === "completed";
+    const showSkip = hasChoices && wasCompleted;
+    this.skipToChoiceBtnTitle.style.display = showSkip ? "inline-block" : "none";
+    this.skipToChoiceBtn.style.display = "none"; // in-VN button shown on startGame()
+
     return true;
   }
 
@@ -178,6 +196,13 @@ class WishHouseEngine {
   startGame() {
     this.titleScreen.classList.add("hidden");
     this.skipStoryBtn.style.display = "block";
+
+    // Show in-VN "Skip to Choice" if eligible (episode completed + has choices)
+    const mainBlock = this.episodeData?.episodes[String(this.currentEpisode)];
+    const hasChoices = mainBlock?.choices?.length > 0;
+    const wasCompleted = window.journal?.getEpisodeState(this.currentChapter, this.currentEpisode) === "completed";
+    this.skipToChoiceBtn.style.display = (hasChoices && wasCompleted) ? "block" : "none";
+
     // Start the main block (block key = episode number)
     this.startBlock(String(this.currentEpisode));
   }
@@ -444,10 +469,41 @@ class WishHouseEngine {
       choiceSummary.textContent = `Your choice: ${lastChoice.text}`;
     }
 
+    // Show/hide "Next Episode" based on whether a next episode exists
+    const nextEp = this.findNextEpisode();
+    if (nextEp) {
+      this.nextEpisodeBtn.style.display = "inline-block";
+      this.nextEpisodeBtn.textContent = nextEp.shiftId != null ? "Next: Cafe Shift" : "Next Episode";
+    } else {
+      this.nextEpisodeBtn.style.display = "none";
+    }
+
     this.episodeComplete.classList.add("visible");
   }
 
-  restart() {
+  /**
+   * Find the next episode after the current one.
+   * Returns the episode spec object from CHAPTERS, or null if at end of chapter.
+   */
+  findNextEpisode() {
+    if (!window.journal) return null;
+    const chData = typeof CHAPTERS !== "undefined" ? CHAPTERS[this.currentChapter] : null;
+    if (!chData) return null;
+    return chData.episodes.find(e => e.episode === this.currentEpisode + 1) || null;
+  }
+
+  /**
+   * Navigate to the next episode. Marks current episode complete,
+   * then opens the next one through journal.
+   */
+  goToNextEpisode() {
+    const nextEp = this.findNextEpisode();
+    if (!nextEp || !window.journal) return;
+
+    // Mark current episode as completed
+    window.journal.completeEpisode(this.currentChapter, this.currentEpisode);
+
+    // Reset VN state
     this.episodeComplete.classList.remove("visible");
     this.choiceHistory = [];
     this.characterExpressions = {};
@@ -457,7 +513,26 @@ class WishHouseEngine {
     this.dialogueBox.style.opacity = "1";
     this.dialogueBox.classList.remove("narrator-mode");
     this.skipStoryBtn.style.display = "none";
-    this.titleScreen.classList.remove("hidden");
+    this.skipToChoiceBtn.style.display = "none";
+    this.skipToChoiceBtnTitle.style.display = "none";
+
+    // Open the next episode through journal (handles VN vs cafe shift)
+    window.journal._activeChapter = this.currentChapter;
+    window.journal._activeEpisode = nextEp.episode;
+    window.journal.openEpisode(this.currentChapter, nextEp);
+  }
+
+  /**
+   * Return to journal from the title screen without marking episode complete.
+   */
+  backToJournalFromTitle() {
+    if (window.journal) {
+      const vnPlayer = document.getElementById("vn-player");
+      const journalScreen = document.getElementById("journal-screen");
+      if (vnPlayer) vnPlayer.classList.add("hidden-screen");
+      if (journalScreen) journalScreen.classList.remove("hidden-screen");
+      window.journal.showChapter(window.journal.currentChapter);
+    }
   }
 
   skipStory() {
@@ -466,9 +541,58 @@ class WishHouseEngine {
     this.choicePanel.classList.remove("visible");
     this.handleSceneTransition();
   }
+
+  /**
+   * Skip to Choice - jumps past all dialogue in the main block and presents
+   * the choice prompt directly. Only available on replay (episode already completed).
+   */
+  skipToChoice() {
+    this.titleScreen.classList.add("hidden");
+    this.skipStoryBtn.style.display = "block";
+    this.skipToChoiceBtn.style.display = "none";
+    this.skipToChoiceBtnTitle.style.display = "none";
+
+    // Load the main block
+    const blockKey = String(this.currentEpisode);
+    const block = this.episodeData?.episodes[blockKey];
+    if (!block) return;
+
+    this.currentBlock = block;
+    this.dialogueBox.style.opacity = "1";
+
+    // Set up character expressions from the last dialogue lines before the choice
+    // so the characters show their final expressions
+    if (block.dialogueLines) {
+      for (const line of block.dialogueLines) {
+        if (line.expression) {
+          const charId = CHARACTERS[line.speaker]?.id;
+          const catalogEntry = charId && EXPRESSIONS[charId]?.[line.expression];
+          this.characterExpressions[line.speaker] = {
+            expression:      line.expression,
+            expressionEmoji: line.expressionEmoji || catalogEntry?.emoji || null,
+            expressionImage: line.expressionImage || catalogEntry?.image || null,
+          };
+        }
+      }
+    }
+
+    // Show characters in their final state
+    this.updateCharacters("Narrator");
+
+    // Jump straight to the choice
+    if (block.choices && block.choices.length > 0) {
+      this.currentLineIdx = block.dialogueLines.length;
+      this.presentChoices(block.choices[0]);
+    } else {
+      // Fallback: no choices found, just start normally
+      this.startBlock(blockKey);
+    }
+  }
 }
 
 // ── Initialize ──
 document.addEventListener("DOMContentLoaded", () => {
   window.game = new WishHouseEngine();
+  // Preload expression catalog so it's ready before any episode opens
+  window.game.loadExpressions();
 });
