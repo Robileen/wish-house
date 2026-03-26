@@ -244,7 +244,7 @@ class JournalBook {
     const completeTitle = document.getElementById("complete-title");
     const nextHint = document.getElementById("next-episode-hint");
 
-    if (subtitle) subtitle.textContent = `Chapter ${chapter}`;
+    if (subtitle) subtitle.textContent = `Chapter ${chapter} Episode ${episode.episode}`;
     if (title) title.textContent = `\u201C${episode.title}\u201D`;
     if (completeHeading) completeHeading.textContent = `Episode ${episode.episode} Complete`;
     if (completeTitle) completeTitle.textContent = `\u201C${episode.title}\u201D`;
