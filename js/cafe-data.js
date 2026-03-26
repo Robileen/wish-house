@@ -4,6 +4,10 @@
  * Loads recipes, ingredients, shifts, and theme data from the canonical
  * JSON files in Assets/Data/CafeData/.
  *
+ * Recipes are loaded dynamically from subcategory files via manifest.json.
+ * To add new recipes: edit the subcategory file (e.g. desserts/pies-tarts.json).
+ * To add a new subcategory: create the file and add it to manifest.json.
+ *
  * Exposes the same globals used by cafe.js, recipe-book.js, cafe-room.js:
  *   INGREDIENTS  – keyed by ingredient id
  *   RECIPES      – keyed by recipe id
@@ -38,16 +42,45 @@ function _indexRecipes(arr) {
 }
 
 /**
+ * Load all subcategory recipe files listed in manifest.json in parallel.
+ */
+async function _loadRecipesFromManifest() {
+  const manifest = await _fetchJSON(`${DATA_ROOT}/recipes/manifest.json`);
+
+  // Collect all subcategory file paths from every category
+  const allFiles = [];
+  for (const [category, files] of Object.entries(manifest)) {
+    if (category.startsWith("_")) continue; // skip _comment
+    for (const file of files) {
+      allFiles.push(`${DATA_ROOT}/recipes/${file}`);
+    }
+  }
+
+  // Fetch all subcategory files in parallel
+  const results = await Promise.all(
+    allFiles.map(path =>
+      _fetchJSON(path).catch(err => {
+        console.warn(`[cafe-data] Could not load ${path}:`, err);
+        return [];
+      })
+    )
+  );
+
+  // Index all recipes
+  for (const arr of results) {
+    _indexRecipes(arr);
+  }
+}
+
+/**
  * Load all core cafe data from JSON files.
  */
 async function _loadCafeData() {
-  const [ingredients, drinks, food, desserts, specials, shifts] = await Promise.all([
+  // Load ingredients, shifts, and all recipes in parallel
+  const [ingredients, shifts] = await Promise.all([
     _fetchJSON(`${DATA_ROOT}/ingredients.json`),
-    _fetchJSON(`${DATA_ROOT}/recipes/drinks.json`),
-    _fetchJSON(`${DATA_ROOT}/recipes/food.json`),
-    _fetchJSON(`${DATA_ROOT}/recipes/desserts.json`),
-    _fetchJSON(`${DATA_ROOT}/recipes/specials.json`),
     _fetchJSON(`${DATA_ROOT}/shifts.json`),
+    _loadRecipesFromManifest(),
   ]);
 
   // Populate INGREDIENTS (skip the _doc metadata key)
@@ -55,12 +88,6 @@ async function _loadCafeData() {
     if (key.startsWith("_")) return;
     INGREDIENTS[key] = val;
   });
-
-  // Populate RECIPES (id-keyed dict)
-  _indexRecipes(drinks);
-  _indexRecipes(food);
-  _indexRecipes(desserts);
-  _indexRecipes(specials);
 
   // Populate SHIFTS (number-keyed dict)
   shifts.forEach(s => { SHIFTS[s.id] = s; });
