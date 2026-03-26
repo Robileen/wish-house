@@ -1,0 +1,27 @@
+{
+  "_comment": "Recipe manifest. Add new subcategory files here -- cafe-data.js loads them all at runtime.",
+  "drinks": [
+    "drinks/coffee.json",
+    "drinks/tea.json",
+    "drinks/matcha.json",
+    "drinks/chocolate.json",
+    "drinks/fruity.json"
+  ],
+  "food": [
+    "food/bread.json",
+    "food/rice.json",
+    "food/soups.json",
+    "food/porridge.json"
+  ],
+  "desserts": [
+    "desserts/cakes.json",
+    "desserts/crepes.json",
+    "desserts/muffins-cookies.json",
+    "desserts/pies-tarts.json",
+    "desserts/puddings.json"
+  ],
+  "specials": [
+    "specials/magical-drinks.json",
+    "specials/magical-food.json"
+  ]
+}

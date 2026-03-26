@@ -12,10 +12,11 @@ The C# scripts in `Assets/Scripts/` are reference designs, NOT runtime code.
 - `web-demo/js/game.js` -- VN engine (WishHouseEngine class)
 - `web-demo/js/journal.js` -- Main menu / episode selector (JournalBook class)
 - `web-demo/js/cafe.js` -- Cafe shift game (CafeEngine class)
-- `web-demo/js/cafe-data.js` -- JSON data loader for cafe game
+- `web-demo/js/cafe-data.js` -- Data loader (loads recipes from manifest.json)
 - `web-demo/data/` -- Episode dialogue JSON (fetched at runtime)
 - `web-demo/data/expressions.json` -- Expression catalog (loaded at runtime)
-- `Assets/Data/CafeData/` -- Cafe ingredients, recipes, shifts JSON
+- `web-demo/data/CafeData/recipes/manifest.json` -- Recipe file registry
+- `Assets/Data/CafeData/` -- Cafe ingredients, recipes, shifts JSON (source of truth)
 - `Assets/Data/expressions.json` -- Expression catalog (Unity sync copy)
 
 ## Full project context: `Documentation/PROJECT_CONTEXT.md`
@@ -62,3 +63,18 @@ sprite image (if file exists) > emoji > default character icon.
 1. Create JSON in `Assets/Resources/DialogueFiles/Chapter{N}/Episode{N}/`
 2. Copy to `web-demo/data/Chapter{N}/Episode{N}/`
 3. Update `CHAPTERS` in `journal.js`
+
+## Adding New Recipes
+
+Recipes are **data-driven** via `manifest.json`. No flat combined files to maintain.
+
+### To add recipes to an existing subcategory:
+1. Edit the subcategory file (e.g., `Assets/Data/CafeData/recipes/desserts/pies-tarts.json`)
+2. Copy the file to `web-demo/data/CafeData/recipes/desserts/pies-tarts.json`
+3. That's it -- `cafe-data.js` loads it automatically via manifest
+
+### To add a new subcategory:
+1. Create the JSON file in `Assets/Data/CafeData/recipes/{category}/{name}.json`
+2. Copy to `web-demo/data/CafeData/recipes/{category}/{name}.json`
+3. Add the path to `recipes/manifest.json` under the appropriate category
+4. Copy the updated manifest to `web-demo/data/CafeData/recipes/manifest.json`

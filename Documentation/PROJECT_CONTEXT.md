@@ -228,9 +228,11 @@ Empty --> Ordering --> Crafting --> Served (0.8s) --> Eating (5s) --> Messy --> 
 4. Update `CHAPTERS` object in `journal.js`
 
 ### New Recipes
-1. Add to appropriate file in `Assets/Data/CafeData/recipes/`
-2. Reference existing ingredients from `ingredients.json`
-3. Automatically available in recipe book and craft deck
+1. Add to the subcategory file in `Assets/Data/CafeData/recipes/{category}/` (e.g., `desserts/pies-tarts.json`)
+2. Copy the file to `web-demo/data/CafeData/recipes/{category}/`
+3. Reference existing ingredients from `ingredients.json`
+4. Automatically available in recipe book and craft deck
+5. For a new subcategory file: also add its path to `recipes/manifest.json`
 
 ### New Shifts
 1. Add shift entry in `Assets/Data/CafeData/shifts.json`
