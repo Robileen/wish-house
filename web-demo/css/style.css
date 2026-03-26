@@ -213,6 +213,49 @@ body {
     margin-bottom: 8px;
 }
 
+/* Expression emoji (replaces default icon when expression is active) */
+.character-placeholder .char-expression-emoji {
+    font-size: 2.5rem;
+    margin-bottom: 4px;
+    transition: transform 0.2s ease;
+}
+
+.character-placeholder:not(.dimmed) .char-expression-emoji {
+    transform: scale(1.1);
+}
+
+/* Sprite image (replaces emoji when sprite is available) */
+.character-placeholder .char-sprite {
+    width: 100px;
+    height: 160px;
+    object-fit: contain;
+    margin-bottom: 4px;
+    transition: opacity 0.3s, transform 0.2s;
+    image-rendering: auto;
+}
+
+.character-placeholder.dimmed .char-sprite {
+    opacity: 0.5;
+    filter: grayscale(30%);
+}
+
+/* Character name label */
+.character-placeholder .char-name-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+/* Expression label (shown below character name) */
+.character-placeholder .char-expression-label {
+    font-size: 0.55rem;
+    font-weight: 500;
+    opacity: 0.7;
+    font-style: italic;
+    text-transform: capitalize;
+    margin-top: 2px;
+}
+
 .char-kit {
     background: linear-gradient(180deg, #2C1810 20%, var(--gold) 100%);
 }

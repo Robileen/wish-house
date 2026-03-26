@@ -18,7 +18,10 @@
         {
           "id": 3,
           "speaker": "Edward (Barista)",
-          "text": "Mom’s probably exhausted again today… I need to do more. I have to step up."
+          "text": "Mom’s probably exhausted again today… I need to do more. I have to step up.",
+          "expression": "determined",
+          "expressionEmoji": "😤",
+          "expressionImage": "sprites/edward/determined.png"
         },
         {
           "id": 4,
@@ -28,7 +31,10 @@
         {
           "id": 5,
           "speaker": "Edward (Barista)",
-          "text": "I’ll make this work. Somehow. I have to."
+          "text": "I’ll make this work. Somehow. I have to.",
+          "expression": "determined",
+          "expressionEmoji": "😤",
+          "expressionImage": "sprites/edward/determined.png"
         },
         {
           "id": 6,
@@ -38,7 +44,10 @@
         {
           "id": 7,
           "speaker": "Edward (Barista)",
-          "text": "…‘Help Wanted. No Experience Required.’"
+          "text": "…‘Help Wanted. No Experience Required.’",
+          "expression": "thoughtful",
+          "expressionEmoji": "🤔",
+          "expressionImage": "sprites/edward/thoughtful.png"
         },
         {
           "id": 8,
@@ -48,7 +57,10 @@
         {
           "id": 9,
           "speaker": "Edward (Barista)",
-          "text": "The Wish House…? Never heard of it."
+          "text": "The Wish House…? Never heard of it.",
+          "expression": "thoughtful",
+          "expressionEmoji": "🤔",
+          "expressionImage": "sprites/edward/thoughtful.png"
         },
         {
           "id": 10,
@@ -58,7 +70,10 @@
         {
           "id": 11,
           "speaker": "Edward (Barista)",
-          "text": "If there’s even a small chance I can help Mom… I should try."
+          "text": "If there’s even a small chance I can help Mom… I should try.",
+          "expression": "hopeful",
+          "expressionEmoji": "🙂",
+          "expressionImage": "sprites/edward/hopeful.png"
         }
       ],
       "choices": [

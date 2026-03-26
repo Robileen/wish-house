@@ -14,7 +14,10 @@
         {
           "id": 2,
           "speaker": "Character Name (Role)",
-          "text": "Character dialogue goes here."
+          "text": "Character dialogue goes here.",
+          "expression": "neutral",
+          "expressionEmoji": "😐",
+          "expressionImage": "sprites/characterid/neutral.png"
         },
         {
           "id": 3,

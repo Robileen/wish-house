@@ -16,6 +16,11 @@ const CHARACTERS = {
   "Stage":            { id: "stage",   color: "#999999", icon: "",             cssClass: "",              side: null    }
 };
 
+// ── Expression Catalog (loaded from data/expressions.json at runtime) ──
+// Structure: { characterId: { expressionLabel: { emoji, image } } }
+// Populated by WishHouseEngine.loadExpressions()
+let EXPRESSIONS = {};
+
 // ── Game Engine ──
 class WishHouseEngine {
   constructor() {
@@ -46,6 +51,8 @@ class WishHouseEngine {
     this.typewriterSpeed = 30; // ms per character
     this.choiceHistory   = [];
     this.activeCharacters = {};  // Track which characters appear in current episode
+    this.characterExpressions = {}; // Track current expression per character (by speaker name)
+    this.spriteCache = {};  // Cache tested sprite availability: path -> boolean
 
     // Bind events
     this.startBtn.addEventListener("click", () => this.startGame());
@@ -61,6 +68,27 @@ class WishHouseEngine {
   }
 
   // ── Episode Loading ──
+
+  /**
+   * Load the expression catalog from data/expressions.json.
+   * Populates the global EXPRESSIONS object keyed by character id.
+   * Safe to call multiple times -- only fetches once.
+   */
+  async loadExpressions() {
+    if (Object.keys(EXPRESSIONS).length > 0) return; // already loaded
+    try {
+      const resp = await fetch("data/expressions.json");
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+      // Flatten: { characters: { kit: { expressions: {...} } } } -> { kit: {...} }
+      for (const [charId, charInfo] of Object.entries(data.characters || {})) {
+        EXPRESSIONS[charId] = charInfo.expressions || {};
+      }
+      console.log(`[Engine] Loaded expressions for: ${Object.keys(EXPRESSIONS).join(", ")}`);
+    } catch (e) {
+      console.warn("[Engine] Could not load expressions.json, expressions will use dialogue-line data only.", e);
+    }
+  }
 
   /**
    * Load episode data from JSON files.
@@ -119,6 +147,10 @@ class WishHouseEngine {
   async loadAndPrepareEpisode(chapter, episode) {
     this.currentChapter = chapter;
     this.currentEpisode = episode;
+
+    // Ensure expression catalog is loaded
+    await this.loadExpressions();
+
     this.episodeData = await this.loadEpisode(chapter, episode);
 
     if (!this.episodeData) {
@@ -195,6 +227,17 @@ class WishHouseEngine {
     const line = lines[this.currentLineIdx];
     this.currentLineIdx++;
 
+    // Update expression state for this character
+    if (line.expression) {
+      const charId = CHARACTERS[line.speaker]?.id;
+      const catalogEntry = charId && EXPRESSIONS[charId]?.[line.expression];
+      this.characterExpressions[line.speaker] = {
+        expression:      line.expression,
+        expressionEmoji: line.expressionEmoji || catalogEntry?.emoji || null,
+        expressionImage: line.expressionImage || catalogEntry?.image || null,
+      };
+    }
+
     this.updateSpeaker(line.speaker);
     this.updateCharacters(line.speaker);
     this.typewriterEffect(line.text);
@@ -258,10 +301,47 @@ class WishHouseEngine {
     const isDimmed = activeSpeaker !== charName && activeSpeaker !== "Narrator" && activeSpeaker !== "Stage";
     const dimClass = isDimmed ? "dimmed" : "";
 
-    return `<div class="character-placeholder ${charData.cssClass} ${dimClass}">
-      <span class="char-icon">${charData.icon}</span>
-      <span>${charName}</span>
+    // Resolve expression display: sprite image > emoji > default icon
+    const exprState = this.characterExpressions[charName];
+    let iconHtml;
+    let exprLabel = "";
+
+    if (exprState) {
+      exprLabel = exprState.expression || "";
+      const imgPath = exprState.expressionImage;
+
+      // Try sprite image if path exists and was confirmed loadable
+      if (imgPath && this.spriteCache[imgPath] === true) {
+        iconHtml = `<img class="char-sprite" src="${imgPath}" alt="${exprLabel}">`;
+      } else if (imgPath && this.spriteCache[imgPath] === undefined) {
+        // Haven't tested this sprite yet -- probe it, use emoji for now
+        this.probeSprite(imgPath);
+        iconHtml = `<span class="char-expression-emoji">${exprState.expressionEmoji || charData.icon}</span>`;
+      } else {
+        // Sprite unavailable or no path -- show emoji
+        iconHtml = `<span class="char-expression-emoji">${exprState.expressionEmoji || charData.icon}</span>`;
+      }
+    } else {
+      iconHtml = `<span class="char-icon">${charData.icon}</span>`;
+    }
+
+    return `<div class="character-placeholder ${charData.cssClass} ${dimClass}" data-expression="${exprLabel}">
+      ${iconHtml}
+      <span class="char-name-label">${charName}</span>
+      ${exprLabel ? `<span class="char-expression-label">${exprLabel.replace(/_/g, " ")}</span>` : ""}
     </div>`;
+  }
+
+  /**
+   * Probe whether a sprite image exists. Caches the result so we only check once.
+   */
+  probeSprite(path) {
+    if (this.spriteCache[path] !== undefined) return;
+    this.spriteCache[path] = false; // mark as testing
+    const img = new Image();
+    img.onload = () => { this.spriteCache[path] = true; };
+    img.onerror = () => { this.spriteCache[path] = false; };
+    img.src = path;
   }
 
   // ── Typewriter Effect ──
@@ -370,6 +450,7 @@ class WishHouseEngine {
   restart() {
     this.episodeComplete.classList.remove("visible");
     this.choiceHistory = [];
+    this.characterExpressions = {};
     this.fadeOverlay.classList.remove("active");
     this.charLeft.style.opacity = "0";
     this.charRight.style.opacity = "0";

@@ -18,7 +18,10 @@
         {
           "id": 3,
           "speaker": "Edward (Barista)",
-          "text": "If I can get this job… it’ll take some weight off Mom’s shoulders."
+          "text": "If I can get this job… it’ll take some weight off Mom’s shoulders.",
+          "expression": "determined",
+          "expressionEmoji": "😤",
+          "expressionImage": "sprites/edward/determined.png"
         },
         {
           "id": 4,
@@ -28,22 +31,34 @@
         {
           "id": 5,
           "speaker": "Kit (Wizard)",
-          "text": "Welcome! A determined aura walks in—hm, fascinating!"
+          "text": "Welcome! A determined aura walks in—hm, fascinating!",
+          "expression": "mischievous",
+          "expressionEmoji": "😏",
+          "expressionImage": "sprites/kit/mischievous.png"
         },
         {
           "id": 6,
           "speaker": "Edward (Barista)",
-          "text": "I’m here about the job posting. I… really need the opportunity."
+          "text": "I’m here about the job posting. I… really need the opportunity.",
+          "expression": "hopeful",
+          "expressionEmoji": "🙂",
+          "expressionImage": "sprites/edward/hopeful.png"
         },
         {
           "id": 7,
           "speaker": "Kit (Wizard)",
-          "text": "Need? A powerful word. What drives that need, I wonder?"
+          "text": "Need? A powerful word. What drives that need, I wonder?",
+          "expression": "curious",
+          "expressionEmoji": "🤔",
+          "expressionImage": "sprites/kit/curious.png"
         },
         {
           "id": 8,
           "speaker": "Edward (Barista)",
-          "text": "My family. My mom works nonstop, and my younger siblings need support. I’m the eldest—so I have to step up."
+          "text": "My family. My mom works nonstop, and my younger siblings need support. I’m the eldest—so I have to step up.",
+          "expression": "determined",
+          "expressionEmoji": "😤",
+          "expressionImage": "sprites/edward/determined.png"
         },
         {
           "id": 9,
@@ -53,12 +68,18 @@
         {
           "id": 10,
           "speaker": "Kit (Wizard)",
-          "text": "Responsibility, resilience, and heart. Excellent traits for someone joining the Wish House."
+          "text": "Responsibility, resilience, and heart. Excellent traits for someone joining the Wish House.",
+          "expression": "proud",
+          "expressionEmoji": "😤",
+          "expressionImage": "sprites/kit/proud.png"
         },
         {
           "id": 11,
           "speaker": "Kit (Wizard)",
-          "text": "Come, Edward. Let me show you where your story here begins."
+          "text": "Come, Edward. Let me show you where your story here begins.",
+          "expression": "neutral",
+          "expressionEmoji": "😐",
+          "expressionImage": "sprites/kit/neutral.png"
         }
       ],
       "choices": [],

@@ -7,17 +7,26 @@
         {
           "id": 1,
           "speaker": "Kit (Wizard)",
-          "text": "If you'd like… you can tell me what’s been weighing on you."
+          "text": "If you'd like… you can tell me what’s been weighing on you.",
+          "expression": "neutral",
+          "expressionEmoji": "😐",
+          "expressionImage": "sprites/kit/neutral.png"
         },
         {
           "id": 2,
           "speaker": "Claire",
-          "text": "I… don’t usually talk about it. People don’t really listen."
+          "text": "I… don’t usually talk about it. People don’t really listen.",
+          "expression": "shy",
+          "expressionEmoji": "😳",
+          "expressionImage": "sprites/claire/shy.png"
         },
         {
           "id": 3,
           "speaker": "Claire",
-          "text": "But today… I feel like if I don’t let it out, I might just disappear."
+          "text": "But today… I feel like if I don’t let it out, I might just disappear.",
+          "expression": "neutral",
+          "expressionEmoji": "😐",
+          "expressionImage": "sprites/claire/neutral.png"
         },
         {
           "id": 4,
@@ -27,32 +36,50 @@
         {
           "id": 5,
           "speaker": "Claire",
-          "text": "The household I work for… they're strict. Cruel, sometimes. I’m one mistake away from being yelled at—or replaced."
+          "text": "The household I work for… they're strict. Cruel, sometimes. I’m one mistake away from being yelled at—or replaced.",
+          "expression": "sad",
+          "expressionEmoji": "😢",
+          "expressionImage": "sprites/claire/sad.png"
         },
         {
           "id": 6,
           "speaker": "Claire",
-          "text": "I keep my head down. Smile when spoken to. Hide when needed. It’s suffocating."
+          "text": "I keep my head down. Smile when spoken to. Hide when needed. It’s suffocating.",
+          "expression": "tired",
+          "expressionEmoji": "😩",
+          "expressionImage": "sprites/claire/tired.png"
         },
         {
           "id": 7,
           "speaker": "Kit (Wizard)",
-          "text": "No one should have to live under fear."
+          "text": "No one should have to live under fear.",
+          "expression": "concerned",
+          "expressionEmoji": "😟",
+          "expressionImage": "sprites/kit/concerned.png"
         },
         {
           "id": 8,
           "speaker": "Claire",
-          "text": "I know. But quitting isn't an option. I need the money… badly."
+          "text": "I know. But quitting isn't an option. I need the money… badly.",
+          "expression": "shy",
+          "expressionEmoji": "😳",
+          "expressionImage": "sprites/claire/shy.png"
         },
         {
           "id": 9,
           "speaker": "Claire",
-          "text": "This café… it feels different. Quiet. Safe."
+          "text": "This café… it feels different. Quiet. Safe.",
+          "expression": "grateful",
+          "expressionEmoji": "🥹",
+          "expressionImage": "sprites/claire/grateful.png"
         },
         {
           "id": 10,
           "speaker": "Kit (Wizard)",
-          "text": "You’re welcome here anytime. For rest, warmth… or just silence."
+          "text": "You’re welcome here anytime. For rest, warmth… or just silence.",
+          "expression": "warm",
+          "expressionEmoji": "🤗",
+          "expressionImage": "sprites/kit/warm.png"
         }
       ],
       "choices": [],

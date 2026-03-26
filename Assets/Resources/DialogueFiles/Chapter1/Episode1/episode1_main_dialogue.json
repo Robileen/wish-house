@@ -27,42 +27,66 @@
         {
           "id": 5,
           "speaker": "Claire",
-          "text": "...Hello? Is—Is it alright for me to come in?"
+          "text": "...Hello? Is—Is it alright for me to come in?",
+          "expression": "shy",
+          "expressionEmoji": "😳",
+          "expressionImage": "sprites/claire/shy.png"
         },
         {
           "id": 6,
           "speaker": "Kit (Wizard)",
-          "text": "Of course. Welcome to the Wish House. A seat is yours if you wish to rest."
+          "text": "Of course. Welcome to the Wish House. A seat is yours if you wish to rest.",
+          "expression": "warm",
+          "expressionEmoji": "🤗",
+          "expressionImage": "sprites/kit/warm.png"
         },
         {
           "id": 7,
           "speaker": "Kit (Wizard)",
-          "text": "What brings you here on this fine evening? You look like you've walked through an entire storm."
+          "text": "What brings you here on this fine evening? You look like you've walked through an entire storm.",
+          "expression": "neutral",
+          "expressionEmoji": "😐",
+          "expressionImage": "sprites/kit/neutral.png"
         },
         {
           "id": 8,
           "speaker": "Claire",
-          "text": "Sorry... It's been a long day. A long week. Maybe a long life."
+          "text": "Sorry... It's been a long day. A long week. Maybe a long life.",
+          "expression": "tired",
+          "expressionEmoji": "😩",
+          "expressionImage": "sprites/claire/tired.png"
         },
         {
           "id": 9,
           "speaker": "Claire",
-          "text": "I work at a rich household nearby. They’re… demanding. Everything has to be spotless. Timed. Perfect."
+          "text": "I work at a rich household nearby. They’re… demanding. Everything has to be spotless. Timed. Perfect.",
+          "expression": "shy",
+          "expressionEmoji": "😳",
+          "expressionImage": "sprites/claire/shy.png"
         },
         {
           "id": 10,
           "speaker": "Claire",
-          "text": "And on my off day, I just wanted somewhere new. Somewhere quiet. Somewhere the world can't find me for a while."
+          "text": "And on my off day, I just wanted somewhere new. Somewhere quiet. Somewhere the world can't find me for a while.",
+          "expression": "relieved",
+          "expressionEmoji": "😌",
+          "expressionImage": "sprites/claire/relieved.png"
         },
         {
           "id": 11,
           "speaker": "Kit (Wizard)",
-          "text": "Then you've found the right corner of the world. What can I brew to help you forget your troubles?"
+          "text": "Then you've found the right corner of the world. What can I brew to help you forget your troubles?",
+          "expression": "gentle",
+          "expressionEmoji": "😌",
+          "expressionImage": "sprites/kit/gentle.png"
         },
         {
           "id": 12,
           "speaker": "Claire",
-          "text": "Just… coffee. Something warm. Something simple."
+          "text": "Just… coffee. Something warm. Something simple.",
+          "expression": "grateful",
+          "expressionEmoji": "🥹",
+          "expressionImage": "sprites/claire/grateful.png"
         },
         {
           "id": 13,
@@ -72,27 +96,42 @@
         {
           "id": 14,
           "speaker": "Kit (Wizard)",
-          "text": "Here you go—one house blend. Let it warm more than just your hands."
+          "text": "Here you go—one house blend. Let it warm more than just your hands.",
+          "expression": "warm",
+          "expressionEmoji": "🤗",
+          "expressionImage": "sprites/kit/warm.png"
         },
         {
           "id": 15,
           "speaker": "Claire",
-          "text": "Thank you. Um… how much is it?"
+          "text": "Thank you. Um… how much is it?",
+          "expression": "grateful",
+          "expressionEmoji": "🥹",
+          "expressionImage": "sprites/claire/grateful.png"
         },
         {
           "id": 16,
           "speaker": "Kit (Wizard)",
-          "text": "that'll be a button, miss. but for today, its on the house"
+          "text": "that'll be a button, miss. but for today, its on the house",
+          "expression": "neutral",
+          "expressionEmoji": "😐",
+          "expressionImage": "sprites/kit/neutral.png"
         },
         {
           "id": 17,
           "speaker": "Claire",
-          "text": "A… button? That’s… oddly adorable."
+          "text": "A… button? That’s… oddly adorable.",
+          "expression": "curious",
+          "expressionEmoji": "🤔",
+          "expressionImage": "sprites/claire/curious.png"
         },
         {
           "id": 18,
           "speaker": "Kit (Wizard)",
-          "text": "Think of it as a tradition here. One small token, one small wish."
+          "text": "Think of it as a tradition here. One small token, one small wish.",
+          "expression": "warm",
+          "expressionEmoji": "🤗",
+          "expressionImage": "sprites/kit/warm.png"
         }
       ],
       "choices": [
