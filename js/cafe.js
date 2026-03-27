@@ -999,7 +999,7 @@ class CafeEngine {
         slotEl.classList.remove("drag-over");
         const ingId = e.dataTransfer.getData("text/plain");
         if (ingId && !slot.ingredientId) {
-          const cardEl = this.deckScroll.querySelector(`.ingredient-card[data-ingredient-id="${ingId}"]:not(.used)`);
+          const cardEl = this.deckScroll.querySelector(`.ingredient-card[data-ingredient-id="${ingId}"]`);
           this.placeInSlot(idx, ingId, cardEl);
         }
       });
@@ -1013,17 +1013,9 @@ class CafeEngine {
 
     this.slots[slotIdx].ingredientId = ingredientId;
 
-    const ing = INGREDIENTS[ingredientId];
-    const isMultiUse = ing && !ing.isSpecial && ing.group !== "temp";
-
     if (cardEl) {
-      if (isMultiUse) {
-        this._deckCardUsage[ingredientId] = (this._deckCardUsage[ingredientId] || 0) + 1;
-        this.renderDeck();
-      } else {
-        cardEl.classList.add("used");
-        this.usedCardEls.add(cardEl);
-      }
+      this._deckCardUsage[ingredientId] = (this._deckCardUsage[ingredientId] || 0) + 1;
+      this.renderDeck();
     }
 
     this.renderSlots();
@@ -1035,23 +1027,11 @@ class CafeEngine {
     this.slots[slotIdx].ingredientId = null;
 
     if (removed) {
-      const ing = INGREDIENTS[removed];
-      const isMultiUse = ing && !ing.isSpecial && ing.group !== "temp";
-
-      if (isMultiUse) {
-        if (this._deckCardUsage[removed]) {
-          this._deckCardUsage[removed]--;
-          if (this._deckCardUsage[removed] <= 0) delete this._deckCardUsage[removed];
-        }
-        this.renderDeck();
-      } else {
-        this.usedCardEls.forEach(el => {
-          if (el.dataset.ingredientId === removed && el.classList.contains("used")) {
-            el.classList.remove("used");
-            this.usedCardEls.delete(el);
-          }
-        });
+      if (this._deckCardUsage[removed]) {
+        this._deckCardUsage[removed]--;
+        if (this._deckCardUsage[removed] <= 0) delete this._deckCardUsage[removed];
       }
+      this.renderDeck();
     }
 
     this.renderSlots();
@@ -1100,7 +1080,6 @@ class CafeEngine {
       card.dataset.ingredientId = ingId;
       if (ing.isSpecial) card.classList.add("special-card");
 
-      const isMultiUse = !ing.isSpecial && ing.group !== "temp";
       const usageCount = this._deckCardUsage[ingId] || 0;
 
       card.innerHTML = `
@@ -1109,16 +1088,8 @@ class CafeEngine {
         ${usageCount > 0 ? `<span class="card-use-count">${usageCount}</span>` : ""}
       `;
 
-      if (!isMultiUse) {
-        const isUsed = [...this.usedCardEls].some(
-          el => el.dataset.ingredientId === ingId
-        );
-        if (isUsed) card.classList.add("used");
-      }
-
       // Click to place
       card.addEventListener("click", () => {
-        if (card.classList.contains("used")) return;
         const emptyIdx = this.slots.findIndex(s => s.ingredientId === null);
         if (emptyIdx !== -1) {
           this.placeInSlot(emptyIdx, ingId, card);
@@ -1128,10 +1099,6 @@ class CafeEngine {
       // Drag support
       card.draggable = true;
       card.addEventListener("dragstart", (e) => {
-        if (card.classList.contains("used")) {
-          e.preventDefault();
-          return;
-        }
         e.dataTransfer.setData("text/plain", ingId);
         e.dataTransfer.effectAllowed = "move";
         card.classList.add("dragging");
