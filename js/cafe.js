@@ -1071,6 +1071,13 @@ class CafeEngine {
           return this._groupToTab[ing.group] === this.activeDeckTab;
         });
 
+    // Temperature exclusion: if one temp card is in a slot, hide the other
+    const placedTempIds = new Set(
+      this.slots
+        .map(s => s.ingredientId)
+        .filter(id => id && INGREDIENTS[id] && INGREDIENTS[id].group === "temp")
+    );
+
     filtered.forEach(ingId => {
       const ing = INGREDIENTS[ingId];
       if (!ing) return;
@@ -1080,6 +1087,9 @@ class CafeEngine {
 
       // Single-use cards disappear from the deck when placed
       if (isSingleUse && usageCount > 0) return;
+
+      // If a temp card is placed, disable the other temp card
+      if (ing.group === "temp" && placedTempIds.size > 0 && !placedTempIds.has(ingId)) return;
 
       const card = document.createElement("div");
       card.className = "ingredient-card";
