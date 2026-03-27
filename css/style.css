@@ -240,6 +240,13 @@ body {
     margin-bottom: 8px;
 }
 
+/* Smaller character icon when shown above the expression emoji or sprite */
+.character-placeholder .char-icon:has(+ .char-expression-emoji),
+.character-placeholder .char-icon:has(+ .char-sprite) {
+    font-size: 1.3rem;
+    margin-bottom: 2px;
+}
+
 /* Expression emoji (replaces default icon when expression is active) */
 .character-placeholder .char-expression-emoji {
     font-size: 2.5rem;
