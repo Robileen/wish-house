@@ -52,6 +52,7 @@ class WishHouseEngine {
     this.isTyping        = false;
     this.skipRequested   = false;
     this.typewriterSpeed = 30; // ms per character
+    this._typewriterId   = 0;  // incremented each typewriter call to cancel stale ones
     this.choiceHistory   = [];
     this.activeCharacters = {};  // Track which characters appear in current episode
     this.characterExpressions = {}; // Track current expression per character (by speaker name)
@@ -376,12 +377,14 @@ class WishHouseEngine {
   // ── Typewriter Effect ──
 
   async typewriterEffect(fullText) {
+    const myId = ++this._typewriterId;
     this.isTyping = true;
     this.skipRequested = false;
     this.advanceIndicator.classList.remove("visible");
     this.dialogueText.textContent = "";
 
     for (let i = 0; i < fullText.length; i++) {
+      if (this._typewriterId !== myId) return; // cancelled by a newer call
       if (this.skipRequested) {
         this.dialogueText.textContent = fullText;
         break;
@@ -391,6 +394,7 @@ class WishHouseEngine {
       await this.sleep(this.typewriterSpeed);
     }
 
+    if (this._typewriterId !== myId) return; // cancelled by a newer call
     this.isTyping = false;
     this.advanceIndicator.classList.add("visible");
   }
