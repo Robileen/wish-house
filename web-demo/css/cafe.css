@@ -1451,7 +1451,7 @@
 
 .ingredient-card.special-card {
     border-color: var(--gold);
-    background: linear-gradient(180deg, #FFF8E7, #FFF0C8);
+    background: linear-gradient(180deg, #FFF8F0, #FFFAF5);
     box-shadow: 0 0 6px rgba(212, 168, 67, 0.2);
 }
 
