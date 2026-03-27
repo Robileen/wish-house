@@ -1088,13 +1088,14 @@ class CafeEngine {
       // Single-use cards disappear from the deck when placed
       if (isSingleUse && usageCount > 0) return;
 
-      // If a temp card is placed, disable the other temp card
-      if (ing.group === "temp" && placedTempIds.size > 0 && !placedTempIds.has(ingId)) return;
+      // If a temp card is placed, show but disable the other temp card
+      const isTempDisabled = ing.group === "temp" && placedTempIds.size > 0 && !placedTempIds.has(ingId);
 
       const card = document.createElement("div");
       card.className = "ingredient-card";
       card.dataset.ingredientId = ingId;
       if (ing.isSpecial) card.classList.add("special-card");
+      if (isTempDisabled) card.classList.add("disabled");
 
       card.innerHTML = `
         <span class="card-icon">${ing.icon}</span>
@@ -1104,6 +1105,7 @@ class CafeEngine {
 
       // Click to place
       card.addEventListener("click", () => {
+        if (card.classList.contains("disabled")) return;
         const emptyIdx = this.slots.findIndex(s => s.ingredientId === null);
         if (emptyIdx !== -1) {
           this.placeInSlot(emptyIdx, ingId, card);
@@ -1111,8 +1113,9 @@ class CafeEngine {
       });
 
       // Drag support
-      card.draggable = true;
+      card.draggable = !isTempDisabled;
       card.addEventListener("dragstart", (e) => {
+        if (card.classList.contains("disabled")) { e.preventDefault(); return; }
         e.dataTransfer.setData("text/plain", ingId);
         e.dataTransfer.effectAllowed = "move";
         card.classList.add("dragging");

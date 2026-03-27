@@ -1431,6 +1431,13 @@
     transform: translateY(-6px) scale(1.05);
 }
 
+.ingredient-card.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    filter: grayscale(50%);
+    cursor: default;
+}
+
 .ingredient-card.highlight {
     border-color: var(--pale-mint);
     box-shadow: 0 0 8px rgba(200, 230, 208, 0.5);
