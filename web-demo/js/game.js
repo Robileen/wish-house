@@ -350,7 +350,11 @@ class WishHouseEngine {
       iconHtml = `<span class="char-icon">${charData.icon}</span>`;
     }
 
+    // Always show character icon on top when an expression is active
+    const charIconHtml = exprState ? `<span class="char-icon">${charData.icon}</span>` : "";
+
     return `<div class="character-placeholder ${charData.cssClass} ${dimClass}" data-expression="${exprLabel}">
+      ${charIconHtml}
       ${iconHtml}
       <span class="char-name-label">${charName}</span>
       ${exprLabel ? `<span class="char-expression-label">${exprLabel.replace(/_/g, " ")}</span>` : ""}
