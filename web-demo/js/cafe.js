@@ -1085,11 +1085,11 @@ class CafeEngine {
       const isSingleUse = ing.isSpecial || ing.group === "temp";
       const usageCount = this._deckCardUsage[ingId] || 0;
 
-      // Single-use cards disappear from the deck when placed
-      if (isSingleUse && usageCount > 0) return;
+      // Special cards (non-temp) disappear from the deck when placed
+      if (ing.isSpecial && usageCount > 0) return;
 
-      // If a temp card is placed, show but disable the other temp card
-      const isTempDisabled = ing.group === "temp" && placedTempIds.size > 0 && !placedTempIds.has(ingId);
+      // Temp cards stay visible but disabled when placed or when the other temp is placed
+      const isTempDisabled = ing.group === "temp" && placedTempIds.size > 0;
 
       const card = document.createElement("div");
       card.className = "ingredient-card";
