@@ -1315,7 +1315,6 @@
 
 .card-slot.correct {
     border-color: var(--pale-mint);
-    background: linear-gradient(180deg, #EDF7F0, #E5F2E9);
     animation: slot-glow 0.6s ease;
 }
 
