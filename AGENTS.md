@@ -64,6 +64,10 @@ sprite image (if file exists) > emoji > default character icon.
 2. Copy to `web-demo/data/Chapter{N}/Episode{N}/`
 3. Update `CHAPTERS` in `journal.js`
 
+## Git Workflow
+
+- Always push commits to `origin/main` after making changes.
+
 ## Adding New Recipes
 
 Recipes are **data-driven** via `manifest.json`. No flat combined files to maintain.
