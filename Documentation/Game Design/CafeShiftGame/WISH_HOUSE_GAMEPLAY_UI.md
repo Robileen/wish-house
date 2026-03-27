@@ -173,10 +173,53 @@ All ingredients shown (31 non-special + wild card), sorted **alphabetically** by
 
 * Active tab: gold background with white text
 * Cards show emoji icon + name
-* Multi-click on food cards (non-special, non-temp) — usage count badge
-* Single-use for special and temp cards
+* Highlighted border (pale mint) on cards matching the current recipe
 * Drag support: `draggable=true`, drag-over glow on slots
-* Highlighted border on cards matching the current recipe
+
+### Ingredient Card Behaviour
+
+Cards are split into **multi-use** and **single-use** categories:
+
+#### Multi-Use Cards
+Groups: base, fruit, topping, sweetener, dairy, protein, vegetable, grain, spice
+
+* Card stays fully visible in the deck after being placed in a slot
+* A **usage count badge** (small circle, top-right) shows how many slots the card occupies
+* Clicking the same card again places it in the next empty slot (e.g. a recipe needing 2x milk)
+* When removed from a slot the badge count decreases; at 0 the badge disappears
+
+#### Single-Use Cards
+Groups: special (`isSpecial: true`), temp (`group === "temp"`)
+
+* Card **disappears** from the deck when placed in a slot
+* Card **reappears** in the deck when removed from the slot
+* No usage count badge — only one instance can be placed at a time
+
+**Includes:** Wild Card, Combo Card, Premade Dish, Premade Drink, category wildcards (Any Fruit, Any Base, Any Topping), Hot, Cold
+
+#### Temperature Exclusion Rule
+
+Hot and Cold are **mutually exclusive** — only one temperature can be used per recipe:
+
+* If **Hot** is placed in a slot, the **Cold** card is hidden from the deck
+* If **Cold** is placed in a slot, the **Hot** card is hidden from the deck
+* Removing the placed temperature card from its slot makes the other temperature card reappear
+* This prevents the player from placing both Hot and Cold in the same recipe
+
+#### Wild Card
+
+* Always included in every recipe's deck
+* Substitutes for **any** ingredient during recipe matching
+* Single-use (disappears from deck when placed)
+* Gold border with sparkle animation
+
+#### Recipe Matching
+
+* **Order doesn't matter** — ingredients can be placed in any slot
+* **Exact matches preferred** — algorithm tries exact ingredient matches first
+* **Wild card fallback** — if no exact match found, a wild card substitutes
+* **One-to-one** — each placed ingredient matches at most one required ingredient
+* Success requires: correct ingredients **AND** correct recipe for the customer's order
 
 ### FUSE Button
 
