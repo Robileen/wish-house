@@ -64,6 +64,11 @@ sprite image (if file exists) > emoji > default character icon.
 2. Copy to `web-demo/data/Chapter{N}/Episode{N}/`
 3. Update `CHAPTERS` in `journal.js`
 
+## Local Dev Server
+
+- Always use port **8238**: `cd web-demo && python3 -m http.server 8238`
+- URL: http://localhost:8238
+
 ## Git Workflow
 
 - Always push commits to `origin/main` after making changes.
