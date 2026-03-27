@@ -1075,12 +1075,16 @@ class CafeEngine {
       const ing = INGREDIENTS[ingId];
       if (!ing) return;
 
+      const isSingleUse = ing.isSpecial || ing.group === "temp";
+      const usageCount = this._deckCardUsage[ingId] || 0;
+
+      // Single-use cards disappear from the deck when placed
+      if (isSingleUse && usageCount > 0) return;
+
       const card = document.createElement("div");
       card.className = "ingredient-card";
       card.dataset.ingredientId = ingId;
       if (ing.isSpecial) card.classList.add("special-card");
-
-      const usageCount = this._deckCardUsage[ingId] || 0;
 
       card.innerHTML = `
         <span class="card-icon">${ing.icon}</span>
