@@ -67,6 +67,7 @@ sprite image (if file exists) > emoji > default character icon.
 ## Git Workflow
 
 - Always push commits to `origin/main` after making changes.
+- Always update `gh-pages` branch too: `git subtree split --prefix web-demo -b gh-pages-temp && git push origin gh-pages-temp:gh-pages --force && git branch -D gh-pages-temp`
 
 ## Adding New Recipes
 
