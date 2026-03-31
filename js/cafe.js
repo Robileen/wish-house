@@ -1419,24 +1419,18 @@ class CafeEngine {
         .join("<br>");
     }
 
-    // Check if this table has more pending orders
+    // Check if this table has more pending orders (beyond the current one)
     const tableData = this.tables[this._activeTableNum];
     let hasPending = false;
     if (tableData) {
+      let pendingCount = 0;
       tableData.customers.forEach(c => {
-        c.orders.forEach(o => { if (!o.completed) hasPending = true; });
+        c.orders.forEach(o => { if (!o.completed) pendingCount++; });
       });
-      // The current order hasn't been marked complete yet, so subtract 1
-      // unless it failed (failures don't complete the order either)
-      // Actually: order gets marked complete in afterServeResult, so here
-      // the current order is still "not completed". Count pending minus the current one if success.
-      if (success) {
-        let pendingCount = 0;
-        tableData.customers.forEach(c => {
-          c.orders.forEach(o => { if (!o.completed) pendingCount++; });
-        });
-        hasPending = pendingCount > 1; // more than just the one we're about to complete
-      }
+      // On success the current order will be marked complete in afterServeResult,
+      // so "more pending" means > 1. On failure the current order stays pending,
+      // so "other orders" also means > 1.
+      hasPending = pendingCount > 1;
     }
 
     if (forceEnd) {
