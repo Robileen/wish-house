@@ -770,8 +770,8 @@
 
 /* Individual table module */
 .cafe-table {
-    width: 200px;
-    height: 210px;
+    width: 180px;
+    height: 180px;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
     text-align: center;
@@ -787,64 +787,56 @@
 }
 
 .cafe-table.has-customer {
-    animation: table-pulse 2s ease-in-out infinite;
-}
-
-@keyframes table-pulse {
-    0%, 100% { box-shadow: none; }
-    50%      { box-shadow: 0 0 16px rgba(212, 168, 67, 0.35); border-radius: 50%; }
+    /* no glow — customers indicated by occupied seat circles */
 }
 
 .cafe-table.served .table-surface {
     border-color: var(--pale-mint);
-    border-radius: 50%;
 }
 
 .cafe-table.messy .table-surface {
     border-color: var(--dusty-rose);
     opacity: 0.7;
-    border-radius: 50%;
 }
 
 .table-surface {
     position: relative;
-    width: 200px;
-    height: 130px;
-    /* Warm wood base */
+    width: 170px;
+    height: 170px;
+    /* Rich wood grain — default theme */
     background:
-        /* Wood grain lines */
+        /* Knot / swirl accent */
+        radial-gradient(ellipse at 35% 45%, rgba(139, 90, 43, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 55%, rgba(160, 112, 64, 0.08) 0%, transparent 40%),
+        /* Strong grain lines */
         repeating-linear-gradient(
-            95deg,
-            transparent,
-            transparent 8px,
-            rgba(139, 90, 43, 0.08) 8px,
-            rgba(139, 90, 43, 0.08) 9px,
-            transparent 9px,
-            transparent 22px
+            93deg,
+            transparent, transparent 5px,
+            rgba(139, 90, 43, 0.1) 5px, rgba(139, 90, 43, 0.1) 6.5px,
+            transparent 6.5px, transparent 14px
         ),
+        /* Secondary finer grain */
         repeating-linear-gradient(
-            92deg,
-            transparent,
-            transparent 30px,
-            rgba(160, 112, 64, 0.06) 30px,
-            rgba(160, 112, 64, 0.06) 31px
+            96deg,
+            transparent, transparent 18px,
+            rgba(160, 112, 64, 0.07) 18px, rgba(160, 112, 64, 0.07) 19px
         ),
         /* Wood colour base */
-        linear-gradient(170deg, #DEC49C 0%, #C8A87A 35%, #B8945E 60%, #C8A87A 85%, #D4B48A 100%);
+        linear-gradient(170deg, #DEC49C 0%, #C8A87A 30%, #B8945E 55%, #C8A87A 80%, #D4B48A 100%);
     border: 2px solid rgba(160, 112, 64, 0.45);
     border-radius: 50%;
     box-shadow:
         0 4px 12px rgba(74, 55, 40, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2),
-        inset 0 -2px 4px rgba(139, 90, 43, 0.1);
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        inset 0 -2px 4px rgba(139, 90, 43, 0.12);
 }
 
-/* Table legs — four small pegs under the oval */
+/* Table legs — small pegs under the circle */
 .table-surface::before,
 .table-surface::after {
     content: "";
     position: absolute;
-    bottom: -10px;
+    bottom: 2px;
     width: 6px;
     height: 14px;
     background: linear-gradient(180deg, #B8945E, #9A7848);
@@ -854,12 +846,12 @@
 }
 
 .table-surface::before {
-    left: 38px;
+    left: 50px;
     transform: rotate(-4deg);
 }
 
 .table-surface::after {
-    right: 38px;
+    right: 50px;
     transform: rotate(4deg);
 }
 
@@ -874,53 +866,24 @@
     transform: translateX(-50%);
 }
 
-/* Seats: circular slots in V-shape around the table
-   Bottom pair (a,b) closer together, top pair (c,d) wider apart
-   Each top seat sits close to its bottom counterpart */
+/* Seats: dynamically placed circles around the table */
 .seat {
     position: absolute;
-    width: 47px;
-    height: 47px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
-    transition: opacity 0.3s;
+    font-size: 1.5rem;
     z-index: 1;
-}
-
-/* Bottom row: closer together (V bottom) */
-.seat.seat-a {
-    bottom: 6px;
-    left: 42px;
-}
-
-.seat.seat-b {
-    bottom: 6px;
-    right: 42px;
-}
-
-/* Top row: wider apart (V top), each near its bottom counterpart */
-.seat.seat-c {
-    top: 6px;
-    left: 10px;
-}
-
-.seat.seat-d {
-    top: 6px;
-    right: 10px;
+    transition: opacity 0.3s;
 }
 
 .seat.occupied {
     background: linear-gradient(180deg, rgba(244, 184, 193, 0.3), rgba(253, 220, 186, 0.35));
     border: 1.5px solid rgba(244, 184, 193, 0.5);
     box-shadow: 0 2px 6px rgba(74, 55, 40, 0.1);
-}
-
-.seat.empty {
-    background: rgba(255, 248, 240, 0.4);
-    border: 1.5px dashed rgba(200, 168, 130, 0.3);
 }
 
 /* Food slot: center of table */
@@ -983,13 +946,13 @@
     100% { transform: translateY(-30px) scale(1.2); opacity: 0; }
 }
 
-/* Order speech bubble — floats above the table */
+/* Order speech bubble — floats above center of the table */
 .table-order-bubble {
     position: absolute;
-    bottom: calc(100% + 8px);
+    bottom: calc(50% + 20px);
     left: 50%;
     transform: translateX(-50%);
-    background: var(--warm-white);
+    background: rgba(255, 245, 235, 0.95);
     border: 1.5px solid var(--gold);
     border-radius: 14px;
     padding: 6px 12px;
@@ -1003,7 +966,7 @@
     animation: bubble-pop 0.35s ease;
 }
 
-/* Speech bubble tail */
+/* Speech bubble tail — pointing down */
 .table-order-bubble::after {
     content: "";
     position: absolute;
@@ -1011,7 +974,7 @@
     left: 50%;
     transform: translateX(-50%);
     border: 7px solid transparent;
-    border-top-color: var(--warm-white);
+    border-top-color: rgba(255, 245, 235, 0.95);
     filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.06));
 }
 
@@ -1046,6 +1009,11 @@
 @keyframes bubble-pop {
     from { transform: translateX(-50%) scale(0); opacity: 0; }
     to   { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+/* Skip animation on re-render of existing bubbles */
+.table-order-bubble.no-anim {
+    animation: none;
 }
 
 /* Clickable sponge on messy table */
@@ -1673,6 +1641,53 @@
     transform: translateY(-2px);
 }
 
+#serve-result-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+#serve-return-btn {
+    padding: 12px 28px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--cocoa);
+    background: rgba(200, 168, 130, 0.15);
+    border: 1.5px solid rgba(200, 168, 130, 0.3);
+    border-radius: 24px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+#serve-return-btn:hover {
+    transform: translateY(-2px);
+    background: rgba(200, 168, 130, 0.3);
+}
+
+#serve-return-btn.hidden { display: none; }
+
+#serve-retry-btn {
+    padding: 12px 36px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--warm-white);
+    background: linear-gradient(135deg, var(--gold), var(--soft-yellow));
+    border: none;
+    border-radius: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(212, 168, 67, 0.4);
+    transition: transform 0.2s;
+}
+
+#serve-retry-btn:hover {
+    transform: translateY(-2px);
+}
+
+#serve-retry-btn.hidden { display: none; }
+
 /* ---- Shift Complete Overlay ---- */
 #shift-complete {
     position: absolute;
@@ -1774,4 +1789,233 @@
     .recipe-tab { padding: 9px 8px 9px 6px; min-width: 40px; }
     .tab-emoji { font-size: 0.8rem; }
     .tab-label { font-size: 0.5rem; }
+}
+
+/* ============================================
+   Table Colour Themes
+   Each theme overrides the .table-surface background
+   ============================================ */
+
+/* Wood grain helper — shared pattern layered on all themes */
+
+.table-theme-wood .table-surface,
+.table-surface {
+    /* default wood — already defined above */
+}
+
+/* Rose Marble — veined pink marble with white/grey streaks */
+.table-theme-rose .table-surface {
+    background:
+        linear-gradient(125deg, transparent 20%, rgba(255, 255, 255, 0.35) 22%, transparent 24%),
+        linear-gradient(130deg, transparent 45%, rgba(220, 200, 210, 0.3) 47%, transparent 49%),
+        linear-gradient(118deg, transparent 65%, rgba(255, 255, 255, 0.25) 67%, transparent 69%),
+        linear-gradient(135deg, transparent 30%, rgba(180, 150, 165, 0.15) 32%, transparent 35%),
+        radial-gradient(ellipse at 25% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 75% 60%, rgba(200, 170, 185, 0.15) 0%, transparent 45%),
+        linear-gradient(160deg, #EDCDD4 0%, #E0B5BF 30%, #D4A0AD 55%, #E0B5BF 80%, #EDCDD4 100%);
+    border-color: rgba(196, 139, 159, 0.45);
+    box-shadow: 0 4px 12px rgba(74, 55, 40, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -2px 4px rgba(180, 120, 140, 0.1);
+}
+.table-theme-rose .table-surface::before,
+.table-theme-rose .table-surface::after { background: linear-gradient(180deg, #C48B9F, #A87088); }
+
+/* Sage — matte ceramic with earthy speckle */
+.table-theme-sage .table-surface {
+    background:
+        radial-gradient(circle at 20% 25%, rgba(90, 110, 85, 0.18) 0%, rgba(90, 110, 85, 0.18) 1.5px, transparent 1.5px),
+        radial-gradient(circle at 55% 15%, rgba(70, 95, 75, 0.14) 0%, rgba(70, 95, 75, 0.14) 1px, transparent 1px),
+        radial-gradient(circle at 75% 40%, rgba(100, 120, 90, 0.16) 0%, rgba(100, 120, 90, 0.16) 1.8px, transparent 1.8px),
+        radial-gradient(circle at 35% 70%, rgba(80, 105, 80, 0.12) 0%, rgba(80, 105, 80, 0.12) 1.2px, transparent 1.2px),
+        radial-gradient(circle at 85% 75%, rgba(95, 115, 88, 0.15) 0%, rgba(95, 115, 88, 0.15) 1.5px, transparent 1.5px),
+        linear-gradient(175deg, #B8CCBC 0%, #A0B8A4 35%, #8AA892 55%, #A0B8A4 80%, #B0C4B4 100%);
+    border-color: rgba(127, 163, 136, 0.5);
+    box-shadow: 0 4px 12px rgba(50, 70, 50, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -2px 4px rgba(90, 120, 95, 0.1);
+}
+.table-theme-sage .table-surface::before,
+.table-theme-sage .table-surface::after { background: linear-gradient(180deg, #7FA388, #668A70); }
+
+/* Lavender — terrazzo with pastel chips */
+.table-theme-lavender .table-surface {
+    background:
+        radial-gradient(ellipse at 18% 22%, rgba(180, 160, 200, 0.35) 0%, rgba(180, 160, 200, 0.35) 4px, transparent 4px),
+        radial-gradient(ellipse at 72% 30%, rgba(200, 180, 210, 0.3) 0%, rgba(200, 180, 210, 0.3) 3px, transparent 3px),
+        radial-gradient(ellipse at 42% 65%, rgba(170, 150, 190, 0.28) 0%, rgba(170, 150, 190, 0.28) 5px, transparent 5px),
+        radial-gradient(ellipse at 85% 70%, rgba(190, 170, 210, 0.25) 0%, rgba(190, 170, 210, 0.25) 3.5px, transparent 3.5px),
+        radial-gradient(circle at 60% 20%, rgba(220, 200, 230, 0.3) 0%, rgba(220, 200, 230, 0.3) 1.5px, transparent 1.5px),
+        radial-gradient(circle at 35% 45%, rgba(160, 140, 180, 0.2) 0%, rgba(160, 140, 180, 0.2) 1px, transparent 1px),
+        linear-gradient(170deg, #D0C4E0 0%, #BEB0D4 35%, #ACA0C4 55%, #BEB0D4 80%, #CCC0DC 100%);
+    border-color: rgba(149, 132, 173, 0.45);
+    box-shadow: 0 4px 12px rgba(60, 50, 70, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -2px 4px rgba(120, 100, 150, 0.1);
+}
+.table-theme-lavender .table-surface::before,
+.table-theme-lavender .table-surface::after { background: linear-gradient(180deg, #9584AD, #7A6C94); }
+
+/* Ocean — watercolour wash with soft bleeds */
+.table-theme-ocean .table-surface {
+    background:
+        radial-gradient(ellipse at 20% 35%, rgba(130, 180, 200, 0.25) 0%, transparent 55%),
+        radial-gradient(ellipse at 70% 25%, rgba(100, 160, 190, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 70%, rgba(140, 190, 210, 0.18) 0%, transparent 45%),
+        radial-gradient(ellipse at 80% 65%, rgba(110, 170, 195, 0.15) 0%, transparent 40%),
+        radial-gradient(ellipse at 30% 60%, rgba(160, 200, 215, 0.2) 0%, transparent 35%),
+        linear-gradient(165deg, #B8D0DA 0%, #9CC0CE 30%, #84B0C0 55%, #9CC0CE 80%, #B0C8D4 100%);
+    border-color: rgba(122, 160, 178, 0.45);
+    box-shadow: 0 4px 12px rgba(40, 60, 80, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -2px 4px rgba(80, 130, 155, 0.1);
+}
+.table-theme-ocean .table-surface::before,
+.table-theme-ocean .table-surface::after { background: linear-gradient(180deg, #7AA0B2, #628898); }
+
+/* Honey — polished amber stone with translucent layers */
+.table-theme-honey .table-surface {
+    background:
+        radial-gradient(ellipse at 30% 40%, rgba(230, 200, 130, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 65% 30%, rgba(255, 225, 160, 0.2) 0%, transparent 45%),
+        radial-gradient(ellipse at 25% 20%, rgba(255, 255, 255, 0.2) 0%, transparent 30%),
+        linear-gradient(140deg, transparent 35%, rgba(200, 170, 90, 0.1) 38%, transparent 41%),
+        linear-gradient(125deg, transparent 55%, rgba(210, 180, 100, 0.08) 58%, transparent 61%),
+        linear-gradient(170deg, #F2E0BE 0%, #E8D0A0 30%, #DCC088 55%, #E8D0A0 80%, #F0DDB8 100%);
+    border-color: rgba(212, 184, 126, 0.5);
+    box-shadow: 0 4px 12px rgba(80, 60, 30, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -2px 4px rgba(180, 150, 80, 0.1);
+}
+.table-theme-honey .table-surface::before,
+.table-theme-honey .table-surface::after { background: linear-gradient(180deg, #D4B87E, #B8A068); }
+
+/* Peach — clay / terracotta with fine earthy texture */
+.table-theme-peach .table-surface {
+    background:
+        radial-gradient(circle at 15% 20%, rgba(160, 100, 70, 0.12) 0%, rgba(160, 100, 70, 0.12) 1px, transparent 1px),
+        radial-gradient(circle at 45% 30%, rgba(180, 120, 90, 0.1) 0%, rgba(180, 120, 90, 0.1) 0.8px, transparent 0.8px),
+        radial-gradient(circle at 70% 15%, rgba(150, 95, 65, 0.11) 0%, rgba(150, 95, 65, 0.11) 1.2px, transparent 1.2px),
+        radial-gradient(circle at 80% 60%, rgba(160, 105, 75, 0.12) 0%, rgba(160, 105, 75, 0.12) 1.5px, transparent 1.5px),
+        radial-gradient(ellipse at 40% 40%, rgba(200, 140, 110, 0.12) 0%, transparent 45%),
+        radial-gradient(ellipse at 70% 65%, rgba(190, 130, 100, 0.1) 0%, transparent 40%),
+        linear-gradient(170deg, #E8C8B4 0%, #D8B09C 30%, #CC9C88 55%, #D8B09C 80%, #E4C0AC 100%);
+    border-color: rgba(196, 144, 128, 0.5);
+    box-shadow: 0 4px 12px rgba(80, 50, 35, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -2px 4px rgba(160, 100, 70, 0.1);
+}
+.table-theme-peach .table-surface::before,
+.table-theme-peach .table-surface::after { background: linear-gradient(180deg, #C49080, #A87868); }
+
+/* ============================================
+   Decoration Screen
+   ============================================ */
+
+#decoration-screen {
+    position: absolute;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, var(--cream) 0%, var(--soft-peach) 60%, var(--blush) 100%);
+    text-align: center;
+    padding: 24px;
+}
+
+#decoration-screen.hidden { display: none; }
+
+#deco-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--cocoa);
+    margin-bottom: 6px;
+}
+
+#deco-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 20px;
+}
+
+/* Preview table */
+#deco-preview {
+    margin-bottom: 24px;
+}
+
+.deco-preview-table {
+    display: inline-block;
+}
+
+.deco-preview-table .table-surface {
+    width: 120px;
+    height: 120px;
+    transition: background 0.3s, border-color 0.3s;
+}
+
+/* Swatch row */
+#deco-swatches {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+    max-width: 500px;
+}
+
+.deco-swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    background: rgba(255, 248, 240, 0.5);
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s, background 0.2s;
+}
+
+.deco-swatch:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 248, 240, 0.8);
+}
+
+.deco-swatch.active {
+    border-color: var(--gold);
+    background: rgba(255, 248, 240, 0.9);
+    box-shadow: 0 2px 10px rgba(212, 168, 67, 0.3);
+}
+
+.swatch-fill {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(74, 55, 40, 0.15);
+}
+
+.swatch-label {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+/* Swatch colour fills */
+.swatch-wood     { background: linear-gradient(135deg, #DEC49C, #B8945E); }
+.swatch-rose     { background: linear-gradient(135deg, #E8C4CC, #C48B9F); }
+.swatch-sage     { background: linear-gradient(135deg, #B5CCBC, #7FA388); }
+.swatch-lavender { background: linear-gradient(135deg, #C4B8D9, #9584AD); }
+.swatch-ocean    { background: linear-gradient(135deg, #B0C8D4, #7AA0B2); }
+.swatch-honey    { background: linear-gradient(135deg, #F0DDB8, #D4B87E); }
+.swatch-peach    { background: linear-gradient(135deg, #E8C4B0, #C49080); }
+
+/* Begin shift button on deco screen */
+#deco-begin-btn {
+    padding: 14px 48px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--warm-white);
+    background: linear-gradient(135deg, var(--gold), var(--soft-yellow));
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(212, 168, 67, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#deco-begin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 168, 67, 0.55);
 }

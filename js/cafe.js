@@ -28,6 +28,8 @@ class CafeEngine {
     this.serveResultIcon = document.getElementById("serve-result-icon");
     this.serveResultText = document.getElementById("serve-result-text");
     this.serveNextBtn    = document.getElementById("serve-next-btn");
+    this.serveRetryBtn   = document.getElementById("serve-retry-btn");
+    this.serveReturnBtn  = document.getElementById("serve-return-btn");
     this.shiftComplete   = document.getElementById("shift-complete");
     this.shiftDoneBtn    = document.getElementById("shift-done-btn");
 
@@ -67,6 +69,13 @@ class CafeEngine {
     this.quitYesBtn      = document.getElementById("quit-confirm-yes");
     this.quitNoBtn       = document.getElementById("quit-confirm-no");
 
+    // DOM — decoration screen
+    this.decoScreen      = document.getElementById("decoration-screen");
+    this.decoSwatches    = document.getElementById("deco-swatches");
+    this.decoPreview     = document.querySelector(".deco-preview-table");
+    this.decoBeginBtn    = document.getElementById("deco-begin-btn");
+    this._selectedTheme  = localStorage.getItem("wishhouse_table_theme") || "wood";
+
     // DOM — recipe book modal
     this.recipeBookModal = document.getElementById("recipe-book-modal");
     this.recipeBookTabs  = document.getElementById("recipe-book-tabs");
@@ -102,6 +111,10 @@ class CafeEngine {
     this._activeTableNum = null;  // which table the player is crafting for
     this._activeOrderIdx = null;  // which order index within the table's orders
     this._activeCustomerIdx = null; // which customer at the table
+
+    // Seat positions: { tableNum: [ { angle, left, top }, ... ] }
+    // Cached so seats don't jump around on re-render
+    this._seatPositions  = {};
 
     // DOM — order picker
     this.orderPicker     = document.getElementById("order-picker");
@@ -151,10 +164,17 @@ class CafeEngine {
     };
 
     // Bind events
-    this.shiftStartBtn.addEventListener("click", () => this.beginShift());
+    this.shiftStartBtn.addEventListener("click", () => this.showDecorationScreen());
+    this.decoBeginBtn.addEventListener("click", () => this.confirmDecoration());
+    this.decoSwatches.addEventListener("click", (e) => {
+      const swatch = e.target.closest(".deco-swatch");
+      if (swatch) this.selectTheme(swatch.dataset.theme);
+    });
     this.fuseBtn.addEventListener("click", () => this.fuse());
     this.revertBtn.addEventListener("click", () => this.revertAllSlots());
-    this.serveNextBtn.addEventListener("click", () => this.afterServeResult());
+    this.serveNextBtn.addEventListener("click", () => this.afterServeResult("continue"));
+    this.serveRetryBtn.addEventListener("click", () => this.afterServeResult("retry"));
+    this.serveReturnBtn.addEventListener("click", () => this.afterServeResult("return"));
     this.shiftDoneBtn.addEventListener("click", () => this.exitShift());
     this.endShiftBtn.addEventListener("click", () => this.endShiftEarly());
 
@@ -248,6 +268,7 @@ class CafeEngine {
     this._activeTableNum = null;
     this._activeOrderIdx = null;
     this._activeCustomerIdx = null;
+    this._seatPositions  = {};
     this._shiftTips      = 0;  // tips earned this shift, saved only on completion
 
     // Show intro
@@ -259,9 +280,54 @@ class CafeEngine {
     this.serveResult.classList.add("hidden");
     this.quitConfirm.classList.add("hidden");
     this.recipeBookModal.classList.add("hidden");
+    this.decoScreen.classList.add("hidden");
 
     // Show cafe screen
     this.cafeScreen.classList.remove("hidden-screen");
+  }
+
+  /* ══════════════════════════════════
+     Decoration Screen
+     ══════════════════════════════════ */
+
+  showDecorationScreen() {
+    this.shiftIntro.classList.add("hidden");
+    this.decoScreen.classList.remove("hidden");
+
+    // Restore last-used theme selection
+    this.selectTheme(this._selectedTheme);
+  }
+
+  selectTheme(theme) {
+    this._selectedTheme = theme;
+
+    // Update swatch active state
+    this.decoSwatches.querySelectorAll(".deco-swatch").forEach(s => {
+      s.classList.toggle("active", s.dataset.theme === theme);
+    });
+
+    // Update preview table: remove all theme classes, add selected
+    const previewSurface = this.decoPreview;
+    previewSurface.className = `deco-preview-table table-theme-${theme}`;
+  }
+
+  confirmDecoration() {
+    // Persist choice
+    localStorage.setItem("wishhouse_table_theme", this._selectedTheme);
+
+    // Apply theme to the cafe room
+    this.applyTableTheme(this._selectedTheme);
+
+    // Hide deco screen and start the shift
+    this.decoScreen.classList.add("hidden");
+    this.beginShift();
+  }
+
+  applyTableTheme(theme) {
+    // Remove any existing theme class from cafe-room, add the new one
+    const room = this.cafeRoom;
+    room.className = room.className.replace(/\btable-theme-\S+/g, "").trim();
+    room.classList.add(`table-theme-${theme}`);
   }
 
   beginShift() {
@@ -335,7 +401,7 @@ class CafeEngine {
       seatedTables.push(tableNum);
     }
 
-    seatedTables.forEach(n => this.renderTable(n));
+    seatedTables.forEach(n => this.renderTable(n, true));
   }
 
   renderAllTables() {
@@ -344,64 +410,68 @@ class CafeEngine {
     }
   }
 
-  renderTable(tableNum) {
+  renderTable(tableNum, isNewSeating = false) {
     const el = this.cafeRoom.querySelector(`.cafe-table[data-table="${tableNum}"]`);
     if (!el) return;
 
-    const seatA = el.querySelector(".seat-a");
-    const seatB = el.querySelector(".seat-b");
-    const seatC = el.querySelector(".seat-c");
-    const seatD = el.querySelector(".seat-d");
     const foodSlot = el.querySelector(".food-slot");
     const overlay = el.querySelector(".table-overlay");
 
-    // Clear dynamic elements
+    // Clear dynamic seat elements
+    el.querySelectorAll(".seat").forEach(s => s.remove());
     el.classList.remove("has-customer", "served", "messy");
-    seatA.className = "seat seat-a empty";
-    seatA.textContent = "";
-    seatB.className = "seat seat-b empty";
-    seatB.textContent = "";
-    if (seatC) { seatC.className = "seat seat-c empty"; seatC.textContent = ""; }
-    if (seatD) { seatD.className = "seat seat-d empty"; seatD.textContent = ""; }
     foodSlot.className = "food-slot";
     foodSlot.textContent = "";
     overlay.className = "table-overlay";
     overlay.textContent = "";
 
     // Remove any speech bubble
+    const surface = el.querySelector(".table-surface");
     const existingBubble = el.querySelector(".table-order-bubble");
     if (existingBubble) existingBubble.remove();
 
     const tableData = this.tables[tableNum];
-    if (!tableData) return;
+    if (!tableData) {
+      delete this._seatPositions[tableNum];
+      return;
+    }
 
     const { customers, state } = tableData;
 
-    if (state === "ordering" || state === "crafting") {
-      el.classList.add("has-customer");
+    // Generate seat positions if not cached for this customer count
+    if (!this._seatPositions[tableNum] || this._seatPositions[tableNum].length !== customers.length) {
+      this._seatPositions[tableNum] = this._generateSeatPositions(tableNum, customers.length);
+    }
 
-      // Show customer avatars
-      if (customers[0]) {
-        seatA.className = "seat seat-a occupied";
-        seatA.textContent = customers[0].avatar;
-      }
-      if (customers[1]) {
-        seatB.className = "seat seat-b occupied";
-        seatB.textContent = customers[1].avatar;
-      }
+    const showCustomers = ["ordering", "crafting", "served", "eating"].includes(state);
 
+    if (showCustomers) {
+      if (state === "ordering" || state === "crafting") el.classList.add("has-customer");
+      if (state === "served") el.classList.add("served");
+
+      // Create seat elements at random positions
+      customers.forEach((cust, idx) => {
+        const pos = this._seatPositions[tableNum][idx];
+        if (!pos) return;
+        const seat = document.createElement("div");
+        seat.className = "seat occupied";
+        seat.textContent = cust.avatar;
+        seat.style.left = `${pos.left}px`;
+        seat.style.top = `${pos.top}px`;
+        el.appendChild(seat);
+      });
+
+      // Order bubble (ordering state only)
       if (state === "ordering") {
-        // Collect all pending orders for the speech bubble
         const pendingOrders = [];
         customers.forEach(c => {
           c.orders.forEach(o => {
             if (!o.completed && o.recipe) pendingOrders.push(o.recipe);
           });
         });
-
         if (pendingOrders.length > 0) {
           const bubble = document.createElement("div");
-          bubble.className = "table-order-bubble";
+          bubble.className = isNewSeating ? "table-order-bubble" : "table-order-bubble no-anim";
           bubble.innerHTML = pendingOrders
             .map(r => `<span class="bubble-icon">${r.icon}</span>`)
             .join(" ");
@@ -410,28 +480,17 @@ class CafeEngine {
           } else {
             bubble.innerHTML += ` <span class="bubble-count">${pendingOrders.length} orders</span>`;
           }
-          el.appendChild(bubble);
+          surface.appendChild(bubble);
         }
       }
-    }
 
-    if (state === "served") {
-      el.classList.add("served");
-      if (customers[0]) { seatA.className = "seat seat-a occupied"; seatA.textContent = customers[0].avatar; }
-      if (customers[1]) { seatB.className = "seat seat-b occupied"; seatB.textContent = customers[1].avatar; }
-      const lastRecipe = this._lastDeliveredRecipe;
-      foodSlot.className = "food-slot has-food";
-      foodSlot.textContent = lastRecipe ? lastRecipe.icon : "\uD83C\uDF7D";
-      overlay.className = "table-overlay glow";
-    }
-
-    if (state === "eating") {
-      if (customers[0]) { seatA.className = "seat seat-a occupied"; seatA.textContent = customers[0].avatar; }
-      if (customers[1]) { seatB.className = "seat seat-b occupied"; seatB.textContent = customers[1].avatar; }
-      const lastRecipe = this._lastDeliveredRecipe;
-      foodSlot.className = "food-slot has-food";
-      foodSlot.textContent = lastRecipe ? lastRecipe.icon : "\uD83C\uDF7D";
-      overlay.className = "table-overlay hearts";
+      // Food on table
+      if (state === "served" || state === "eating") {
+        const lastRecipe = this._lastDeliveredRecipe;
+        foodSlot.className = "food-slot has-food";
+        foodSlot.textContent = lastRecipe ? lastRecipe.icon : "\uD83C\uDF7D";
+        overlay.className = state === "served" ? "table-overlay glow" : "table-overlay hearts";
+      }
     }
 
     if (state === "messy") {
@@ -439,6 +498,57 @@ class CafeEngine {
       foodSlot.className = "food-slot has-food clickable";
       foodSlot.textContent = "\uD83E\uDDFD";
     }
+  }
+
+  /**
+   * Generate random seat positions around the table edge.
+   * Positions are in px relative to the .cafe-table element.
+   * Ensures no overlap with seats on the same table.
+   */
+  _generateSeatPositions(tableNum, count) {
+    // Table & seat dimensions (must match CSS)
+    const tableW = 180, tableH = 180;
+    const surfaceW = 170, surfaceH = 170;
+    const seatSize = 52;
+
+    // Center of the table surface within .cafe-table
+    const cx = tableW / 2;
+    const cy = tableH / 2;
+
+    // Radius from center to seat center (just outside the table edge)
+    const rx = (surfaceW / 2) + (seatSize * 0.15);
+    const ry = (surfaceH / 2) + (seatSize * 0.15);
+
+    const positions = [];
+    const minAngleSep = Math.PI / 3; // ~60 degrees min between seats on same table
+
+    for (let i = 0; i < count; i++) {
+      let bestAngle = null;
+      let attempts = 0;
+
+      while (attempts < 30) {
+        // Random angle around the circle
+        const angle = Math.random() * Math.PI * 2;
+        attempts++;
+
+        // Check distance from other seats on this table
+        let tooClose = false;
+        for (const existing of positions) {
+          let diff = Math.abs(angle - existing.angle);
+          if (diff > Math.PI) diff = Math.PI * 2 - diff;
+          if (diff < minAngleSep) { tooClose = true; break; }
+        }
+        if (!tooClose) { bestAngle = angle; break; }
+      }
+
+      if (bestAngle === null) bestAngle = (Math.PI * 2 / count) * i; // fallback: evenly spaced
+
+      const left = cx + Math.cos(bestAngle) * rx - seatSize / 2;
+      const top  = cy + Math.sin(bestAngle) * ry - seatSize / 2;
+      positions.push({ angle: bestAngle, left: Math.round(left), top: Math.round(top) });
+    }
+
+    return positions;
   }
 
   onTableClick(tableNum) {
@@ -1307,13 +1417,51 @@ class CafeEngine {
         .join("<br>");
     }
 
+    // Check if this table has more pending orders
+    const tableData = this.tables[this._activeTableNum];
+    let hasPending = false;
+    if (tableData) {
+      tableData.customers.forEach(c => {
+        c.orders.forEach(o => { if (!o.completed) hasPending = true; });
+      });
+      // The current order hasn't been marked complete yet, so subtract 1
+      // unless it failed (failures don't complete the order either)
+      // Actually: order gets marked complete in afterServeResult, so here
+      // the current order is still "not completed". Count pending minus the current one if success.
+      if (success) {
+        let pendingCount = 0;
+        tableData.customers.forEach(c => {
+          c.orders.forEach(o => { if (!o.completed) pendingCount++; });
+        });
+        hasPending = pendingCount > 1; // more than just the one we're about to complete
+      }
+    }
+
     if (forceEnd) {
-      // 5+ mistakes — force player to end the shift
       this.serveNextBtn.textContent = "End Shift";
+      this.serveNextBtn.classList.remove("hidden");
+      this.serveRetryBtn.classList.add("hidden");
+      this.serveReturnBtn.classList.add("hidden");
       this._forceEndShift = true;
+    } else if (!success) {
+      // Failed order — offer retry and return to tables
+      this.serveNextBtn.classList.add("hidden");
+      this.serveRetryBtn.classList.remove("hidden");
+      this.serveReturnBtn.classList.remove("hidden");
+      this._forceEndShift = false;
+    } else if (hasPending) {
+      // Success with more orders — offer continue or return
+      this.serveNextBtn.textContent = "Continue Next Order";
+      this.serveNextBtn.classList.remove("hidden");
+      this.serveRetryBtn.classList.add("hidden");
+      this.serveReturnBtn.classList.remove("hidden");
+      this._forceEndShift = false;
     } else {
       const shiftDone = this.successCount >= this.shiftData.ordersRequired && this.orderQueue.length === 0;
       this.serveNextBtn.textContent = shiftDone ? "Finish Shift" : "Back to Tables";
+      this.serveNextBtn.classList.remove("hidden");
+      this.serveRetryBtn.classList.add("hidden");
+      this.serveReturnBtn.classList.add("hidden");
       this._forceEndShift = false;
     }
 
@@ -1321,10 +1469,10 @@ class CafeEngine {
   }
 
   /**
-   * Called when player clicks the serve result button.
-   * Returns to table zone with food delivery animation.
+   * Called when player clicks a serve result button.
+   * choice: "continue" (next order at same table), "retry" (same order again), or "return" (back to tables)
    */
-  async afterServeResult() {
+  async afterServeResult(choice = "continue") {
     this.serveResult.classList.add("hidden");
 
     // Forced end shift at 5+ mistakes
@@ -1334,11 +1482,17 @@ class CafeEngine {
       return;
     }
 
+    // Retry — re-open the same order with fresh slots
+    if (choice === "retry") {
+      this._selectOrder(this._activeTableNum, this._activeCustomerIdx, this._activeOrderIdx);
+      return;
+    }
+
     const tableNum = this._activeTableNum;
     const tableData = this.tables[tableNum];
 
-    // Mark the current order as completed
-    if (tableData && this._activeCustomerIdx != null && this._activeOrderIdx != null) {
+    // Mark the current order as completed only on success
+    if (this._lastFuseSuccess && tableData && this._activeCustomerIdx != null && this._activeOrderIdx != null) {
       const customer = tableData.customers[this._activeCustomerIdx];
       if (customer && customer.orders[this._activeOrderIdx]) {
         customer.orders[this._activeOrderIdx].completed = true;
@@ -1353,6 +1507,28 @@ class CafeEngine {
           if (!o.completed) pendingOrders.push({ customerIdx: ci, orderIdx: oi, ...o });
         });
       });
+    }
+
+    // Player chose "Return to Tables" — go back, keep remaining/failed orders
+    if (choice === "return" && tableData) {
+      this._activeTableNum = null;
+      this._activeOrderIdx = null;
+      this._activeCustomerIdx = null;
+
+      if (this._lastFuseSuccess && pendingOrders.length > 0) {
+        // Quick serve animation without the full eat/messy cycle
+        this._lastDeliveredRecipe = this.selectedRecipe;
+        tableData.state = "served";
+        this.showTableZone();
+        await this.sleep(800);
+        tableData.state = "ordering";
+        this.renderTable(tableNum);
+      } else {
+        // Failed or no pending — just go back to ordering
+        tableData.state = "ordering";
+        this.showTableZone();
+      }
+      return;
     }
 
     if (pendingOrders.length > 0 && this._lastFuseSuccess) {

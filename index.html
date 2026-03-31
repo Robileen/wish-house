@@ -123,6 +123,48 @@
             <button id="shift-start-btn">Start Shift</button>
         </div>
 
+        <!-- Decoration screen: table colour picker -->
+        <div id="decoration-screen" class="hidden">
+            <h2 id="deco-title">Decorate Your Cafe</h2>
+            <p id="deco-subtitle">Choose a table style for today's shift</p>
+            <div id="deco-preview">
+                <div class="deco-preview-table">
+                    <div class="table-surface"></div>
+                </div>
+            </div>
+            <div id="deco-swatches">
+                <button class="deco-swatch active" data-theme="wood" title="Classic Wood">
+                    <span class="swatch-fill swatch-wood"></span>
+                    <span class="swatch-label">Wood</span>
+                </button>
+                <button class="deco-swatch" data-theme="rose" title="Rose Marble">
+                    <span class="swatch-fill swatch-rose"></span>
+                    <span class="swatch-label">Marble</span>
+                </button>
+                <button class="deco-swatch" data-theme="sage" title="Sage Ceramic">
+                    <span class="swatch-fill swatch-sage"></span>
+                    <span class="swatch-label">Ceramic</span>
+                </button>
+                <button class="deco-swatch" data-theme="lavender" title="Lavender Terrazzo">
+                    <span class="swatch-fill swatch-lavender"></span>
+                    <span class="swatch-label">Terrazzo</span>
+                </button>
+                <button class="deco-swatch" data-theme="ocean" title="Ocean Watercolour">
+                    <span class="swatch-fill swatch-ocean"></span>
+                    <span class="swatch-label">Ocean</span>
+                </button>
+                <button class="deco-swatch" data-theme="honey" title="Honey Stone">
+                    <span class="swatch-fill swatch-honey"></span>
+                    <span class="swatch-label">Stone</span>
+                </button>
+                <button class="deco-swatch" data-theme="peach" title="Peach Clay">
+                    <span class="swatch-fill swatch-peach"></span>
+                    <span class="swatch-label">Clay</span>
+                </button>
+            </div>
+            <button id="deco-begin-btn">Begin Shift</button>
+        </div>
+
         <!-- HUD: shift progress bar -->
         <div id="cafe-hud">
             <div class="hud-left">
@@ -191,72 +233,48 @@
                 <!-- Row 1: Tables 1-3 -->
                 <div class="table-row">
                     <div class="cafe-table" data-table="1">
-                        <div class="seat seat-c"></div>
-                        <div class="seat seat-d"></div>
                         <div class="table-surface">
                             <div class="food-slot"></div>
                             <div class="table-overlay"></div>
                         </div>
-                        <div class="seat seat-a"></div>
-                        <div class="seat seat-b"></div>
                         <div class="table-label">Table 1</div>
                     </div>
                     <div class="cafe-table" data-table="2">
-                        <div class="seat seat-c"></div>
-                        <div class="seat seat-d"></div>
                         <div class="table-surface">
                             <div class="food-slot"></div>
                             <div class="table-overlay"></div>
                         </div>
-                        <div class="seat seat-a"></div>
-                        <div class="seat seat-b"></div>
                         <div class="table-label">Table 2</div>
                     </div>
                     <div class="cafe-table" data-table="3">
-                        <div class="seat seat-c"></div>
-                        <div class="seat seat-d"></div>
                         <div class="table-surface">
                             <div class="food-slot"></div>
                             <div class="table-overlay"></div>
                         </div>
-                        <div class="seat seat-a"></div>
-                        <div class="seat seat-b"></div>
                         <div class="table-label">Table 3</div>
                     </div>
                 </div>
                 <!-- Row 2: Tables 4-6 -->
                 <div class="table-row">
                     <div class="cafe-table" data-table="4">
-                        <div class="seat seat-c"></div>
-                        <div class="seat seat-d"></div>
                         <div class="table-surface">
                             <div class="food-slot"></div>
                             <div class="table-overlay"></div>
                         </div>
-                        <div class="seat seat-a"></div>
-                        <div class="seat seat-b"></div>
                         <div class="table-label">Table 4</div>
                     </div>
                     <div class="cafe-table" data-table="5">
-                        <div class="seat seat-c"></div>
-                        <div class="seat seat-d"></div>
                         <div class="table-surface">
                             <div class="food-slot"></div>
                             <div class="table-overlay"></div>
                         </div>
-                        <div class="seat seat-a"></div>
-                        <div class="seat seat-b"></div>
                         <div class="table-label">Table 5</div>
                     </div>
                     <div class="cafe-table" data-table="6">
-                        <div class="seat seat-c"></div>
-                        <div class="seat seat-d"></div>
                         <div class="table-surface">
                             <div class="food-slot"></div>
                             <div class="table-overlay"></div>
                         </div>
-                        <div class="seat seat-a"></div>
-                        <div class="seat seat-b"></div>
                         <div class="table-label">Table 6</div>
                     </div>
                 </div>
@@ -340,7 +358,11 @@
         <div id="serve-result" class="hidden">
             <div id="serve-result-icon"></div>
             <div id="serve-result-text"></div>
-            <button id="serve-next-btn">Next Order</button>
+            <div id="serve-result-actions">
+                <button id="serve-next-btn">Next Order</button>
+                <button id="serve-retry-btn" class="hidden">Try Again?</button>
+                <button id="serve-return-btn" class="hidden">Return to Tables</button>
+            </div>
         </div>
 
         <!-- Shift complete overlay -->
