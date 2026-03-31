@@ -1641,6 +1641,8 @@
     transform: translateY(-2px);
 }
 
+#serve-next-btn.hidden { display: none; }
+
 #serve-result-actions {
     display: flex;
     gap: 12px;
