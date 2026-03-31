@@ -758,8 +758,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 52px;
-    padding: 40px 16px 8px;
+    gap: 12px;
+    padding: 12px 16px 4px;
 }
 
 .table-row {
@@ -770,11 +770,16 @@
 
 /* Individual table module */
 .cafe-table {
-    width: 160px;
+    width: 200px;
+    height: 210px;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
     text-align: center;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .cafe-table:hover {
@@ -787,26 +792,75 @@
 
 @keyframes table-pulse {
     0%, 100% { box-shadow: none; }
-    50%      { box-shadow: 0 0 16px rgba(212, 168, 67, 0.35); border-radius: 12px; }
+    50%      { box-shadow: 0 0 16px rgba(212, 168, 67, 0.35); border-radius: 50%; }
 }
 
 .cafe-table.served .table-surface {
     border-color: var(--pale-mint);
+    border-radius: 50%;
 }
 
 .cafe-table.messy .table-surface {
     border-color: var(--dusty-rose);
     opacity: 0.7;
+    border-radius: 50%;
 }
 
 .table-surface {
     position: relative;
-    width: 160px;
-    height: 110px;
-    background: linear-gradient(180deg, #FFF8F0 0%, #FDDCBA 50%, #F5E6C8 100%);
-    border: 2px solid rgba(200, 168, 130, 0.4);
-    border-radius: 12px;
-    box-shadow: 0 3px 10px rgba(74, 55, 40, 0.1);
+    width: 200px;
+    height: 130px;
+    /* Warm wood base */
+    background:
+        /* Wood grain lines */
+        repeating-linear-gradient(
+            95deg,
+            transparent,
+            transparent 8px,
+            rgba(139, 90, 43, 0.08) 8px,
+            rgba(139, 90, 43, 0.08) 9px,
+            transparent 9px,
+            transparent 22px
+        ),
+        repeating-linear-gradient(
+            92deg,
+            transparent,
+            transparent 30px,
+            rgba(160, 112, 64, 0.06) 30px,
+            rgba(160, 112, 64, 0.06) 31px
+        ),
+        /* Wood colour base */
+        linear-gradient(170deg, #DEC49C 0%, #C8A87A 35%, #B8945E 60%, #C8A87A 85%, #D4B48A 100%);
+    border: 2px solid rgba(160, 112, 64, 0.45);
+    border-radius: 50%;
+    box-shadow:
+        0 4px 12px rgba(74, 55, 40, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -2px 4px rgba(139, 90, 43, 0.1);
+}
+
+/* Table legs — four small pegs under the oval */
+.table-surface::before,
+.table-surface::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    width: 6px;
+    height: 14px;
+    background: linear-gradient(180deg, #B8945E, #9A7848);
+    border-radius: 0 0 2px 2px;
+    box-shadow: 0 2px 3px rgba(74, 55, 40, 0.15);
+    z-index: -1;
+}
+
+.table-surface::before {
+    left: 38px;
+    transform: rotate(-4deg);
+}
+
+.table-surface::after {
+    right: 38px;
+    transform: rotate(4deg);
 }
 
 .table-label {
@@ -814,39 +868,59 @@
     font-size: 0.6rem;
     font-weight: 600;
     color: var(--text-light);
-    margin-top: 4px;
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-/* Seats: left and right positions */
+/* Seats: circular slots in V-shape around the table
+   Bottom pair (a,b) closer together, top pair (c,d) wider apart
+   Each top seat sits close to its bottom counterpart */
 .seat {
     position: absolute;
-    width: 38px;
-    height: 50px;
-    bottom: 4px;
-    border-radius: 8px 8px 4px 4px;
+    width: 47px;
+    height: 47px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     transition: opacity 0.3s;
+    z-index: 1;
 }
 
+/* Bottom row: closer together (V bottom) */
 .seat.seat-a {
-    left: 10px;
+    bottom: 6px;
+    left: 42px;
 }
 
 .seat.seat-b {
+    bottom: 6px;
+    right: 42px;
+}
+
+/* Top row: wider apart (V top), each near its bottom counterpart */
+.seat.seat-c {
+    top: 6px;
+    left: 10px;
+}
+
+.seat.seat-d {
+    top: 6px;
     right: 10px;
 }
 
 .seat.occupied {
-    background: linear-gradient(180deg, rgba(244, 184, 193, 0.25), rgba(253, 220, 186, 0.3));
-    border: 1.5px solid rgba(244, 184, 193, 0.4);
+    background: linear-gradient(180deg, rgba(244, 184, 193, 0.3), rgba(253, 220, 186, 0.35));
+    border: 1.5px solid rgba(244, 184, 193, 0.5);
+    box-shadow: 0 2px 6px rgba(74, 55, 40, 0.1);
 }
 
 .seat.empty {
-    background: rgba(200, 168, 130, 0.08);
-    border: 1.5px dashed rgba(200, 168, 130, 0.2);
+    background: rgba(255, 248, 240, 0.4);
+    border: 1.5px dashed rgba(200, 168, 130, 0.3);
 }
 
 /* Food slot: center of table */
