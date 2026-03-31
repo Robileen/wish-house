@@ -350,6 +350,8 @@ class CafeEngine {
 
     const seatA = el.querySelector(".seat-a");
     const seatB = el.querySelector(".seat-b");
+    const seatC = el.querySelector(".seat-c");
+    const seatD = el.querySelector(".seat-d");
     const foodSlot = el.querySelector(".food-slot");
     const overlay = el.querySelector(".table-overlay");
 
@@ -359,6 +361,8 @@ class CafeEngine {
     seatA.textContent = "";
     seatB.className = "seat seat-b empty";
     seatB.textContent = "";
+    if (seatC) { seatC.className = "seat seat-c empty"; seatC.textContent = ""; }
+    if (seatD) { seatD.className = "seat seat-d empty"; seatD.textContent = ""; }
     foodSlot.className = "food-slot";
     foodSlot.textContent = "";
     overlay.className = "table-overlay";
