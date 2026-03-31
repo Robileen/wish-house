@@ -12,7 +12,12 @@ Journal (Main Menu)
             ├── Shift Intro Overlay
             │       └── click "Start Shift"
             │
-            ├── Table Zone (cafe room with 6 tables)
+            ├── Decoration Screen
+            │       ├── Table colour/texture picker (7 themes)
+            │       ├── Live preview table
+            │       └── click "Begin Shift"
+            │
+            ├── Table Zone (cafe room with 6 circular tables)
             │       ├── Customers appear at random tables with speech bubbles
             │       ├── Click a table → take order → Craft View
             │       ├── After serving → food delivery animation
@@ -33,11 +38,38 @@ Journal (Main Menu)
 
 ## 1. Shift Intro
 
-Full-screen overlay with shift name, description, and goal (e.g. "Serve 12 successful dishes"). Click "Start Shift" to enter the Table Zone.
+Full-screen overlay with shift name, description, and goal (e.g. "Serve 12 successful dishes"). Click "Start Shift" to enter the Decoration Screen.
 
 ---
 
-## 2. HUD (Top Bar)
+## 2. Decoration Screen
+
+Appears between Shift Intro and gameplay. Player picks a table style for the shift.
+
+### Table Themes
+
+| Theme | Texture | Description |
+|-------|---------|-------------|
+| **Wood** | Rich grain with knot swirls | Warm brown wood with visible grain lines |
+| **Marble** | Veined pink marble | Soft pink with diagonal white/grey vein streaks |
+| **Ceramic** | Matte sage with speckle | Earthy green with scattered tiny flecks |
+| **Terrazzo** | Pastel purple chips | Lavender base with scattered terrazzo chip shapes |
+| **Ocean** | Watercolour wash | Soft blue with irregular wet paint bleeds |
+| **Stone** | Polished amber | Warm translucent layers with subtle light veins |
+| **Clay** | Terracotta | Earthy peach with fine sandy texture dots |
+
+### UI Layout
+
+* Title: "Decorate Your Cafe" (Playfair Display)
+* Subtitle: "Choose a table style for today's shift"
+* Preview table: circular table surface showing the selected texture
+* 7 colour swatches: circular fills with labels, gold border on active
+* "Begin Shift" button: gold gradient (same style as Start Shift)
+* Selection persisted in `localStorage` key `wishhouse_table_theme`
+
+---
+
+## 3. HUD (Top Bar)
 
 Always visible during the shift:
 
@@ -59,58 +91,55 @@ Always visible during the shift:
 
 ---
 
-## 3. Table Zone (Cafe Room)
+## 4. Table Zone (Cafe Room)
 
-6 tables in a **2×3 grid** with a barista zone at the bottom. Vertical gap of 52px between rows to accommodate speech bubbles.
+6 **circular tables** (170×170px) in a **2×3 grid** with a barista zone at the bottom.
 
-```
-┌───────────────────────────────────────────────────────────┐
-│                                                           │
-│    ☕ House Blend     🍵 Matcha                            │
-│   ┌──────────┐     ┌──────────┐     ┌──────────┐        │
-│   │ 👩  ·    │     │ 👨  ·    │     │  ·   ·   │        │
-│   │    🍽    │     │    🍽    │     │    🍽    │        │
-│   └──────────┘     └──────────┘     └──────────┘        │
-│    Table 1          Table 2          Table 3             │
-│                                                           │
-│   ┌──────────┐     ┌──────────┐     ┌──────────┐        │
-│   │  ·   ·   │     │ 🧓  ·    │     │  ·   ·   │        │
-│   │    🍽    │     │    🍽    │     │    🍽    │        │
-│   └──────────┘     └──────────┘     └──────────┘        │
-│    Table 4          Table 5          Table 6             │
-│                                                           │
-│                    ☕ M & B                                │
-└───────────────────────────────────────────────────────────┘
-```
+### Table Design
+
+* **Shape:** Circle (`border-radius: 50%`)
+* **Texture:** Themed surface matching the player's Decoration Screen selection
+* **Legs:** Two small wooden pegs at the bottom, colour-matched to theme
+* **Table labels:** Centred below each table
+
+### Customer Seats
+
+* **Dynamic placement:** seats appear at random angles around the table edge
+* **Only shown when occupied** — no empty seat outlines
+* **Collision avoidance:** minimum 60° angle separation between seats on the same table
+* **Size:** 52×52px circles with customer avatar emoji
+* **Style:** pastel gradient fill, solid border, subtle shadow
+* Positions cached per table (don't jump on re-render)
+
+### Speech Bubbles
+
+* Float **above** the table centre
+* Centred horizontally with V-shaped tail pointing down
+* Gold border (`1.5px`), warm-white background (`rgba(255,245,235,0.95)`)
+* Recipe icon + name (single order) or all icons + "N orders" (multiple)
+* **Pop-in animation only on first appearance** (new customer seating)
+* Re-renders (after serving/cleaning) show bubble without animation
 
 ### Table States
 
 | State | Visual | Interaction |
 |-------|--------|-------------|
-| **Empty** | Empty seats (dashed borders), no customer | — |
-| **Ordering** | Customer avatar in seat A, speech bubble above table with recipe icon + name | Click table → go to Craft View |
-| **Crafting** | Customer seated, no bubble (player is in Craft View) | — |
-| **Served** | Customer + food icon on table, green glow overlay | Auto-advances |
-| **Eating** | Customer + food, floating hearts animation | Auto-advances |
-| **Messy** | No customer, wobbling sponge emoji on table | Click table/sponge to clean |
-
-### Speech Bubbles
-
-* Float **above** the table (outside `.table-surface`)
-* Centered horizontally with V-shaped tail pointing down
-* Gold border, warm-white background
-* Recipe icon + name (e.g. "☕ House Blend") or dialogue text
-* Pop-in animation on appear
+| **Empty** | Clean circular table, no customers | — |
+| **Ordering** | Customer circle(s) around table, speech bubble | Click table → Craft View |
+| **Crafting** | Customers seated, no bubble | Player is in Craft View |
+| **Served** | Customers + food icon on table, pale mint border | Auto-advances |
+| **Eating** | Customers + food, floating hearts animation | Auto-advances |
+| **Messy** | No customers, wobbling sponge emoji on table | Click table/sponge to clean |
 
 ### Customer Seating
 
-* Up to 3 customers seated at random empty tables at a time
+* Up to 3 tables populated at a time from the order queue
 * New customers seat when a table is cleaned
 * 20 customers per shift, 12 required to pass
 
 ---
 
-## 4. Craft View
+## 5. Craft View
 
 Entered by clicking a table with an ordering customer. Recipe is **auto-selected** from the customer's order.
 
@@ -230,7 +259,7 @@ Hot and Cold are **mutually exclusive** — only one temperature can be used per
 
 ---
 
-## 5. Recipe Book Modal
+## 6. Recipe Book Modal
 
 Opened via the **?** button. See `RECIPE_BOOK.md` for full spec.
 
@@ -244,17 +273,80 @@ Key points:
 
 ---
 
-## 6. Post-FUSE Flow
+## 7. Post-FUSE Flow — Serve Result Screen
 
-1. Fuse animation overlay (brew/conjure)
-2. Serve result screen (success ✨ or fail 😞 with reason)
-3. Click "Back to Tables" → returns to Table Zone
-4. Delivery animation: barista slides → food placed → glow → hearts → customer eats → messy
-5. Click sponge to clean table → next customer seats
+After FUSE animation completes, a result overlay is shown. The buttons displayed depend on the outcome and remaining orders:
+
+### Success — Table Has More Orders
+
+```
+        ✨
+  House Blend served successfully!
+
+  [Continue Next Order]  [Return to Tables]
+```
+
+* **Continue Next Order** (pink, primary): shows order picker for remaining orders at same table
+* **Return to Tables** (subtle): delivers food briefly, returns table to ordering state with remaining orders
+
+### Success — Last/Only Order at Table
+
+```
+        ✨
+  House Blend served successfully!
+
+  [Back to Tables]   (or [Finish Shift] if goal met)
+```
+
+* Single button — goes to table zone with full delivery animation (serve → eat → messy → clean)
+
+### Failure — Table Has More Orders
+
+```
+        😞
+  Wrong recipe! Edward: "Maybe check the recipe book?"
+
+  [Try Again?]  [Next Order]  [Return to Tables]
+```
+
+* **Try Again?** (gold, primary): re-opens same order with fresh ingredient slots
+* **Next Order** (pink): goes to order picker to select a different order at the same table
+* **Return to Tables** (subtle): returns to table zone, all incomplete orders remain (including the failed one)
+
+### Failure — Single Order at Table
+
+```
+        😞
+  Wrong recipe! Edward: "…our budget, boss… 😒"
+
+  [Try Again?]  [Return to Tables]
+```
+
+* **Try Again?** (gold): re-opens same order with fresh slots
+* **Return to Tables** (subtle): returns to table zone, failed order stays as pending
+
+### Failure — 5+ Mistakes (Forced End)
+
+```
+        😞
+  Wrong recipe!
+  Edward: "Uh boss… more practice?"
+  Kit: "Why?!"
+
+  [Continue]
+```
+
+* Single button — ends the shift immediately, goes to Shift Complete screen
+
+### Key Behaviours
+
+* **Failed orders are NOT marked as completed** — they remain pending and retryable
+* **"Return to Tables" always preserves incomplete orders** — customers stay seated, speech bubble shows remaining orders
+* **Mistake counter resets to 0 at the start of every shift** — each shift is treated as fresh
 
 ---
 
-## 7. Visual & UI Notes
+## 8. Visual & UI Notes
 
 * **Style:** 2D, watercolour, gentle, Barbie My Scene
 * **Palette:**

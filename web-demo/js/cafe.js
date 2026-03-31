@@ -270,6 +270,8 @@ class CafeEngine {
     this._activeCustomerIdx = null;
     this._seatPositions  = {};
     this._shiftTips      = 0;  // tips earned this shift, saved only on completion
+    this._forceEndShift  = false;
+    this._lastFuseSuccess = false;
 
     // Show intro
     this.shiftIntroTitle.textContent = this.shiftData.name;
@@ -1444,10 +1446,16 @@ class CafeEngine {
       this.serveReturnBtn.classList.add("hidden");
       this._forceEndShift = true;
     } else if (!success) {
-      // Failed order — offer retry and return to tables
-      this.serveNextBtn.classList.add("hidden");
+      // Failed order — always offer retry and return to tables
       this.serveRetryBtn.classList.remove("hidden");
       this.serveReturnBtn.classList.remove("hidden");
+      // If table has other orders, also offer picking a different order
+      if (hasPending) {
+        this.serveNextBtn.textContent = "Next Order";
+        this.serveNextBtn.classList.remove("hidden");
+      } else {
+        this.serveNextBtn.classList.add("hidden");
+      }
       this._forceEndShift = false;
     } else if (hasPending) {
       // Success with more orders — offer continue or return
@@ -1543,6 +1551,18 @@ class CafeEngine {
       tableData.state = "crafting";
 
       // Return to order picker for remaining orders
+      if (pendingOrders.length === 1) {
+        this._selectOrder(tableNum, pendingOrders[0].customerIdx, pendingOrders[0].orderIdx);
+      } else {
+        this._showOrderPicker(tableNum, pendingOrders);
+        this.showCraftView();
+      }
+      return;
+    }
+
+    if (pendingOrders.length > 0 && !this._lastFuseSuccess) {
+      // Failed but table has more orders — go straight to order picker (no delivery)
+      tableData.state = "crafting";
       if (pendingOrders.length === 1) {
         this._selectOrder(tableNum, pendingOrders[0].customerIdx, pendingOrders[0].orderIdx);
       } else {

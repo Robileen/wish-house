@@ -1,98 +1,146 @@
-Perfect — let’s extend your Markdown with a **Shift Flow Diagram** so the dev team can see the full progression from order to story interaction. I’ll keep it text-based, clean, and annotated.
+# Wish House – Shift Flow Diagram
 
-Here’s the updated section to append to your Markdown:
+## Complete Shift Flow
 
----
-
-## 9. Shift Flow Diagram
-
-```id="shift_flow"
+```
 Start of Shift
       │
       ▼
-Customer Orders Appear
+Shift Intro Screen
+  "Shift 1 — Your first day!"
+  [Start Shift]
       │
       ▼
-Player Chooses Order Type
- ┌───────────────┬───────────────┐
- │               │               │
- ▼               ▼               ▼
-Drink          Food/Dessert    Special (Story NPC)
- │               │               │
- │               │               │
- Waiter         Magician        Dialogue Trigger
- Handles        Handles
- Drink          Recipe Puzzle
- │               │
- │               ▼
- │        Open Recipe Book
- │        Select Ingredient Cards
- │        Place in Slots
- │        (Slots Highlight Correct Cards)
- │               │
- │               ▼
- │          Click FUSE
- │          ▼
- │      Animation Plays
- │  (Barista or Magician)
- │               │
- ▼               ▼
-Serve Dish / Drink
- │
- │
-Success? ──► Yes ──► Streak & Shift Rating Update
- │
-No
- │
- ▼
-Optional: Discard & Redo
- │
- ▼
-Repeat for Next Order
- │
- ▼
-Shift End Conditions
- ┌───────────────────────────────┐
- │  1. Player completes 5+       │
- │     successful dishes         │
- │  2. All customers served       │
- │  3. Player chooses to skip     │
- └───────────────────────────────┘
+Decoration Screen
+  "Decorate Your Cafe"
+  Pick table theme: Wood | Marble | Ceramic | Terrazzo | Ocean | Stone | Clay
+  [Begin Shift]
       │
       ▼
-Story NPC Interaction / Chapter Progression
+Table Zone (6 circular tables, 2×3 grid)
+  ├── Up to 3 tables populated with 1-2 customers each
+  ├── Speech bubbles show pending order icons
+  └── Player clicks a table with ordering customers
+          │
+          ▼
+    ┌─── Multiple orders at table? ───┐
+    │ YES                              │ NO
+    ▼                                  ▼
+Order Picker                     Craft View
+  Select which order               (single order
+  to work on                        auto-selected)
+    │                                  │
+    └──────────┬───────────────────────┘
+               ▼
+         Craft View
+    ┌─────────────────────────────┐
+    │ Customer chat (~60% chance) │
+    │  → 2 choices, best = +1 tip│
+    ├─────────────────────────────┤
+    │ Fill ingredient slots       │
+    │ from deck (any order)       │
+    ├─────────────────────────────┤
+    │ Click FUSE                  │
+    │ → Brew/Conjure animation    │
+    └─────────────────────────────┘
+               │
+               ▼
+      ┌── Recipe Correct? ──┐
+      │ YES                  │ NO
+      ▼                      ▼
+  +1 success              +1 mistake
+  +1 button               streak reset
+  +1 streak               Edward quip
+      │                      │
+      ▼                      ▼
+  ╔════════════╗        ╔════════════╗
+  ║  SUCCESS   ║        ║  FAILURE   ║
+  ║  SCREEN    ║        ║  SCREEN    ║
+  ╚════════════╝        ╚════════════╝
+      │                      │
+      │                      ├── 5 mistakes?
+      │                      │   YES → [Continue] → Shift Complete (forced end)
+      │                      │
+      │                      ├── Table has more orders?
+      │                      │   YES:
+      │                      │     [Try Again?] → same order, fresh slots ──→ Craft View
+      │                      │     [Next Order] → order picker ──→ Craft View
+      │                      │     [Return to Tables] → table stays ordering ──→ Table Zone
+      │                      │
+      │                      └── Single order:
+      │                          [Try Again?] → same order, fresh slots ──→ Craft View
+      │                          [Return to Tables] → table stays ordering ──→ Table Zone
       │
-      ▼
-Shift Complete → Earnings & Reputation Updated
+      ├── Table has more orders?
+      │   YES:
+      │     [Continue Next Order] → delivery → order picker ──→ Craft View
+      │     [Return to Tables] → brief delivery → table stays ordering ──→ Table Zone
+      │
+      └── Last/only order:
+          [Back to Tables] → full delivery animation ──→ Table Zone
+          [Finish Shift] (if goal met) → Shift Complete
+                │
+                ▼
+          Delivery Animation
+            Barista slides → food on table → glow
+            → hearts (5s) → customer leaves → messy
+                │
+                ▼
+          Messy Table
+            🧽 wobbling sponge
+            Click to clean
+                │
+                ▼
+          Table cleaned → next customers seat
+                │
+                ▼
+          ┌── More customers in queue? ──┐
+          │ YES                           │ NO
+          ▼                               ▼
+    Back to Table Zone             ┌── Goal met? ──┐
+    (new customers seated)         │ YES            │ NO
+                                   ▼                ▼
+                              Shift Complete    Continue
+                                                (wait for
+                                                 cleanup)
 ```
-
-### 📝 Notes
-
-1. **Player Choice & Freedom**
-
-   * Player may interact with Story NPCs after ~5–6 dishes.
-   * Can skip remaining orders to prioritize VN progress.
-   * Earnings and streaks are kept even if shift is skipped.
-
-2. **Mistake System Integration**
-
-   * Mistakes feed into Shift Rating / Mistake Meter
-   * Dialogue triggers appear when mistakes accumulate.
-   * Maximum mistakes allowed per shift can be increased via streaks.
-
-3. **Special Cards**
-
-   * Can be used at any point to instantly complete a dish/drink.
-   * Limited per shift to avoid imbalance.
-
-4. **Visual Feedback**
-
-   * Glow/highlight on correct ingredient placement.
-   * Dish/drink animations for FUSE button feedback.
-   * Shift ratings visualized with sparkles/question marks/explosions.
 
 ---
 
-This flow chart now clearly communicates **every step of a shift**, from player choice → gameplay mechanics → story progression → shift end.
+## Serve Result — Button Matrix
 
---- 
+```
+┌─────────────────────┬─────────────────────┬─────────────────────────────┐
+│ Outcome             │ Table Orders        │ Buttons Shown               │
+├─────────────────────┼─────────────────────┼─────────────────────────────┤
+│ SUCCESS             │ More orders remain  │ [Continue Next Order]       │
+│                     │                     │ [Return to Tables]          │
+├─────────────────────┼─────────────────────┼─────────────────────────────┤
+│ SUCCESS             │ Last/only order     │ [Back to Tables]            │
+│                     │                     │  or [Finish Shift]          │
+├─────────────────────┼─────────────────────┼─────────────────────────────┤
+│ FAILURE             │ More orders remain  │ [Try Again?]                │
+│                     │                     │ [Next Order]                │
+│                     │                     │ [Return to Tables]          │
+├─────────────────────┼─────────────────────┼─────────────────────────────┤
+│ FAILURE             │ Single order        │ [Try Again?]                │
+│                     │                     │ [Return to Tables]          │
+├─────────────────────┼─────────────────────┼─────────────────────────────┤
+│ FAILURE (5 mistakes)│ Any                 │ [Continue] → forced end     │
+└─────────────────────┴─────────────────────┴─────────────────────────────┘
+```
+
+---
+
+## Key Rules
+
+1. **Failed orders stay pending** — not marked complete, retryable at any time
+2. **"Return to Tables" preserves all incomplete orders** — customers stay seated
+3. **Mistake counter resets to 0 every new shift** — each shift is independent
+4. **Tips (buttons) only saved on shift completion** — lost if player quits
+5. **No time pressure** — player can take as long as needed
+6. **5 mistakes = forced shift end** — no retry, goes to Shift Complete
+
+---
+
+*Last Updated: 2026-03-31*
