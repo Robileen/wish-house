@@ -455,6 +455,13 @@ class WishHouseEngine {
       return;
     }
 
+    // Hide dialogue and characters before fade so they don't linger
+    this.dialogueBox.style.opacity = "0";
+    this.charLeft.style.opacity = "0";
+    this.charRight.style.opacity = "0";
+    this.skipStoryBtn.style.display = "none";
+    this.skipToChoiceBtn.style.display = "none";
+
     // Fade out
     this.fadeOverlay.classList.add("active");
     await this.sleep(800);
@@ -511,6 +518,10 @@ class WishHouseEngine {
     // Mark current episode as completed
     window.journal.completeEpisode(this.currentChapter, this.currentEpisode);
 
+    // Clear stale dialogue content before making anything visible
+    this.dialogueText.textContent = "";
+    this.speakerName.textContent = "";
+
     // Reset VN state
     this.episodeComplete.classList.remove("visible");
     this.choiceHistory = [];
@@ -518,7 +529,7 @@ class WishHouseEngine {
     this.fadeOverlay.classList.remove("active");
     this.charLeft.style.opacity = "0";
     this.charRight.style.opacity = "0";
-    this.dialogueBox.style.opacity = "1";
+    this.dialogueBox.style.opacity = "0";
     this.dialogueBox.classList.remove("narrator-mode");
     this.skipStoryBtn.style.display = "none";
     this.skipToChoiceBtn.style.display = "none";
