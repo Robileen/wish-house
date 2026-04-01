@@ -342,59 +342,35 @@ class CafeEngine {
     p.querySelectorAll(".heart-edge-layer").forEach(el => el.remove());
     if (shape !== "heart") return;
 
-    const borderClip = "path('M68 17 C68 -2, -2 -2, -2 39 C-2 75, 33 96, 68 115 C103 96, 138 75, 138 39 C138 -2, 68 -2, 68 17 Z')";
+    const clip = "path('M65 18 C65 0, 0 0, 0 38 C0 72, 32 92, 65 110 C98 92, 130 72, 130 38 C130 0, 65 0, 65 18 Z')";
 
-    // Border rim
-    const rim = document.createElement("div");
-    rim.className = "heart-edge-layer";
-    Object.assign(rim.style, {
-      position: "absolute", top: "-3px", left: "-4px",
-      width: "138px", height: "128px",
-      background: "rgba(160, 112, 64, 0.5)",
-      clipPath: borderClip, zIndex: "0", pointerEvents: "none",
-    });
-    p.appendChild(rim);
-
-    // Thicker bottom border
-    const bottomRim = document.createElement("div");
-    bottomRim.className = "heart-edge-layer";
-    Object.assign(bottomRim.style, {
-      position: "absolute", top: "-1px", left: "-4px",
-      width: "138px", height: "128px",
-      background: "rgba(130, 90, 50, 0.6)",
-      clipPath: borderClip, zIndex: "0", pointerEvents: "none",
-    });
-    p.appendChild(bottomRim);
-
-    // Stepped edge bands
-    const bands = [
-      { offset: 8, color: "rgba(120, 80, 40, 0.15)" },
-      { offset: 6, color: "rgba(140, 95, 50, 0.25)" },
-      { offset: 4, color: "rgba(160, 112, 64, 0.35)" },
-    ];
-    bands.forEach(({ offset, color }) => {
-      const band = document.createElement("div");
-      band.className = "heart-edge-layer";
-      Object.assign(band.style, {
-        position: "absolute", top: `${offset - 3}px`, left: "-4px",
-        width: "138px", height: "128px",
-        background: color,
-        clipPath: borderClip, zIndex: "0", pointerEvents: "none",
+    const makeLayer = (opts) => {
+      const el = document.createElement("div");
+      el.className = "heart-edge-layer";
+      Object.assign(el.style, {
+        position: "absolute",
+        top: "0", left: "0",
+        width: "130px", height: "120px",
+        clipPath: clip,
+        zIndex: "0",
+        pointerEvents: "none",
+        transformOrigin: "center center",
+        ...opts,
       });
-      p.appendChild(band);
-    });
+      p.appendChild(el);
+    };
 
-    // Drop shadow
-    const shadow = document.createElement("div");
-    shadow.className = "heart-edge-layer";
-    Object.assign(shadow.style, {
-      position: "absolute", top: "7px", left: "-4px",
-      width: "138px", height: "128px",
+    makeLayer({ background: "rgba(160, 112, 64, 0.5)", transform: "scale(1.05)" });
+    makeLayer({ background: "rgba(130, 90, 50, 0.6)", transform: "scale(1.05) translateY(2px)" });
+    makeLayer({ background: "rgba(160, 112, 64, 0.35)", transform: "scale(1.05) translateY(4px)" });
+    makeLayer({ background: "rgba(140, 95, 50, 0.25)", transform: "scale(1.05) translateY(6px)" });
+    makeLayer({ background: "rgba(120, 80, 40, 0.15)", transform: "scale(1.05) translateY(8px)" });
+    makeLayer({
       background: "rgba(74, 55, 40, 0.25)",
-      clipPath: borderClip, zIndex: "-1", pointerEvents: "none",
+      transform: "scale(1.05) translateY(10px)",
       filter: "blur(10px)",
+      zIndex: "-1",
     });
-    p.appendChild(shadow);
   }
 
   confirmDecoration() {
@@ -429,92 +405,60 @@ class CafeEngine {
   }
 
   /**
-   * For heart shape, inject layers behind each table to replicate:
-   * - 3px border rim (slightly larger dark heart behind surface)
-   * - 5px bottom border (extra thickness at bottom)
-   * - Three stepped edge bands at 4/6/8px (same as box-shadow on other shapes)
-   * - Blurred drop shadow for lift
+   * For heart shape, inject layers behind each table to replicate
+   * the circle's border + box-shadow + drop-shadow appearance:
+   * - Scaled-up heart = visible border rim all around
+   * - Same scaled heart shifted down = thicker bottom border
+   * - Three shifted copies = stepped edge bands (like box-shadow 0 4/6/8px 0 0)
+   * - Blurred copy = drop shadow for lift
    */
   _updateHeartEdgeLayers(shape) {
     this.cafeRoom.querySelectorAll(".heart-edge-layer").forEach(el => el.remove());
     if (shape !== "heart") return;
 
-    // Clip paths: surface-size and slightly larger for the border
-    const surfaceClip = "path('M65 18 C65 0, 0 0, 0 38 C0 72, 32 92, 65 110 C98 92, 130 72, 130 38 C130 0, 65 0, 65 18 Z')";
-    const borderClip  = "path('M68 17 C68 -2, -2 -2, -2 39 C-2 75, 33 96, 68 115 C103 96, 138 75, 138 39 C138 -2, 68 -2, 68 17 Z')";
+    const clip = "path('M65 18 C65 0, 0 0, 0 38 C0 72, 32 92, 65 110 C98 92, 130 72, 130 38 C130 0, 65 0, 65 18 Z')";
+    const W = 130, H = 120;
 
     this.cafeRoom.querySelectorAll(".cafe-table").forEach(table => {
-      // 1) Border rim — slightly larger heart, darker color (simulates 3px border)
-      const rim = document.createElement("div");
-      rim.className = "heart-edge-layer";
-      Object.assign(rim.style, {
-        position: "absolute",
-        top: "calc(50% - 55px)",
-        left: "calc(50% - 69px)",
-        width: "138px",
-        height: "128px",
-        background: "rgba(160, 112, 64, 0.5)",
-        clipPath: borderClip,
-        zIndex: "0",
-        pointerEvents: "none",
-      });
-      table.appendChild(rim);
+      const baseTop = "calc(50% - 52px)";
+      const baseLeft = "calc(50% - 65px)";
 
-      // 2) Thicker bottom portion — same rim shifted down 2px more (simulates border-bottom: 5px)
-      const bottomRim = document.createElement("div");
-      bottomRim.className = "heart-edge-layer";
-      Object.assign(bottomRim.style, {
-        position: "absolute",
-        top: "calc(50% - 53px)",
-        left: "calc(50% - 69px)",
-        width: "138px",
-        height: "128px",
-        background: "rgba(130, 90, 50, 0.6)",
-        clipPath: borderClip,
-        zIndex: "0",
-        pointerEvents: "none",
-      });
-      table.appendChild(bottomRim);
-
-      // 3) Stepped edge bands — same as box-shadow 0 4/6/8px 0 0 on other shapes
-      const bands = [
-        { offset: 8, color: "rgba(120, 80, 40, 0.15)" },
-        { offset: 6, color: "rgba(140, 95, 50, 0.25)" },
-        { offset: 4, color: "rgba(160, 112, 64, 0.35)" },
-      ];
-      bands.forEach(({ offset, color }) => {
-        const band = document.createElement("div");
-        band.className = "heart-edge-layer";
-        Object.assign(band.style, {
+      const makeLayer = (opts) => {
+        const el = document.createElement("div");
+        el.className = "heart-edge-layer";
+        Object.assign(el.style, {
           position: "absolute",
-          top: `calc(50% - 55px + ${offset}px)`,
-          left: "calc(50% - 69px)",
-          width: "138px",
-          height: "128px",
-          background: color,
-          clipPath: borderClip,
+          top: baseTop,
+          left: baseLeft,
+          width: W + "px",
+          height: H + "px",
+          clipPath: clip,
           zIndex: "0",
           pointerEvents: "none",
+          transformOrigin: "center center",
+          ...opts,
         });
-        table.appendChild(band);
-      });
+        table.appendChild(el);
+      };
 
-      // 4) Drop shadow for lift — matches 0 10px 20px on other shapes
-      const shadow = document.createElement("div");
-      shadow.className = "heart-edge-layer";
-      Object.assign(shadow.style, {
-        position: "absolute",
-        top: "calc(50% - 45px)",
-        left: "calc(50% - 69px)",
-        width: "138px",
-        height: "128px",
+      // Border rim — scaled up ~5% = ~3px visible border all around
+      makeLayer({ background: "rgba(160, 112, 64, 0.5)", transform: "scale(1.05)" });
+
+      // Bottom border — scaled up + shifted down 2px = thicker bottom
+      makeLayer({ background: "rgba(130, 90, 50, 0.6)", transform: "scale(1.05) translateY(2px)" });
+
+      // Stepped edge bands — same as circle's box-shadow 0 4/6/8px 0 0
+      makeLayer({ background: "rgba(160, 112, 64, 0.35)", transform: "scale(1.05) translateY(4px)" });
+      makeLayer({ background: "rgba(140, 95, 50, 0.25)", transform: "scale(1.05) translateY(6px)" });
+      makeLayer({ background: "rgba(120, 80, 40, 0.15)", transform: "scale(1.05) translateY(8px)" });
+
+      // Drop shadow for lift
+      makeLayer({
         background: "rgba(74, 55, 40, 0.25)",
-        clipPath: borderClip,
-        zIndex: "-1",
-        pointerEvents: "none",
+        transform: "scale(1.05) translateY(10px)",
         filter: "blur(10px)",
+        zIndex: "-1",
       });
-      table.appendChild(shadow);
     });
   }
 
