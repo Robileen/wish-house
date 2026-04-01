@@ -760,6 +760,64 @@
     align-items: center;
     gap: 12px;
     padding: 12px 16px 4px;
+    position: relative;
+    /* Warm cafe floor — subtle wood plank pattern */
+    background:
+        repeating-linear-gradient(
+            90deg,
+            transparent, transparent 79px,
+            rgba(160, 120, 80, 0.06) 79px, rgba(160, 120, 80, 0.06) 80px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            transparent, transparent 39px,
+            rgba(140, 100, 60, 0.04) 39px, rgba(140, 100, 60, 0.04) 40px
+        ),
+        linear-gradient(180deg, rgba(245, 230, 210, 0.4) 0%, rgba(230, 210, 185, 0.3) 100%);
+}
+
+/* Window decorations — top corners */
+#cafe-room::before,
+#cafe-room::after {
+    content: "";
+    position: absolute;
+    top: 8px;
+    width: 64px;
+    height: 80px;
+    border-radius: 6px 6px 2px 2px;
+    background:
+        /* Window glass — sky gradient */
+        linear-gradient(180deg, #D4E8F0 0%, #B8D8E8 40%, #E8F4EC 100%);
+    border: 3px solid rgba(160, 130, 90, 0.5);
+    box-shadow:
+        inset 0 0 0 2px rgba(255, 255, 255, 0.5),
+        0 2px 8px rgba(100, 80, 50, 0.1);
+    z-index: 0;
+    pointer-events: none;
+}
+
+#cafe-room::before {
+    left: 12px;
+}
+
+#cafe-room::after {
+    right: 12px;
+}
+
+/* Window crossbar (via outline trick) */
+#cafe-room::before,
+#cafe-room::after {
+    /* Add a subtle center cross via background */
+    background:
+        /* Vertical bar */
+        linear-gradient(90deg, transparent 46%, rgba(160, 130, 90, 0.4) 46%, rgba(160, 130, 90, 0.4) 54%, transparent 54%),
+        /* Horizontal bar */
+        linear-gradient(180deg, transparent 44%, rgba(160, 130, 90, 0.4) 44%, rgba(160, 130, 90, 0.4) 56%, transparent 56%),
+        /* Curtain tops — scalloped look */
+        radial-gradient(ellipse at 25% 0%, rgba(220, 180, 160, 0.6) 0%, transparent 60%),
+        radial-gradient(ellipse at 75% 0%, rgba(220, 180, 160, 0.6) 0%, transparent 60%),
+        /* Sky gradient */
+        linear-gradient(180deg, #D4E8F0 0%, #B8D8E8 40%, #E8F4EC 100%);
 }
 
 .table-row {
@@ -1793,6 +1851,7 @@
     .seat { width: 30px; height: 40px; font-size: 1rem; }
     .table-row { gap: 12px; }
     #cafe-room { gap: 40px; padding: 30px 10px 6px; }
+    #cafe-room::before, #cafe-room::after { width: 44px; height: 56px; top: 4px; }
     .recipe-book-outer { width: 96%; padding: 4px 0 4px 10px; }
     .recipe-page { padding: 10px 8px; gap: 10px; }
     .recipe-card-icon { font-size: 2rem; }
@@ -1830,17 +1889,27 @@
 .table-theme-rose .table-surface::before,
 .table-theme-rose .table-surface::after { background: linear-gradient(180deg, #C48B9F, #A87088); }
 
-/* Sage — matte ceramic with earthy speckle */
+/* Sage — linen tablecloth with lace trim */
 .table-theme-sage .table-surface {
     background:
-        radial-gradient(circle at 20% 25%, rgba(90, 110, 85, 0.18) 0%, rgba(90, 110, 85, 0.18) 1.5px, transparent 1.5px),
-        radial-gradient(circle at 55% 15%, rgba(70, 95, 75, 0.14) 0%, rgba(70, 95, 75, 0.14) 1px, transparent 1px),
-        radial-gradient(circle at 75% 40%, rgba(100, 120, 90, 0.16) 0%, rgba(100, 120, 90, 0.16) 1.8px, transparent 1.8px),
-        radial-gradient(circle at 35% 70%, rgba(80, 105, 80, 0.12) 0%, rgba(80, 105, 80, 0.12) 1.2px, transparent 1.2px),
-        radial-gradient(circle at 85% 75%, rgba(95, 115, 88, 0.15) 0%, rgba(95, 115, 88, 0.15) 1.5px, transparent 1.5px),
-        linear-gradient(175deg, #B8CCBC 0%, #A0B8A4 35%, #8AA892 55%, #A0B8A4 80%, #B0C4B4 100%);
-    border-color: rgba(127, 163, 136, 0.5);
-    box-shadow: 0 4px 12px rgba(50, 70, 50, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -2px 4px rgba(90, 120, 95, 0.1);
+        /* Subtle linen weave texture */
+        repeating-linear-gradient(
+            0deg,
+            transparent, transparent 3px,
+            rgba(140, 168, 146, 0.08) 3px, rgba(140, 168, 146, 0.08) 4px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent, transparent 3px,
+            rgba(130, 158, 136, 0.06) 3px, rgba(130, 158, 136, 0.06) 4px
+        ),
+        linear-gradient(175deg, #C8DCC8 0%, #B4CCB8 35%, #A0BCA4 55%, #B4CCB8 80%, #C4D8C4 100%);
+    border: 2px solid rgba(140, 175, 148, 0.5);
+    /* Cloth overhang — drape shadow beyond table edge */
+    box-shadow:
+        0 0 0 6px rgba(180, 204, 184, 0.7),
+        0 0 0 8px rgba(140, 175, 148, 0.3),
+        0 6px 16px rgba(50, 70, 50, 0.15);
 }
 .table-theme-sage .table-surface::before,
 .table-theme-sage .table-surface::after { background: linear-gradient(180deg, #7FA388, #668A70); }
@@ -1861,17 +1930,27 @@
 .table-theme-lavender .table-surface::before,
 .table-theme-lavender .table-surface::after { background: linear-gradient(180deg, #9584AD, #7A6C94); }
 
-/* Ocean — watercolour wash with soft bleeds */
+/* Ocean — gingham tablecloth with cloth drape */
 .table-theme-ocean .table-surface {
     background:
-        radial-gradient(ellipse at 20% 35%, rgba(130, 180, 200, 0.25) 0%, transparent 55%),
-        radial-gradient(ellipse at 70% 25%, rgba(100, 160, 190, 0.2) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 70%, rgba(140, 190, 210, 0.18) 0%, transparent 45%),
-        radial-gradient(ellipse at 80% 65%, rgba(110, 170, 195, 0.15) 0%, transparent 40%),
-        radial-gradient(ellipse at 30% 60%, rgba(160, 200, 215, 0.2) 0%, transparent 35%),
-        linear-gradient(165deg, #B8D0DA 0%, #9CC0CE 30%, #84B0C0 55%, #9CC0CE 80%, #B0C8D4 100%);
-    border-color: rgba(122, 160, 178, 0.45);
-    box-shadow: 0 4px 12px rgba(40, 60, 80, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -2px 4px rgba(80, 130, 155, 0.1);
+        /* Gingham checkered pattern */
+        repeating-linear-gradient(
+            0deg,
+            rgba(100, 160, 195, 0.25) 0px, rgba(100, 160, 195, 0.25) 10px,
+            transparent 10px, transparent 20px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            rgba(100, 160, 195, 0.25) 0px, rgba(100, 160, 195, 0.25) 10px,
+            transparent 10px, transparent 20px
+        ),
+        linear-gradient(175deg, #E0EEF4 0%, #D0E4EE 35%, #C4DAE8 55%, #D0E4EE 80%, #E0EEF4 100%);
+    border: 2px solid rgba(140, 185, 210, 0.5);
+    /* Cloth overhang — drape shadow beyond table edge */
+    box-shadow:
+        0 0 0 6px rgba(192, 218, 232, 0.7),
+        0 0 0 8px rgba(140, 185, 210, 0.3),
+        0 6px 16px rgba(40, 60, 80, 0.15);
 }
 .table-theme-ocean .table-surface::before,
 .table-theme-ocean .table-surface::after { background: linear-gradient(180deg, #7AA0B2, #628898); }
@@ -2005,9 +2084,19 @@
 /* Swatch colour fills */
 .swatch-wood     { background: linear-gradient(135deg, #DEC49C, #B8945E); }
 .swatch-rose     { background: linear-gradient(135deg, #E8C4CC, #C48B9F); }
-.swatch-sage     { background: linear-gradient(135deg, #B5CCBC, #7FA388); }
+.swatch-sage     {
+    background:
+        repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(140, 168, 146, 0.15) 3px, rgba(140, 168, 146, 0.15) 4px),
+        repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(130, 158, 136, 0.12) 3px, rgba(130, 158, 136, 0.12) 4px),
+        linear-gradient(135deg, #C8DCC8, #A0BCA4);
+}
 .swatch-lavender { background: linear-gradient(135deg, #C4B8D9, #9584AD); }
-.swatch-ocean    { background: linear-gradient(135deg, #B0C8D4, #7AA0B2); }
+.swatch-ocean    {
+    background:
+        repeating-linear-gradient(0deg, rgba(100, 160, 195, 0.3) 0px, rgba(100, 160, 195, 0.3) 4px, transparent 4px, transparent 8px),
+        repeating-linear-gradient(90deg, rgba(100, 160, 195, 0.3) 0px, rgba(100, 160, 195, 0.3) 4px, transparent 4px, transparent 8px),
+        linear-gradient(135deg, #E0EEF4, #C4DAE8);
+}
 .swatch-honey    { background: linear-gradient(135deg, #F0DDB8, #D4B87E); }
 .swatch-peach    { background: linear-gradient(135deg, #E8C4B0, #C49080); }
 
