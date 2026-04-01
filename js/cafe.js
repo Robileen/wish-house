@@ -347,10 +347,7 @@ class CafeEngine {
     p.querySelectorAll(".heart-edge-layer").forEach(el => el.remove());
     if (shape !== "heart") return;
 
-    const surface = p.querySelector(".table-surface");
-    const cs = getComputedStyle(surface);
-    const borderColor = cs.borderColor || cs.borderTopColor || "rgba(160, 112, 64, 0.5)";
-
+    const borderColor = this._getThemeBorderColor();
     const clip = "path('M65 18 C65 0, 0 0, 0 38 C0 72, 32 92, 65 110 C98 92, 130 72, 130 38 C130 0, 65 0, 65 18 Z')";
 
     const makeLayer = (opts) => {
@@ -417,8 +414,8 @@ class CafeEngine {
   /**
    * For heart shape, inject layers behind each table to replicate
    * the circle's border + box-shadow + drop-shadow appearance.
-   * Reads the actual computed border-color from the themed table surface
-   * so the heart rim matches whatever material is selected.
+   * Uses theme-matched border colors so the heart rim matches
+   * whatever material is selected.
    */
   _updateHeartEdgeLayers(shape) {
     this.cafeRoom.querySelectorAll(".heart-edge-layer").forEach(el => el.remove());
@@ -426,13 +423,9 @@ class CafeEngine {
 
     const clip = "path('M65 18 C65 0, 0 0, 0 38 C0 72, 32 92, 65 110 C98 92, 130 72, 130 38 C130 0, 65 0, 65 18 Z')";
     const W = 130, H = 120;
+    const borderColor = this._getThemeBorderColor();
 
     this.cafeRoom.querySelectorAll(".cafe-table").forEach(table => {
-      const surface = table.querySelector(".table-surface");
-      const cs = getComputedStyle(surface);
-      // Read the theme's actual border-color and darken it for the bottom
-      const borderColor = cs.borderColor || cs.borderTopColor || "rgba(160, 112, 64, 0.5)";
-
       const baseTop = "calc(50% - 52px)";
       const baseLeft = "calc(50% - 65px)";
 
@@ -454,15 +447,11 @@ class CafeEngine {
         table.appendChild(el);
       };
 
-      // Border rim — uses the theme's border color
       makeLayer({ background: borderColor, transform: "scale(1.05)" });
-      // Thicker bottom border — slightly darker via brightness filter
       makeLayer({ background: borderColor, transform: "scale(1.05) translateY(2px)", filter: "brightness(0.85)" });
-      // Stepped edge bands — progressively shifted down, fading out
       makeLayer({ background: borderColor, transform: "scale(1.05) translateY(4px)", opacity: "0.7" });
       makeLayer({ background: borderColor, transform: "scale(1.05) translateY(6px)", opacity: "0.5" });
       makeLayer({ background: borderColor, transform: "scale(1.05) translateY(8px)", opacity: "0.3" });
-      // Drop shadow for lift
       makeLayer({
         background: borderColor,
         transform: "scale(1.05) translateY(10px)",
@@ -471,6 +460,20 @@ class CafeEngine {
         zIndex: "-1",
       });
     });
+  }
+
+  /** Border color lookup per theme — matches each theme's CSS border-color */
+  _getThemeBorderColor() {
+    const colors = {
+      wood:     "rgba(160, 112, 64, 0.5)",
+      rose:     "rgba(196, 139, 159, 0.45)",
+      sage:     "rgba(140, 175, 148, 0.5)",
+      lavender: "rgba(149, 132, 173, 0.45)",
+      ocean:    "rgba(140, 185, 210, 0.5)",
+      honey:    "rgba(212, 184, 126, 0.5)",
+      peach:    "rgba(196, 144, 128, 0.5)",
+    };
+    return colors[this._selectedTheme] || colors.wood;
   }
 
   beginShift() {
