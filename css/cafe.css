@@ -2065,7 +2065,11 @@
 }
 
 .deco-preview-table.table-shape-heart {
-    min-height: 140px;
+    width: 150px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .deco-preview-table.table-shape-heart .table-surface {
     width: 130px;
