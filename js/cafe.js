@@ -720,6 +720,10 @@ class CafeEngine {
         const angle = Math.random() * Math.PI * 2;
         attempts++;
 
+        // Avoid the top zone (~270° ± 40°) so seats don't overlap the centered order bubble
+        const deg = ((angle * 180 / Math.PI) + 360) % 360;
+        if (deg > 230 && deg < 310) continue;
+
         // Check distance from other seats on this table
         let tooClose = false;
         for (const existing of positions) {

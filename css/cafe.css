@@ -1021,12 +1021,12 @@
     100% { transform: translateY(-48px) scale(1.1); opacity: 0; }
 }
 
-/* Order speech bubble — floats above the table */
+/* Order speech bubble — centered on the table */
 .table-order-bubble {
     position: absolute;
-    bottom: calc(50% + 30px);
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     background: rgba(255, 245, 235, 0.95);
     border: 1.5px solid var(--gold);
     border-radius: 14px;
@@ -1041,31 +1041,10 @@
     animation: bubble-pop 0.35s ease;
 }
 
-/* Push bubble higher on heart tables so it clears the top of the heart */
-.table-shape-heart .table-order-bubble {
-    bottom: calc(50% + 40px);
-}
-
-/* Speech bubble tail — pointing down */
-.table-order-bubble::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 7px solid transparent;
-    border-top-color: rgba(255, 245, 235, 0.95);
-    filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.06));
-}
-
+/* Speech bubble tail — hidden since bubble is centered on table */
+.table-order-bubble::after,
 .table-order-bubble::before {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 8px solid transparent;
-    border-top-color: var(--gold);
+    display: none;
 }
 
 .table-order-bubble .bubble-icon {
@@ -1087,8 +1066,8 @@
 }
 
 @keyframes bubble-pop {
-    from { transform: translateX(-50%) scale(0); opacity: 0; }
-    to   { transform: translateX(-50%) scale(1); opacity: 1; }
+    from { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    to   { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
 /* Skip animation on re-render of existing bubbles */
