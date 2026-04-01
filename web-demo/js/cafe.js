@@ -343,21 +343,28 @@ class CafeEngine {
     if (shape !== "heart") return;
 
     const heartClip = "path('M65 18 C65 0, 0 0, 0 38 C0 72, 32 92, 65 110 C98 92, 130 72, 130 38 C130 0, 65 0, 65 18 Z')";
+    const bands = [
+      { offset: 8, color: "rgba(120, 80, 40, 0.15)" },
+      { offset: 6, color: "rgba(140, 95, 50, 0.25)" },
+      { offset: 4, color: "rgba(160, 112, 64, 0.35)" },
+    ];
 
-    const edge = document.createElement("div");
-    edge.className = "heart-edge-layer";
-    Object.assign(edge.style, {
-      position: "absolute",
-      top: "3px",
-      left: "0",
-      width: "130px",
-      height: "124px",
-      background: "linear-gradient(180deg, rgba(160, 112, 64, 0.5) 0%, rgba(130, 90, 50, 0.7) 40%, rgba(100, 70, 35, 0.5) 100%)",
-      clipPath: heartClip,
-      zIndex: "0",
-      pointerEvents: "none",
+    bands.forEach(({ offset, color }) => {
+      const band = document.createElement("div");
+      band.className = "heart-edge-layer";
+      Object.assign(band.style, {
+        position: "absolute",
+        top: `${offset}px`,
+        left: "0",
+        width: "130px",
+        height: "120px",
+        background: color,
+        clipPath: heartClip,
+        zIndex: "0",
+        pointerEvents: "none",
+      });
+      p.appendChild(band);
     });
-    p.appendChild(edge);
   }
 
   confirmDecoration() {
@@ -392,32 +399,40 @@ class CafeEngine {
   }
 
   /**
-   * For heart shape, inject a solid edge slab behind each table surface
-   * to replicate the visible table-edge thickness that circle/square/rect
-   * get from box-shadow (0 Npx 0 0) layers.
+   * For heart shape, inject solid edge bands behind each table surface
+   * to replicate the same 3D stepped rim that circle/square/rect get
+   * from their box-shadow (0 4px 0 0, 0 6px 0 0, 0 8px 0 0) layers.
    */
   _updateHeartEdgeLayers(shape) {
     this.cafeRoom.querySelectorAll(".heart-edge-layer").forEach(el => el.remove());
     if (shape !== "heart") return;
 
     const heartClip = "path('M65 18 C65 0, 0 0, 0 38 C0 72, 32 92, 65 110 C98 92, 130 72, 130 38 C130 0, 65 0, 65 18 Z')";
+    // Same colors + offsets as box-shadow on circle/square/rect
+    const bands = [
+      { offset: 8, color: "rgba(120, 80, 40, 0.15)" },
+      { offset: 6, color: "rgba(140, 95, 50, 0.25)" },
+      { offset: 4, color: "rgba(160, 112, 64, 0.35)" },
+    ];
 
     this.cafeRoom.querySelectorAll(".cafe-table").forEach(table => {
-      // Solid edge slab — a darker heart offset 6px down to show table thickness
-      const edge = document.createElement("div");
-      edge.className = "heart-edge-layer";
-      Object.assign(edge.style, {
-        position: "absolute",
-        top: "calc(50% - 52px + 3px)",
-        left: "calc(50% - 65px)",
-        width: "130px",
-        height: "124px",
-        background: "linear-gradient(180deg, rgba(160, 112, 64, 0.5) 0%, rgba(130, 90, 50, 0.7) 40%, rgba(100, 70, 35, 0.5) 100%)",
-        clipPath: heartClip,
-        zIndex: "0",
-        pointerEvents: "none",
+      // Edge bands — bottom to top so layering is correct
+      bands.forEach(({ offset, color }) => {
+        const band = document.createElement("div");
+        band.className = "heart-edge-layer";
+        Object.assign(band.style, {
+          position: "absolute",
+          top: `calc(50% - 52px + ${offset}px)`,
+          left: "calc(50% - 65px)",
+          width: "130px",
+          height: "120px",
+          background: color,
+          clipPath: heartClip,
+          zIndex: "0",
+          pointerEvents: "none",
+        });
+        table.appendChild(band);
       });
-      table.appendChild(edge);
     });
   }
 
