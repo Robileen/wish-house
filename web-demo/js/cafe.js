@@ -349,13 +349,16 @@ class CafeEngine {
 
     const borderColor = this._getThemeBorderColor();
     const clip = "path('M65 18 C65 0, 0 0, 0 38 C0 72, 32 92, 65 110 C98 92, 130 72, 130 38 C130 0, 65 0, 65 18 Z')";
+    // Same positioning as cafe tables (150x150 container, centered)
+    const baseTop = "calc(50% - 52px)";
+    const baseLeft = "calc(50% - 65px)";
 
     const makeLayer = (opts) => {
       const el = document.createElement("div");
       el.className = "heart-edge-layer";
       Object.assign(el.style, {
         position: "absolute",
-        top: "0", left: "0",
+        top: baseTop, left: baseLeft,
         width: "130px", height: "120px",
         clipPath: clip,
         zIndex: "0",
