@@ -655,33 +655,14 @@ class CafeEngine {
   }
 
   /**
-   * Spawn multiple floating heart particles inside the overlay element.
-   * Hearts appear in staggered waves with random horizontal spread.
+   * Spawn a single big red heart that pulses and fades on the overlay.
    */
   _spawnHearts(overlay) {
-    const heartEmojis = ["\u2764\uFE0F", "\uD83E\uDE77", "\uD83D\uDC95", "\uD83D\uDC96"];
-    const totalHearts = 6;
-    const waveDuration = 6000; // spread hearts over 6s
-
-    for (let i = 0; i < totalHearts; i++) {
-      const span = document.createElement("span");
-      span.className = "heart-particle";
-      span.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
-
-      // Random horizontal offset (-35px to +35px)
-      const xOff = (Math.random() - 0.5) * 70;
-      span.style.left = `calc(50% + ${xOff}px)`;
-
-      // Stagger each heart's start
-      const delay = (i / totalHearts) * waveDuration;
-      span.style.animationDelay = `${delay}ms`;
-
-      // Slight size variation
-      const scale = 0.9 + Math.random() * 0.4;
-      span.style.fontSize = `${scale * 1.2}rem`;
-
-      overlay.appendChild(span);
-    }
+    const span = document.createElement("span");
+    span.className = "heart-particle";
+    span.textContent = "\u2764\uFE0F";
+    span.style.left = "50%";
+    overlay.appendChild(span);
   }
 
   /**
