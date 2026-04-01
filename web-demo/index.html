@@ -123,7 +123,7 @@
             <button id="shift-start-btn">Start Shift</button>
         </div>
 
-        <!-- Decoration screen: table colour picker -->
+        <!-- Decoration screen: table colour & shape picker -->
         <div id="decoration-screen" class="hidden">
             <h2 id="deco-title">Decorate Your Cafe</h2>
             <p id="deco-subtitle">Choose a table style for today's shift</p>
@@ -132,6 +132,26 @@
                     <div class="table-surface"></div>
                 </div>
             </div>
+            <p class="deco-section-label">Shape</p>
+            <div id="deco-shapes">
+                <button class="deco-shape active" data-shape="circle" title="Circle">
+                    <span class="shape-icon shape-circle"></span>
+                    <span class="swatch-label">Circle</span>
+                </button>
+                <button class="deco-shape" data-shape="square" title="Square">
+                    <span class="shape-icon shape-square"></span>
+                    <span class="swatch-label">Square</span>
+                </button>
+                <button class="deco-shape" data-shape="rectangle" title="Rectangle">
+                    <span class="shape-icon shape-rectangle"></span>
+                    <span class="swatch-label">Rectangle</span>
+                </button>
+                <button class="deco-shape" data-shape="hexagon" title="Hexagon">
+                    <span class="shape-icon shape-hexagon"></span>
+                    <span class="swatch-label">Hexagon</span>
+                </button>
+            </div>
+            <p class="deco-section-label">Material</p>
             <div id="deco-swatches">
                 <button class="deco-swatch active" data-theme="wood" title="Classic Wood">
                     <span class="swatch-fill swatch-wood"></span>
