@@ -521,8 +521,8 @@ class CafeEngine {
       span.className = "heart-particle";
       span.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
 
-      // Random horizontal offset (-18px to +18px)
-      const xOff = (Math.random() - 0.5) * 36;
+      // Random horizontal offset (-35px to +35px)
+      const xOff = (Math.random() - 0.5) * 70;
       span.style.left = `calc(50% + ${xOff}px)`;
 
       // Stagger each heart's start
