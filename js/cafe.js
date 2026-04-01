@@ -629,7 +629,7 @@ class CafeEngine {
           } else {
             bubble.innerHTML += ` <span class="bubble-count">${pendingOrders.length} orders</span>`;
           }
-          surface.appendChild(bubble);
+          el.appendChild(bubble);
         }
       }
 

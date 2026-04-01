@@ -1021,10 +1021,10 @@
     100% { transform: translateY(-48px) scale(1.1); opacity: 0; }
 }
 
-/* Order speech bubble — floats above center of the table */
+/* Order speech bubble — floats above the table */
 .table-order-bubble {
     position: absolute;
-    bottom: calc(50% + 20px);
+    bottom: calc(50% + 30px);
     left: 50%;
     transform: translateX(-50%);
     background: rgba(255, 245, 235, 0.95);
