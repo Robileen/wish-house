@@ -944,15 +944,15 @@
 .table-overlay .heart-particle {
     position: absolute;
     font-size: 1.2rem;
-    animation: hearts-float 3s ease-out forwards;
+    animation: hearts-float 2s ease-out forwards;
     pointer-events: none;
 }
 
 @keyframes hearts-float {
     0%   { transform: translateY(0) scale(0.4); opacity: 0; }
     15%  { opacity: 1; }
-    70%  { opacity: 0.8; }
-    100% { transform: translateY(-38px) scale(1.1); opacity: 0; }
+    60%  { opacity: 0.8; }
+    100% { transform: translateY(-48px) scale(1.1); opacity: 0; }
 }
 
 /* Order speech bubble — floats above center of the table */
