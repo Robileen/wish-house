@@ -1041,6 +1041,11 @@
     animation: bubble-pop 0.35s ease;
 }
 
+/* Push bubble higher on heart tables so it clears the top of the heart */
+.table-shape-heart .table-order-bubble {
+    bottom: calc(50% + 40px);
+}
+
 /* Speech bubble tail — pointing down */
 .table-order-bubble::after {
     content: "";
