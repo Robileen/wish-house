@@ -1569,14 +1569,11 @@ class CafeEngine {
     }
 
     if (pendingOrders.length > 0 && this._lastFuseSuccess) {
-      // More orders at this table — show delivery then return to order picker
+      // More orders at this table — quick served flash, then straight to next order
       this._lastDeliveredRecipe = this.selectedRecipe;
       tableData.state = "served";
       this.renderTable(tableNum);
       await this.sleep(600);
-      tableData.state = "eating";
-      this.renderTable(tableNum);
-      await this.sleep(5000);
       tableData.state = "crafting";
 
       // Return to order picker for remaining orders
