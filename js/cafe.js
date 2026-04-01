@@ -575,9 +575,13 @@ class CafeEngine {
    */
   _generateSeatPositions(tableNum, count) {
     // Table & seat dimensions (must match CSS)
-    const isRect = this._selectedShape === "rectangle";
-    const tableW = isRect ? 170 : 140, tableH = isRect ? 120 : 140;
-    const surfaceW = isRect ? 150 : 120, surfaceH = isRect ? 100 : 120;
+    const shape = this._selectedShape;
+    const isRect = shape === "rectangle";
+    const isHeart = shape === "heart";
+    const tableW = isRect ? 170 : isHeart ? 150 : 140;
+    const tableH = isRect ? 120 : isHeart ? 130 : 140;
+    const surfaceW = isRect ? 150 : isHeart ? 130 : 120;
+    const surfaceH = isRect ? 100 : isHeart ? 110 : 120;
     const seatSize = 52;
 
     // Center of the table surface within .cafe-table
