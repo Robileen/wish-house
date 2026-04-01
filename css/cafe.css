@@ -881,25 +881,33 @@
         ),
         /* Wood colour base */
         linear-gradient(170deg, #DEC49C 0%, #C8A87A 30%, #B8945E 55%, #C8A87A 80%, #D4B48A 100%);
-    border: 2px solid rgba(160, 112, 64, 0.45);
+    border: 3px solid rgba(160, 112, 64, 0.5);
+    border-bottom: 5px solid rgba(130, 90, 50, 0.6);
     border-radius: 50%;
     box-shadow:
-        0 4px 12px rgba(74, 55, 40, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.25),
-        inset 0 -2px 4px rgba(139, 90, 43, 0.12);
+        /* Thick 3D edge — stacked layers to simulate depth */
+        0 4px 0 0 rgba(160, 112, 64, 0.35),
+        0 6px 0 0 rgba(140, 95, 50, 0.25),
+        0 8px 0 0 rgba(120, 80, 40, 0.15),
+        /* Drop shadow for lift */
+        0 10px 20px rgba(74, 55, 40, 0.25),
+        0 4px 8px rgba(74, 55, 40, 0.15),
+        /* Top highlight for glossy surface */
+        inset 0 2px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -3px 6px rgba(139, 90, 43, 0.15);
 }
 
-/* Table legs — small pegs under the circle */
+/* Table legs — chunky pegs under the table */
 .table-surface::before,
 .table-surface::after {
     content: "";
     position: absolute;
-    bottom: 2px;
-    width: 6px;
-    height: 14px;
-    background: linear-gradient(180deg, #B8945E, #9A7848);
-    border-radius: 0 0 2px 2px;
-    box-shadow: 0 2px 3px rgba(74, 55, 40, 0.15);
+    bottom: -4px;
+    width: 8px;
+    height: 20px;
+    background: linear-gradient(180deg, #B8945E, #8A6838);
+    border-radius: 0 0 3px 3px;
+    box-shadow: 0 3px 4px rgba(74, 55, 40, 0.2);
     z-index: -1;
 }
 
@@ -1884,7 +1892,13 @@
         radial-gradient(ellipse at 75% 60%, rgba(200, 170, 185, 0.15) 0%, transparent 45%),
         linear-gradient(160deg, #EDCDD4 0%, #E0B5BF 30%, #D4A0AD 55%, #E0B5BF 80%, #EDCDD4 100%);
     border-color: rgba(196, 139, 159, 0.45);
-    box-shadow: 0 4px 12px rgba(74, 55, 40, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -2px 4px rgba(180, 120, 140, 0.1);
+    box-shadow:
+        0 4px 0 0 rgba(196, 139, 159, 0.3),
+        0 6px 0 0 rgba(170, 115, 135, 0.2),
+        0 8px 0 0 rgba(150, 100, 120, 0.12),
+        0 10px 20px rgba(74, 55, 40, 0.2),
+        inset 0 2px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -3px 6px rgba(180, 120, 140, 0.12);
 }
 .table-theme-rose .table-surface::before,
 .table-theme-rose .table-surface::after { background: linear-gradient(180deg, #C48B9F, #A87088); }
@@ -1904,12 +1918,14 @@
             rgba(130, 158, 136, 0.06) 3px, rgba(130, 158, 136, 0.06) 4px
         ),
         linear-gradient(175deg, #C8DCC8 0%, #B4CCB8 35%, #A0BCA4 55%, #B4CCB8 80%, #C4D8C4 100%);
-    border: 2px solid rgba(140, 175, 148, 0.5);
-    /* Cloth overhang — drape shadow beyond table edge */
+    border: 3px solid rgba(140, 175, 148, 0.5);
+    border-bottom: 5px solid rgba(110, 150, 120, 0.5);
+    /* Cloth overhang — thick draped edge */
     box-shadow:
-        0 0 0 6px rgba(180, 204, 184, 0.7),
-        0 0 0 8px rgba(140, 175, 148, 0.3),
-        0 6px 16px rgba(50, 70, 50, 0.15);
+        0 0 0 6px rgba(180, 204, 184, 0.75),
+        0 0 0 8px rgba(160, 190, 168, 0.5),
+        0 4px 0 8px rgba(140, 175, 148, 0.25),
+        0 10px 20px rgba(50, 70, 50, 0.2);
 }
 .table-theme-sage .table-surface::before,
 .table-theme-sage .table-surface::after { background: linear-gradient(180deg, #7FA388, #668A70); }
@@ -1925,7 +1941,13 @@
         radial-gradient(circle at 35% 45%, rgba(160, 140, 180, 0.2) 0%, rgba(160, 140, 180, 0.2) 1px, transparent 1px),
         linear-gradient(170deg, #D0C4E0 0%, #BEB0D4 35%, #ACA0C4 55%, #BEB0D4 80%, #CCC0DC 100%);
     border-color: rgba(149, 132, 173, 0.45);
-    box-shadow: 0 4px 12px rgba(60, 50, 70, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -2px 4px rgba(120, 100, 150, 0.1);
+    box-shadow:
+        0 4px 0 0 rgba(149, 132, 173, 0.3),
+        0 6px 0 0 rgba(130, 115, 155, 0.2),
+        0 8px 0 0 rgba(115, 100, 140, 0.12),
+        0 10px 20px rgba(60, 50, 70, 0.2),
+        inset 0 2px 0 rgba(255, 255, 255, 0.25),
+        inset 0 -3px 6px rgba(120, 100, 150, 0.12);
 }
 .table-theme-lavender .table-surface::before,
 .table-theme-lavender .table-surface::after { background: linear-gradient(180deg, #9584AD, #7A6C94); }
@@ -1945,12 +1967,14 @@
             transparent 10px, transparent 20px
         ),
         linear-gradient(175deg, #E0EEF4 0%, #D0E4EE 35%, #C4DAE8 55%, #D0E4EE 80%, #E0EEF4 100%);
-    border: 2px solid rgba(140, 185, 210, 0.5);
-    /* Cloth overhang — drape shadow beyond table edge */
+    border: 3px solid rgba(140, 185, 210, 0.5);
+    border-bottom: 5px solid rgba(110, 160, 190, 0.5);
+    /* Cloth overhang — thick draped edge */
     box-shadow:
-        0 0 0 6px rgba(192, 218, 232, 0.7),
-        0 0 0 8px rgba(140, 185, 210, 0.3),
-        0 6px 16px rgba(40, 60, 80, 0.15);
+        0 0 0 6px rgba(192, 218, 232, 0.75),
+        0 0 0 8px rgba(170, 200, 218, 0.5),
+        0 4px 0 8px rgba(140, 185, 210, 0.25),
+        0 10px 20px rgba(40, 60, 80, 0.2);
 }
 .table-theme-ocean .table-surface::before,
 .table-theme-ocean .table-surface::after { background: linear-gradient(180deg, #7AA0B2, #628898); }
@@ -1965,7 +1989,13 @@
         linear-gradient(125deg, transparent 55%, rgba(210, 180, 100, 0.08) 58%, transparent 61%),
         linear-gradient(170deg, #F2E0BE 0%, #E8D0A0 30%, #DCC088 55%, #E8D0A0 80%, #F0DDB8 100%);
     border-color: rgba(212, 184, 126, 0.5);
-    box-shadow: 0 4px 12px rgba(80, 60, 30, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -2px 4px rgba(180, 150, 80, 0.1);
+    box-shadow:
+        0 4px 0 0 rgba(212, 184, 126, 0.3),
+        0 6px 0 0 rgba(190, 165, 110, 0.2),
+        0 8px 0 0 rgba(170, 145, 90, 0.12),
+        0 10px 20px rgba(80, 60, 30, 0.2),
+        inset 0 2px 0 rgba(255, 255, 255, 0.35),
+        inset 0 -3px 6px rgba(180, 150, 80, 0.12);
 }
 .table-theme-honey .table-surface::before,
 .table-theme-honey .table-surface::after { background: linear-gradient(180deg, #D4B87E, #B8A068); }
@@ -1981,7 +2011,13 @@
         radial-gradient(ellipse at 70% 65%, rgba(190, 130, 100, 0.1) 0%, transparent 40%),
         linear-gradient(170deg, #E8C8B4 0%, #D8B09C 30%, #CC9C88 55%, #D8B09C 80%, #E4C0AC 100%);
     border-color: rgba(196, 144, 128, 0.5);
-    box-shadow: 0 4px 12px rgba(80, 50, 35, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -2px 4px rgba(160, 100, 70, 0.1);
+    box-shadow:
+        0 4px 0 0 rgba(196, 144, 128, 0.3),
+        0 6px 0 0 rgba(175, 125, 110, 0.2),
+        0 8px 0 0 rgba(155, 108, 95, 0.12),
+        0 10px 20px rgba(80, 50, 35, 0.2),
+        inset 0 2px 0 rgba(255, 255, 255, 0.15),
+        inset 0 -3px 6px rgba(160, 100, 70, 0.12);
 }
 .table-theme-peach .table-surface::before,
 .table-theme-peach .table-surface::after { background: linear-gradient(180deg, #C49080, #A87868); }
