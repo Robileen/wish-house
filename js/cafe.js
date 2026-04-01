@@ -72,10 +72,11 @@ class CafeEngine {
     // DOM — decoration screen
     this.decoScreen      = document.getElementById("decoration-screen");
     this.decoSwatches    = document.getElementById("deco-swatches");
+    this.decoShapes      = document.getElementById("deco-shapes");
     this.decoPreview     = document.querySelector(".deco-preview-table");
     this.decoBeginBtn    = document.getElementById("deco-begin-btn");
     this._selectedTheme  = localStorage.getItem("wishhouse_table_theme") || "wood";
-
+    this._selectedShape  = localStorage.getItem("wishhouse_table_shape") || "circle";
     // DOM — recipe book modal
     this.recipeBookModal = document.getElementById("recipe-book-modal");
     this.recipeBookTabs  = document.getElementById("recipe-book-tabs");
@@ -169,6 +170,10 @@ class CafeEngine {
     this.decoSwatches.addEventListener("click", (e) => {
       const swatch = e.target.closest(".deco-swatch");
       if (swatch) this.selectTheme(swatch.dataset.theme);
+    });
+    this.decoShapes.addEventListener("click", (e) => {
+      const btn = e.target.closest(".deco-shape");
+      if (btn) this.selectShape(btn.dataset.shape);
     });
     this.fuseBtn.addEventListener("click", () => this.fuse());
     this.revertBtn.addEventListener("click", () => this.revertAllSlots());
@@ -296,8 +301,9 @@ class CafeEngine {
     this.shiftIntro.classList.add("hidden");
     this.decoScreen.classList.remove("hidden");
 
-    // Restore last-used theme selection
+    // Restore last-used selections
     this.selectTheme(this._selectedTheme);
+    this.selectShape(this._selectedShape);
   }
 
   selectTheme(theme) {
@@ -308,17 +314,34 @@ class CafeEngine {
       s.classList.toggle("active", s.dataset.theme === theme);
     });
 
-    // Update preview table: remove all theme classes, add selected
-    const previewSurface = this.decoPreview;
-    previewSurface.className = `deco-preview-table table-theme-${theme}`;
+    // Update preview table: swap theme class, keep shape class
+    const p = this.decoPreview;
+    p.className = p.className.replace(/\btable-theme-\S+/g, "").trim();
+    p.classList.add(`table-theme-${theme}`);
+  }
+
+  selectShape(shape) {
+    this._selectedShape = shape;
+
+    // Update shape button active state
+    this.decoShapes.querySelectorAll(".deco-shape").forEach(s => {
+      s.classList.toggle("active", s.dataset.shape === shape);
+    });
+
+    // Update preview table: swap shape class, keep theme class
+    const p = this.decoPreview;
+    p.className = p.className.replace(/\btable-shape-\S+/g, "").trim();
+    if (shape !== "circle") p.classList.add(`table-shape-${shape}`);
   }
 
   confirmDecoration() {
-    // Persist choice
+    // Persist choices
     localStorage.setItem("wishhouse_table_theme", this._selectedTheme);
+    localStorage.setItem("wishhouse_table_shape", this._selectedShape);
 
-    // Apply theme to the cafe room
+    // Apply theme and shape to the cafe room
     this.applyTableTheme(this._selectedTheme);
+    this.applyTableShape(this._selectedShape);
 
     // Hide deco screen and start the shift
     this.decoScreen.classList.add("hidden");
@@ -330,6 +353,14 @@ class CafeEngine {
     const room = this.cafeRoom;
     room.className = room.className.replace(/\btable-theme-\S+/g, "").trim();
     room.classList.add(`table-theme-${theme}`);
+  }
+
+  applyTableShape(shape) {
+    const room = this.cafeRoom;
+    room.className = room.className.replace(/\btable-shape-\S+/g, "").trim();
+    if (shape !== "circle") room.classList.add(`table-shape-${shape}`);
+    // Clear cached seat positions so they regenerate for the new shape
+    this._seatPositions = {};
   }
 
   beginShift() {
@@ -544,8 +575,9 @@ class CafeEngine {
    */
   _generateSeatPositions(tableNum, count) {
     // Table & seat dimensions (must match CSS)
-    const tableW = 140, tableH = 140;
-    const surfaceW = 120, surfaceH = 120;
+    const isRect = this._selectedShape === "rectangle";
+    const tableW = isRect ? 170 : 140, tableH = isRect ? 120 : 140;
+    const surfaceW = isRect ? 150 : 120, surfaceH = isRect ? 100 : 120;
     const seatSize = 52;
 
     // Center of the table surface within .cafe-table
