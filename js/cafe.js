@@ -491,7 +491,12 @@ class CafeEngine {
         const lastRecipe = this._lastDeliveredRecipe;
         foodSlot.className = "food-slot has-food";
         foodSlot.textContent = lastRecipe ? lastRecipe.icon : "\uD83C\uDF7D";
-        overlay.className = state === "served" ? "table-overlay glow" : "table-overlay hearts";
+        if (state === "served") {
+          overlay.className = "table-overlay glow";
+        } else {
+          overlay.className = "table-overlay hearts";
+          this._spawnHearts(overlay);
+        }
       }
     }
 
@@ -503,14 +508,44 @@ class CafeEngine {
   }
 
   /**
+   * Spawn multiple floating heart particles inside the overlay element.
+   * Hearts appear in staggered waves with random horizontal spread.
+   */
+  _spawnHearts(overlay) {
+    const heartEmojis = ["\u2764\uFE0F", "\uD83E\uDE77", "\uD83D\uDC95", "\uD83D\uDC96"];
+    const totalHearts = 6;
+    const waveDuration = 6000; // spread hearts over 6s
+
+    for (let i = 0; i < totalHearts; i++) {
+      const span = document.createElement("span");
+      span.className = "heart-particle";
+      span.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+
+      // Random horizontal offset (-18px to +18px)
+      const xOff = (Math.random() - 0.5) * 36;
+      span.style.left = `calc(50% + ${xOff}px)`;
+
+      // Stagger each heart's start
+      const delay = (i / totalHearts) * waveDuration;
+      span.style.animationDelay = `${delay}ms`;
+
+      // Slight size variation
+      const scale = 0.9 + Math.random() * 0.4;
+      span.style.fontSize = `${scale * 1.2}rem`;
+
+      overlay.appendChild(span);
+    }
+  }
+
+  /**
    * Generate random seat positions around the table edge.
    * Positions are in px relative to the .cafe-table element.
    * Ensures no overlap with seats on the same table.
    */
   _generateSeatPositions(tableNum, count) {
     // Table & seat dimensions (must match CSS)
-    const tableW = 180, tableH = 180;
-    const surfaceW = 170, surfaceH = 170;
+    const tableW = 140, tableH = 140;
+    const surfaceW = 120, surfaceH = 120;
     const seatSize = 52;
 
     // Center of the table surface within .cafe-table
@@ -681,10 +716,10 @@ class CafeEngine {
       this.renderTable(tableNum);
       await this.sleep(800);
 
-      // Customer eating
+      // Customer eating (hearts float up in waves)
       tableData.state = "eating";
       this.renderTable(tableNum);
-      await this.sleep(5000);
+      await this.sleep(8000);
 
       // Customer leaves, table messy
       tableData.state = "messy";
