@@ -2224,7 +2224,7 @@
 /* Heart — wide heart-shaped table */
 .table-shape-heart .cafe-table {
     width: 150px;
-    height: 130px;
+    height: 140px;
 }
 .table-shape-heart .table-surface {
     width: 130px;
@@ -2233,6 +2233,11 @@
     clip-path: path('M65 18 C65 0, 0 0, 0 38 C0 72, 32 92, 65 110 C98 92, 130 72, 130 38 C130 0, 65 0, 65 18 Z');
     border: none;
     box-shadow: none;
+    /* drop-shadow respects clip-path for outer glow + depth */
+    filter:
+        drop-shadow(0 4px 0 rgba(120, 80, 40, 0.35))
+        drop-shadow(0 6px 0 rgba(100, 65, 30, 0.25))
+        drop-shadow(0 10px 6px rgba(74, 55, 40, 0.3));
 }
 .table-shape-heart .table-surface::before,
 .table-shape-heart .table-surface::after { display: none; }
@@ -2253,6 +2258,10 @@
     clip-path: path('M65 18 C65 0, 0 0, 0 38 C0 72, 32 92, 65 110 C98 92, 130 72, 130 38 C130 0, 65 0, 65 18 Z');
     border: none;
     box-shadow: none;
+    filter:
+        drop-shadow(0 4px 0 rgba(120, 80, 40, 0.35))
+        drop-shadow(0 6px 0 rgba(100, 65, 30, 0.25))
+        drop-shadow(0 10px 6px rgba(74, 55, 40, 0.3));
 }
 
 /* Begin shift button on deco screen */
