@@ -1009,16 +1009,19 @@
 
 .table-overlay .heart-particle {
     position: absolute;
-    font-size: 1.2rem;
-    animation: hearts-float 2s ease-out forwards;
+    font-size: 2.5rem;
+    animation: heart-pulse 4s ease-in-out forwards;
     pointer-events: none;
+    transform: translateX(-50%);
 }
 
-@keyframes hearts-float {
-    0%   { transform: translateY(0) scale(0.4); opacity: 0; }
-    15%  { opacity: 1; }
-    60%  { opacity: 0.8; }
-    100% { transform: translateY(-48px) scale(1.1); opacity: 0; }
+@keyframes heart-pulse {
+    0%   { transform: translateX(-50%) scale(0); opacity: 0; }
+    15%  { transform: translateX(-50%) scale(1.2); opacity: 1; }
+    30%  { transform: translateX(-50%) scale(1); }
+    50%  { transform: translateX(-50%) scale(1.15); }
+    70%  { transform: translateX(-50%) scale(1); opacity: 1; }
+    100% { transform: translateX(-50%) scale(0.8); opacity: 0; }
 }
 
 /* Order speech bubble — floats above the table */
