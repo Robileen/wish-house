@@ -318,6 +318,11 @@ class CafeEngine {
     const p = this.decoPreview;
     p.className = p.className.replace(/\btable-theme-\S+/g, "").trim();
     p.classList.add(`table-theme-${theme}`);
+
+    // Rebuild heart layers if active (border color changes with theme)
+    if (this._selectedShape === "heart") {
+      requestAnimationFrame(() => this._updatePreviewHeartLayers("heart"));
+    }
   }
 
   selectShape(shape) {
@@ -333,14 +338,18 @@ class CafeEngine {
     p.className = p.className.replace(/\btable-shape-\S+/g, "").trim();
     if (shape !== "circle") p.classList.add(`table-shape-${shape}`);
 
-    // Inject/remove heart edge layers on the preview
-    this._updatePreviewHeartLayers(shape);
+    // Inject/remove heart edge layers on the preview (use rAF so CSS is applied first)
+    requestAnimationFrame(() => this._updatePreviewHeartLayers(shape));
   }
 
   _updatePreviewHeartLayers(shape) {
     const p = this.decoPreview;
     p.querySelectorAll(".heart-edge-layer").forEach(el => el.remove());
     if (shape !== "heart") return;
+
+    const surface = p.querySelector(".table-surface");
+    const cs = getComputedStyle(surface);
+    const borderColor = cs.borderColor || cs.borderTopColor || "rgba(160, 112, 64, 0.5)";
 
     const clip = "path('M65 18 C65 0, 0 0, 0 38 C0 72, 32 92, 65 110 C98 92, 130 72, 130 38 C130 0, 65 0, 65 18 Z')";
 
@@ -360,14 +369,15 @@ class CafeEngine {
       p.appendChild(el);
     };
 
-    makeLayer({ background: "rgba(160, 112, 64, 0.5)", transform: "scale(1.05)" });
-    makeLayer({ background: "rgba(130, 90, 50, 0.6)", transform: "scale(1.05) translateY(2px)" });
-    makeLayer({ background: "rgba(160, 112, 64, 0.35)", transform: "scale(1.05) translateY(4px)" });
-    makeLayer({ background: "rgba(140, 95, 50, 0.25)", transform: "scale(1.05) translateY(6px)" });
-    makeLayer({ background: "rgba(120, 80, 40, 0.15)", transform: "scale(1.05) translateY(8px)" });
+    makeLayer({ background: borderColor, transform: "scale(1.05)" });
+    makeLayer({ background: borderColor, transform: "scale(1.05) translateY(2px)", filter: "brightness(0.85)" });
+    makeLayer({ background: borderColor, transform: "scale(1.05) translateY(4px)", opacity: "0.7" });
+    makeLayer({ background: borderColor, transform: "scale(1.05) translateY(6px)", opacity: "0.5" });
+    makeLayer({ background: borderColor, transform: "scale(1.05) translateY(8px)", opacity: "0.3" });
     makeLayer({
-      background: "rgba(74, 55, 40, 0.25)",
+      background: borderColor,
       transform: "scale(1.05) translateY(10px)",
+      opacity: "0.25",
       filter: "blur(10px)",
       zIndex: "-1",
     });
@@ -406,11 +416,9 @@ class CafeEngine {
 
   /**
    * For heart shape, inject layers behind each table to replicate
-   * the circle's border + box-shadow + drop-shadow appearance:
-   * - Scaled-up heart = visible border rim all around
-   * - Same scaled heart shifted down = thicker bottom border
-   * - Three shifted copies = stepped edge bands (like box-shadow 0 4/6/8px 0 0)
-   * - Blurred copy = drop shadow for lift
+   * the circle's border + box-shadow + drop-shadow appearance.
+   * Reads the actual computed border-color from the themed table surface
+   * so the heart rim matches whatever material is selected.
    */
   _updateHeartEdgeLayers(shape) {
     this.cafeRoom.querySelectorAll(".heart-edge-layer").forEach(el => el.remove());
@@ -420,6 +428,11 @@ class CafeEngine {
     const W = 130, H = 120;
 
     this.cafeRoom.querySelectorAll(".cafe-table").forEach(table => {
+      const surface = table.querySelector(".table-surface");
+      const cs = getComputedStyle(surface);
+      // Read the theme's actual border-color and darken it for the bottom
+      const borderColor = cs.borderColor || cs.borderTopColor || "rgba(160, 112, 64, 0.5)";
+
       const baseTop = "calc(50% - 52px)";
       const baseLeft = "calc(50% - 65px)";
 
@@ -441,21 +454,19 @@ class CafeEngine {
         table.appendChild(el);
       };
 
-      // Border rim — scaled up ~5% = ~3px visible border all around
-      makeLayer({ background: "rgba(160, 112, 64, 0.5)", transform: "scale(1.05)" });
-
-      // Bottom border — scaled up + shifted down 2px = thicker bottom
-      makeLayer({ background: "rgba(130, 90, 50, 0.6)", transform: "scale(1.05) translateY(2px)" });
-
-      // Stepped edge bands — same as circle's box-shadow 0 4/6/8px 0 0
-      makeLayer({ background: "rgba(160, 112, 64, 0.35)", transform: "scale(1.05) translateY(4px)" });
-      makeLayer({ background: "rgba(140, 95, 50, 0.25)", transform: "scale(1.05) translateY(6px)" });
-      makeLayer({ background: "rgba(120, 80, 40, 0.15)", transform: "scale(1.05) translateY(8px)" });
-
+      // Border rim — uses the theme's border color
+      makeLayer({ background: borderColor, transform: "scale(1.05)" });
+      // Thicker bottom border — slightly darker via brightness filter
+      makeLayer({ background: borderColor, transform: "scale(1.05) translateY(2px)", filter: "brightness(0.85)" });
+      // Stepped edge bands — progressively shifted down, fading out
+      makeLayer({ background: borderColor, transform: "scale(1.05) translateY(4px)", opacity: "0.7" });
+      makeLayer({ background: borderColor, transform: "scale(1.05) translateY(6px)", opacity: "0.5" });
+      makeLayer({ background: borderColor, transform: "scale(1.05) translateY(8px)", opacity: "0.3" });
       // Drop shadow for lift
       makeLayer({
-        background: "rgba(74, 55, 40, 0.25)",
+        background: borderColor,
         transform: "scale(1.05) translateY(10px)",
+        opacity: "0.25",
         filter: "blur(10px)",
         zIndex: "-1",
       });
