@@ -2065,7 +2065,6 @@
 }
 
 .deco-preview-table.table-shape-heart {
-    /* Extra height to fit the dark edge + shadow below */
     min-height: 140px;
 }
 .deco-preview-table.table-shape-heart .table-surface {
@@ -2078,36 +2077,6 @@
     filter: none;
     position: relative;
     z-index: 1;
-}
-/* 3D stacked edge behind the preview heart — matches cafe table */
-.deco-preview-table.table-shape-heart::before {
-    content: "";
-    position: absolute;
-    top: 8px;
-    left: 0;
-    width: 130px;
-    height: 120px;
-    background: rgba(120, 80, 40, 0.15);
-    clip-path: path('M65 18 C65 0, 0 0, 0 38 C0 72, 32 92, 65 110 C98 92, 130 72, 130 38 C130 0, 65 0, 65 18 Z');
-    z-index: 0;
-    pointer-events: none;
-    filter:
-        drop-shadow(0 -2px 0 rgba(140, 95, 50, 0.25))
-        drop-shadow(0 -2px 0 rgba(160, 112, 64, 0.35));
-}
-/* Ground shadow under the preview heart */
-.deco-preview-table.table-shape-heart::after {
-    content: "";
-    position: absolute;
-    top: 10px;
-    left: 0;
-    width: 130px;
-    height: 120px;
-    background: rgba(74, 55, 40, 0.25);
-    clip-path: path('M65 18 C65 0, 0 0, 0 38 C0 72, 32 92, 65 110 C98 92, 130 72, 130 38 C130 0, 65 0, 65 18 Z');
-    z-index: -1;
-    pointer-events: none;
-    filter: blur(10px);
 }
 
 .deco-preview-table .table-surface {
@@ -2281,48 +2250,11 @@
     border: none;
     box-shadow: none;
     filter: none;
+    z-index: 1;
 }
-.table-shape-heart .table-surface::before {
-    display: none;
-}
+.table-shape-heart .table-surface::before,
 .table-shape-heart .table-surface::after {
     display: none;
-}
-/* 3D stacked edge — matches circle/square/rect box-shadow layers */
-.table-shape-heart .cafe-table::before {
-    content: "";
-    position: absolute;
-    /* Position at 8px below surface = deepest edge layer */
-    top: calc(50% - 52px + 8px);
-    left: calc(50% - 65px);
-    width: 130px;
-    height: 120px;
-    background: rgba(120, 80, 40, 0.15);
-    clip-path: path('M65 18 C65 0, 0 0, 0 38 C0 72, 32 92, 65 110 C98 92, 130 72, 130 38 C130 0, 65 0, 65 18 Z');
-    z-index: 0;
-    pointer-events: none;
-    /* Add the two upper edge layers via drop-shadow (offsets relative to this element) */
-    filter:
-        drop-shadow(0 -2px 0 rgba(140, 95, 50, 0.25))
-        drop-shadow(0 -2px 0 rgba(160, 112, 64, 0.35));
-}
-/* Drop shadow for lift — matches the 0 10px 20px shadow on other shapes */
-.table-shape-heart .cafe-table::after {
-    content: "";
-    position: absolute;
-    top: calc(50% - 52px + 10px);
-    left: calc(50% - 65px);
-    width: 130px;
-    height: 120px;
-    background: rgba(74, 55, 40, 0.25);
-    clip-path: path('M65 18 C65 0, 0 0, 0 38 C0 72, 32 92, 65 110 C98 92, 130 72, 130 38 C130 0, 65 0, 65 18 Z');
-    z-index: -1;
-    pointer-events: none;
-    filter: blur(10px);
-}
-/* Ensure the real surface sits above the edge */
-.table-shape-heart .table-surface {
-    z-index: 1;
 }
 
 /* Preview table shape overrides */
