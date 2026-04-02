@@ -1,4 +1,4 @@
 [
-  { "id": "wishing_star_parfait", "name": "Wishing Star Parfait", "category": "specials-magical-food", "icon": "\u2B50", "ingredients": ["strawberry", "blueberry", "cream", "vanilla", "wild"], "illustration": "A layered parfait of red and blue berries with cream that sparkles like stardust." },
-  { "id": "enchanted_toast", "name": "Enchanted Toast", "category": "specials-magical-food", "icon": "\u2728", "ingredients": ["bread", "honey", "stardust", "cinnamon", "wild"], "illustration": "A golden toast dusted with glittering stardust that hums with faint warmth." }
+  { "id": "wishing_star_parfait", "name": "Wishing Star Parfait", "category": "specials-magical-food", "icon": "⭐", "ingredients": ["strawberry", "blueberry", "cream", "vanilla", "wild"], "tags": ["sweet", "refreshing", "magical", "caffeine_free"], "illustration": "A layered parfait of red and blue berries with cream that sparkles like stardust." },
+  { "id": "enchanted_toast", "name": "Enchanted Toast", "category": "specials-magical-food", "icon": "✨", "ingredients": ["bread", "honey", "stardust", "cinnamon", "wild"], "tags": ["sweet", "comfort", "magical", "lactose_free", "caffeine_free"], "illustration": "A golden toast dusted with glittering stardust that hums with faint warmth." }
 ]

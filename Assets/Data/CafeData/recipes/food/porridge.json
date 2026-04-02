@@ -1,5 +1,5 @@
 [
-  { "id": "rice_porridge", "name": "Rice Porridge", "category": "food-porridge", "icon": "\uD83C\uDF5A", "ingredients": ["rice", "milk", "hot", "sugar"], "illustration": "A comforting bowl of warm rice porridge, soft and gently sweet." },
-  { "id": "apple_oatmeal", "name": "Apple Oatmeal", "category": "food-porridge", "icon": "\uD83E\uDD63", "ingredients": ["apple", "oats", "honey", "hot"], "illustration": "A warm bowl of oatmeal studded with apple chunks and drizzled with honey." },
-  { "id": "fruit_salad", "name": "Fruit Salad", "category": "food-porridge", "icon": "\uD83C\uDF4E", "ingredients": ["apple", "strawberry", "honey"], "illustration": "A colorful bowl of fresh fruit pieces glistening with honey." }
+  { "id": "rice_porridge", "name": "Rice Porridge", "category": "food-porridge", "icon": "🍚", "ingredients": ["rice", "milk", "hot", "sugar"], "tags": ["hot", "comfort", "light", "sweet", "caffeine_free"], "illustration": "A comforting bowl of warm rice porridge, soft and gently sweet." },
+  { "id": "apple_oatmeal", "name": "Apple Oatmeal", "category": "food-porridge", "icon": "🥣", "ingredients": ["apple", "oats", "honey", "hot"], "tags": ["hot", "comfort", "sweet", "filling", "lactose_free", "caffeine_free"], "illustration": "A warm bowl of oatmeal studded with apple chunks and drizzled with honey." },
+  { "id": "fruit_salad", "name": "Fruit Salad", "category": "food-porridge", "icon": "🍎", "ingredients": ["apple", "strawberry", "honey"], "tags": ["light", "refreshing", "sweet", "quick", "lactose_free", "caffeine_free"], "illustration": "A colorful bowl of fresh fruit pieces glistening with honey." }
 ]

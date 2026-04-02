@@ -1,4 +1,4 @@
 [
-  { "id": "hot_chocolate", "name": "Hot Chocolate", "category": "drink-chocolate", "icon": "\uD83C\uDF6B", "ingredients": ["chocolate", "milk", "hot"], "illustration": "A steaming mug of velvety hot chocolate, perfect for a rainy day." },
-  { "id": "cream_cocoa", "name": "Cream Cocoa", "category": "drink-chocolate", "icon": "\uD83E\uDDC1", "ingredients": ["chocolate", "milk", "cream", "hot"], "illustration": "A luxurious cocoa topped with a generous cloud of whipped cream." }
+  { "id": "hot_chocolate", "name": "Hot Chocolate", "category": "drink-chocolate", "icon": "🍫", "ingredients": ["chocolate", "milk", "hot"], "tags": ["hot", "sweet", "comfort", "caffeine_free"], "illustration": "A steaming mug of velvety hot chocolate, perfect for a rainy day." },
+  { "id": "cream_cocoa", "name": "Cream Cocoa", "category": "drink-chocolate", "icon": "🧁", "ingredients": ["chocolate", "milk", "cream", "hot"], "tags": ["hot", "sweet", "rich", "comfort", "caffeine_free"], "illustration": "A luxurious cocoa topped with a generous cloud of whipped cream." }
 ]

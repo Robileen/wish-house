@@ -1,0 +1,605 @@
+{
+  "_doc": "Customer chat dialogues for cafe shifts. Each entry has tags that map to recipe tags for recommendation matching. Correct answers generate an additional order for the customer.",
+  "dialogues": [
+
+    {
+      "id": "lactose_intolerant_drink",
+      "category": "dietary",
+      "customer_line": "Hey, sorry -- I'm lactose intolerant. Do you have drinks without milk?",
+      "tags": ["lactose_free"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "Yes we do! We've got lemonade, teas without milk, and our house blend with no added cream.",
+          "is_correct": true,
+          "response": "Oh nice! I'll take a tea then.",
+          "order_tags": ["lactose_free"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "Hmm... I think most of our drinks have milk.",
+          "is_correct": false,
+          "response": "Ah... that's okay, I'll pass.",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "caffeine_free_request",
+      "category": "dietary",
+      "customer_line": "I can't really have caffeine... anything gentle?",
+      "tags": ["caffeine_free"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "Of course! We have herbal teas and fruit drinks that are completely caffeine-free.",
+          "is_correct": true,
+          "response": "Herbal tea sounds perfect!",
+          "order_tags": ["caffeine_free"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "You could try a small coffee?",
+          "is_correct": false,
+          "response": "Oh... I'll skip then.",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "lactose_free_dessert",
+      "category": "dietary",
+      "customer_line": "I'd love a dessert, but dairy doesn't agree with me. Anything safe?",
+      "tags": ["lactose_free", "sweet"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "Absolutely! Our honey cookie and blueberry muffin are dairy-free and delicious.",
+          "is_correct": true,
+          "response": "Ooh, a honey cookie sounds great!",
+          "order_tags": ["lactose_free", "sweet"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "All our desserts have butter or cream, sorry.",
+          "is_correct": false,
+          "response": "Oh... never mind then.",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "caffeine_free_sweet",
+      "category": "dietary",
+      "customer_line": "My doctor says no caffeine, but I still want something sweet to drink...",
+      "tags": ["caffeine_free", "sweet"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "How about a strawberry milk or hot chocolate? Sweet and caffeine-free!",
+          "is_correct": true,
+          "response": "Strawberry milk! Yes please!",
+          "order_tags": ["caffeine_free", "sweet"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "Sweet drinks usually have caffeine in them.",
+          "is_correct": false,
+          "response": "That... doesn't sound right. I'll just go.",
+          "reward": { "buttons": 0, "satisfaction": -2 }
+        }
+      ]
+    },
+
+    {
+      "id": "first_time_customer",
+      "category": "preference",
+      "customer_line": "It's my first time here... what do you recommend?",
+      "tags": ["refreshing"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "Welcome! How about something refreshing? Our iced tea and fruit drinks are really popular.",
+          "is_correct": true,
+          "response": "Hmm... something refreshing sounds nice!",
+          "order_tags": ["refreshing"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "Everything's good, just pick something.",
+          "is_correct": false,
+          "response": "Uh... I'm not sure then.",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "sweet_tooth",
+      "category": "preference",
+      "customer_line": "I have the biggest sweet tooth. What's the sweetest thing you've got?",
+      "tags": ["sweet"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "You're in the right place! Our caramel mocha and honey pancakes are heavenly sweet.",
+          "is_correct": true,
+          "response": "Say no more -- I'll try one!",
+          "order_tags": ["sweet"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "We don't really do super sweet stuff.",
+          "is_correct": false,
+          "response": "Oh... that's disappointing.",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "something_strong",
+      "category": "preference",
+      "customer_line": "I need something strong. Like, wake-me-up strong.",
+      "tags": ["strong"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "Our house blend is bold and no-nonsense. Cinnamon coffee too if you like a kick!",
+          "is_correct": true,
+          "response": "Bold and no-nonsense -- that's me. I'll take it.",
+          "order_tags": ["strong"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "Maybe try a smoothie?",
+          "is_correct": false,
+          "response": "That's... not what I meant.",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "something_cold",
+      "category": "preference",
+      "customer_line": "It's so hot outside... do you have anything cold?",
+      "tags": ["cold", "refreshing"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "Totally! We've got iced tea, smoothies, milkshakes, and lemon sorbet to cool you down.",
+          "is_correct": true,
+          "response": "Anything icy, please!",
+          "order_tags": ["cold", "refreshing"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "We mostly serve hot drinks.",
+          "is_correct": false,
+          "response": "In this weather? I'll try somewhere else.",
+          "reward": { "buttons": 0, "satisfaction": -2 }
+        }
+      ]
+    },
+
+    {
+      "id": "something_warm",
+      "category": "preference",
+      "customer_line": "Brr, it's freezing today. Something warm would be amazing...",
+      "tags": ["hot", "comfort"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "I've got just the thing! Hot chocolate, chai latte, or a nice warm soup?",
+          "is_correct": true,
+          "response": "Yes, warm me up!",
+          "order_tags": ["hot", "comfort"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "We have iced drinks on special today.",
+          "is_correct": false,
+          "response": "...that's the opposite of what I need.",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "spiced_lover",
+      "category": "preference",
+      "customer_line": "I love anything with cinnamon or spice. Got anything like that?",
+      "tags": ["spiced"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "You'd love our cinnamon coffee, chai latte, or apple cider -- all warm and spicy!",
+          "is_correct": true,
+          "response": "Oh, all of those sound amazing!",
+          "order_tags": ["spiced"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "We don't really use spices here.",
+          "is_correct": false,
+          "response": "Hm, okay...",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "comfort_dessert",
+      "category": "emotional",
+      "customer_line": "I had a long day... I just want something comforting.",
+      "tags": ["comfort"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "I get that. Something warm and sweet like a cinnamon roll or hot chocolate could really help.",
+          "is_correct": true,
+          "response": "That sounds perfect right now.",
+          "order_tags": ["comfort", "sweet"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "Uh... we have desserts.",
+          "is_correct": false,
+          "response": "Never mind...",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "feeling_down",
+      "category": "emotional",
+      "customer_line": "I'm having a really rough week. What would you pick to cheer someone up?",
+      "tags": ["comfort", "sweet"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "When I'm down, a warm cream cocoa or a slice of chocolate cake always helps. Want to try?",
+          "is_correct": true,
+          "response": "You know what... yes. I deserve that.",
+          "order_tags": ["comfort", "sweet"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "I don't know, food doesn't fix problems.",
+          "is_correct": false,
+          "response": "...wow, okay.",
+          "reward": { "buttons": 0, "satisfaction": -2 }
+        }
+      ]
+    },
+
+    {
+      "id": "stressed_student",
+      "category": "emotional",
+      "customer_line": "I've got exams tomorrow and I'm so stressed... anything calming?",
+      "tags": ["soothing", "caffeine_free"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "Our lemon honey tea is really soothing, and it's caffeine-free so it won't keep you wired.",
+          "is_correct": true,
+          "response": "That's exactly what I need. Thank you.",
+          "order_tags": ["soothing", "caffeine_free"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "Triple espresso?",
+          "is_correct": false,
+          "response": "I said calming, not heart attack...",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "tired_parent",
+      "category": "emotional",
+      "customer_line": "The baby kept me up all night... I can barely keep my eyes open.",
+      "tags": ["caffeine", "strong"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "Hang in there! A strong house blend or cinnamon coffee should help wake you up.",
+          "is_correct": true,
+          "response": "Bless you. Make it strong.",
+          "order_tags": ["caffeine", "strong"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "Maybe some warm milk?",
+          "is_correct": false,
+          "response": "That'll put me right back to sleep...",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "celebration_mood",
+      "category": "emotional",
+      "customer_line": "I just got a promotion! I want to treat myself to something special.",
+      "tags": ["rich", "sweet"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "Congratulations! How about a rich caramel mocha or a slice of our chocolate cake to celebrate?",
+          "is_correct": true,
+          "response": "Yes! Something indulgent! I earned it!",
+          "order_tags": ["rich", "sweet"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "Water is free.",
+          "is_correct": false,
+          "response": "...seriously?",
+          "reward": { "buttons": 0, "satisfaction": -2 }
+        }
+      ]
+    },
+
+    {
+      "id": "light_food_request",
+      "category": "situational",
+      "customer_line": "I'm not super hungry... just something light?",
+      "tags": ["light"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "No problem! A rice ball, fruit salad, or veggie wrap would be nice and light.",
+          "is_correct": true,
+          "response": "A fruit salad sounds perfect.",
+          "order_tags": ["light"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "You should get a full meal, you look thin.",
+          "is_correct": false,
+          "response": "That's... not really your call.",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "rush_customer",
+      "category": "situational",
+      "customer_line": "I'm in a bit of a rush -- what's quick?",
+      "tags": ["quick"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "Got you! A rice ball, toast, or cherry soda -- all ready in a flash.",
+          "is_correct": true,
+          "response": "Perfect, I'll take something quick!",
+          "order_tags": ["quick"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "Everything takes time, you'll have to wait.",
+          "is_correct": false,
+          "response": "I really don't have time for this.",
+          "reward": { "buttons": 0, "satisfaction": -2 }
+        }
+      ]
+    },
+
+    {
+      "id": "filling_meal",
+      "category": "situational",
+      "customer_line": "I skipped lunch and I'm starving. What's the most filling thing you've got?",
+      "tags": ["filling"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "Our grilled cheese, egg sandwich, or soups are really hearty and filling!",
+          "is_correct": true,
+          "response": "Give me the biggest one!",
+          "order_tags": ["filling"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "Try a cookie, that should hold you over.",
+          "is_correct": false,
+          "response": "A cookie? I said starving, not snacky.",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "quick_snack_break",
+      "category": "situational",
+      "customer_line": "I'm on break and I only have ten minutes. Anything fast and tasty?",
+      "tags": ["quick", "sweet"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "A honey cookie or blueberry muffin -- quick, sweet, and satisfying!",
+          "is_correct": true,
+          "response": "Done! Muffin it is!",
+          "order_tags": ["quick", "sweet"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "Our cakes are nice but take a while to plate.",
+          "is_correct": false,
+          "response": "I don't have time for that...",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "refreshing_after_exercise",
+      "category": "situational",
+      "customer_line": "Just finished a run and I need something cold and refreshing!",
+      "tags": ["cold", "refreshing"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "Nice! How about a banana shake for energy, or a strawberry lemonade to cool down?",
+          "is_correct": true,
+          "response": "Yes! Something to recharge!",
+          "order_tags": ["cold", "refreshing"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "Hot soup would warm you right up after a run.",
+          "is_correct": false,
+          "response": "Hot?! I'm already overheating!",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "date_recommendation",
+      "category": "situational",
+      "customer_line": "I'm meeting someone special here tonight. What's the most romantic thing on the menu?",
+      "tags": ["rich", "sweet", "comfort"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "How about a chocolate tart or a cream cocoa for two? Rich and cozy.",
+          "is_correct": true,
+          "response": "That sounds lovely! We'll share.",
+          "order_tags": ["rich", "sweet"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "This is a cafe, not a restaurant.",
+          "is_correct": false,
+          "response": "Well, that's... not the vibe I was hoping for.",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "savory_mood",
+      "category": "preference",
+      "customer_line": "I'm not in the mood for sweet stuff. Got anything savory?",
+      "tags": ["savory"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "Definitely! We have grilled cheese, egg sandwiches, and a great tomato soup.",
+          "is_correct": true,
+          "response": "Oh, savory options! Sign me up.",
+          "order_tags": ["savory"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "This is mostly a dessert cafe.",
+          "is_correct": false,
+          "response": "Hmm, I'll look elsewhere then.",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "healthy_option",
+      "category": "preference",
+      "customer_line": "I'm trying to eat healthier. Any suggestions?",
+      "tags": ["light", "refreshing"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "Our fruit salad is fresh and light, and the veggie wrap is really crisp and tasty!",
+          "is_correct": true,
+          "response": "Light and fresh -- yes please!",
+          "order_tags": ["light", "refreshing"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "This is a cafe, not a gym.",
+          "is_correct": false,
+          "response": "Rude...",
+          "reward": { "buttons": 0, "satisfaction": -2 }
+        }
+      ]
+    },
+
+    {
+      "id": "curious_about_specials",
+      "category": "preference",
+      "customer_line": "I heard you have something... magical on the menu? Is that real?",
+      "tags": ["magical"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "It is! Our Moonlight Cocoa shimmers and the Dreamer's Tea fills the room with calm. Want to try?",
+          "is_correct": true,
+          "response": "Whoa, yes! I have to see this.",
+          "order_tags": ["magical"],
+          "reward": { "buttons": 3, "satisfaction": 3 }
+        },
+        {
+          "id": "B",
+          "text": "That's just marketing, it's regular food.",
+          "is_correct": false,
+          "response": "Oh... that's a letdown.",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    },
+
+    {
+      "id": "energizing_request",
+      "category": "situational",
+      "customer_line": "I need energy for the rest of the day. What gives you a boost?",
+      "tags": ["energizing", "caffeine"],
+      "choices": [
+        {
+          "id": "A",
+          "text": "A banana shake for quick energy, or a house blend for a caffeine boost!",
+          "is_correct": true,
+          "response": "Let's go with the boost!",
+          "order_tags": ["energizing"],
+          "reward": { "buttons": 2, "satisfaction": 2 }
+        },
+        {
+          "id": "B",
+          "text": "You should probably just take a nap.",
+          "is_correct": false,
+          "response": "I wish I could...",
+          "reward": { "buttons": 0, "satisfaction": -1 }
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 [
-  { "id": "iced_tea", "name": "Iced Lemon Tea", "category": "drink-tea", "icon": "\uD83C\uDF4B", "ingredients": ["tea", "lemon", "sugar", "cold"], "illustration": "A refreshing glass of iced tea with lemon slices." },
-  { "id": "chai_latte", "name": "Chai Latte", "category": "drink-tea", "icon": "\uD83C\uDF75", "ingredients": ["tea", "milk", "cinnamon", "hot"], "illustration": "A spiced chai latte with a creamy froth and cinnamon sprinkle." },
-  { "id": "lemon_honey_tea", "name": "Lemon Honey Tea", "category": "drink-tea", "icon": "\uD83C\uDF4B", "ingredients": ["tea", "lemon", "honey", "hot"], "illustration": "A soothing cup of tea with lemon wedges and a drizzle of golden honey." }
+  { "id": "iced_tea", "name": "Iced Lemon Tea", "category": "drink-tea", "icon": "🍋", "ingredients": ["tea", "lemon", "sugar", "cold"], "tags": ["cold", "refreshing", "light", "caffeine_free", "lactose_free", "quick"], "illustration": "A refreshing glass of iced tea with lemon slices." },
+  { "id": "chai_latte", "name": "Chai Latte", "category": "drink-tea", "icon": "🍵", "ingredients": ["tea", "milk", "cinnamon", "hot"], "tags": ["hot", "spiced", "comfort"], "illustration": "A spiced chai latte with a creamy froth and cinnamon sprinkle." },
+  { "id": "lemon_honey_tea", "name": "Lemon Honey Tea", "category": "drink-tea", "icon": "🍋", "ingredients": ["tea", "lemon", "honey", "hot"], "tags": ["hot", "soothing", "light", "caffeine_free", "lactose_free"], "illustration": "A soothing cup of tea with lemon wedges and a drizzle of golden honey." }
 ]

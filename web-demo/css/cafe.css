@@ -1270,6 +1270,30 @@
     opacity: 0.5;
 }
 
+#chat-response {
+    margin-top: 6px;
+    padding: 8px 14px;
+    background: linear-gradient(135deg, rgba(200, 230, 208, 0.3), rgba(255, 248, 240, 0.6));
+    border: 1px solid rgba(200, 230, 208, 0.4);
+    border-radius: 12px;
+    animation: chatResponseIn 0.3s ease;
+}
+
+#chat-response.hidden { display: none; }
+
+#chat-response-text {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.72rem;
+    color: var(--cocoa);
+    font-style: italic;
+    line-height: 1.4;
+}
+
+@keyframes chatResponseIn {
+    0%   { opacity: 0; transform: translateY(6px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
 /* ---- Craft View Container ---- */
 #craft-view {
     flex: 1;
