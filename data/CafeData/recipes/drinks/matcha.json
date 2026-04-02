@@ -1,4 +1,4 @@
 [
-  { "id": "matcha_latte", "name": "Matcha Latte", "category": "drink-matcha", "icon": "\uD83C\uDF35", "ingredients": ["matcha", "milk", "hot"], "illustration": "A vibrant green matcha latte with a foamy top." },
-  { "id": "matcha_frappe", "name": "Matcha Frappe", "category": "drink-matcha", "icon": "\uD83C\uDF35", "ingredients": ["matcha", "milk", "sugar", "cold"], "illustration": "A frosty blended matcha frappe with a swirl of green on top." }
+  { "id": "matcha_latte", "name": "Matcha Latte", "category": "drink-matcha", "icon": "🌵", "ingredients": ["matcha", "milk", "hot"], "tags": ["hot", "light", "caffeine"], "illustration": "A vibrant green matcha latte with a foamy top." },
+  { "id": "matcha_frappe", "name": "Matcha Frappe", "category": "drink-matcha", "icon": "🌵", "ingredients": ["matcha", "milk", "sugar", "cold"], "tags": ["cold", "sweet", "refreshing", "caffeine"], "illustration": "A frosty blended matcha frappe with a swirl of green on top." }
 ]

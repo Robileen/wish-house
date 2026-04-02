@@ -1,5 +1,5 @@
 [
-  { "id": "vanilla_pudding", "name": "Vanilla Pudding", "category": "dessert-puddings", "icon": "\uD83C\uDF6E", "ingredients": ["milk", "vanilla", "sugar"], "illustration": "A silky vanilla pudding with a tiny caramel crown on top." },
-  { "id": "caramel_flan", "name": "Caramel Flan", "category": "dessert-puddings", "icon": "\uD83C\uDF6E", "ingredients": ["milk", "caramel", "sugar", "vanilla"], "illustration": "A jiggly caramel flan with a pool of amber syrup on the plate." },
-  { "id": "lemon_sorbet", "name": "Lemon Sorbet", "category": "dessert-puddings", "icon": "\uD83C\uDF4B", "ingredients": ["lemon", "sugar", "cold"], "illustration": "A tangy scoop of lemon sorbet in a chilled glass dish, refreshingly bright." }
+  { "id": "vanilla_pudding", "name": "Vanilla Pudding", "category": "dessert-puddings", "icon": "🍮", "ingredients": ["milk", "vanilla", "sugar"], "tags": ["sweet", "light", "comfort", "caffeine_free"], "illustration": "A silky vanilla pudding with a tiny caramel crown on top." },
+  { "id": "caramel_flan", "name": "Caramel Flan", "category": "dessert-puddings", "icon": "🍮", "ingredients": ["milk", "caramel", "sugar", "vanilla"], "tags": ["sweet", "rich", "comfort", "caffeine_free"], "illustration": "A jiggly caramel flan with a pool of amber syrup on the plate." },
+  { "id": "lemon_sorbet", "name": "Lemon Sorbet", "category": "dessert-puddings", "icon": "🍋", "ingredients": ["lemon", "sugar", "cold"], "tags": ["cold", "refreshing", "sweet", "light", "lactose_free", "caffeine_free"], "illustration": "A tangy scoop of lemon sorbet in a chilled glass dish, refreshingly bright." }
 ]

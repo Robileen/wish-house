@@ -9,9 +9,10 @@
  * To add a new subcategory: create the file and add it to manifest.json.
  *
  * Exposes the same globals used by cafe.js, recipe-book.js, cafe-room.js:
- *   INGREDIENTS  – keyed by ingredient id
- *   RECIPES      – keyed by recipe id
- *   SHIFTS       – keyed by shift id (number)
+ *   INGREDIENTS        – keyed by ingredient id
+ *   RECIPES            – keyed by recipe id
+ *   SHIFTS             – keyed by shift id (number)
+ *   CUSTOMER_DIALOGUES – array of dialogue objects (loaded from dialogue JSON)
  *
  * Also exposes:
  *   cafeDataReady – a Promise that resolves once all data is loaded.
@@ -19,11 +20,13 @@
  */
 
 const DATA_ROOT = "data/CafeData";
+const DIALOGUE_PATH = "data/Chapter1/Episode4/cafe_shift_customer_dialogues.json";
 
 // Globals consumed by the rest of the app
 const INGREDIENTS = {};
 const RECIPES     = {};
 const SHIFTS      = {};
+let   CUSTOMER_DIALOGUES = [];
 
 /**
  * Fetch JSON helper with error handling.
@@ -76,10 +79,14 @@ async function _loadRecipesFromManifest() {
  * Load all core cafe data from JSON files.
  */
 async function _loadCafeData() {
-  // Load ingredients, shifts, and all recipes in parallel
-  const [ingredients, shifts] = await Promise.all([
+  // Load ingredients, shifts, customer dialogues, and all recipes in parallel
+  const [ingredients, shifts, dialogueData] = await Promise.all([
     _fetchJSON(`${DATA_ROOT}/ingredients.json`),
     _fetchJSON(`${DATA_ROOT}/shifts.json`),
+    _fetchJSON(DIALOGUE_PATH).catch(err => {
+      console.warn("[cafe-data] Could not load customer dialogues:", err);
+      return { dialogues: [] };
+    }),
     _loadRecipesFromManifest(),
   ]);
 
@@ -92,10 +99,14 @@ async function _loadCafeData() {
   // Populate SHIFTS (number-keyed dict)
   shifts.forEach(s => { SHIFTS[s.id] = s; });
 
+  // Populate CUSTOMER_DIALOGUES
+  CUSTOMER_DIALOGUES = dialogueData.dialogues || [];
+
   console.log(
     `[cafe-data] Loaded ${Object.keys(INGREDIENTS).length} ingredients, ` +
     `${Object.keys(RECIPES).length} recipes, ` +
-    `${Object.keys(SHIFTS).length} shifts`
+    `${Object.keys(SHIFTS).length} shifts, ` +
+    `${CUSTOMER_DIALOGUES.length} customer dialogues`
   );
 }
 

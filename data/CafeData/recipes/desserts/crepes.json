@@ -1,4 +1,4 @@
 [
-  { "id": "choco_banana", "name": "Choco Banana", "category": "dessert-crepes", "icon": "\uD83C\uDF6B", "ingredients": ["banana", "chocolate", "cream"], "illustration": "A banana split covered in chocolate drizzle and cream." },
-  { "id": "banana_crepe", "name": "Banana Crepe", "category": "dessert-crepes", "icon": "\uD83E\uDDC7", "ingredients": ["flour", "banana", "cream", "chocolate"], "illustration": "A thin golden crepe folded around banana slices with chocolate drizzle." }
+  { "id": "choco_banana", "name": "Choco Banana", "category": "dessert-crepes", "icon": "🍫", "ingredients": ["banana", "chocolate", "cream"], "tags": ["sweet", "rich", "comfort", "caffeine_free"], "illustration": "A banana split covered in chocolate drizzle and cream." },
+  { "id": "banana_crepe", "name": "Banana Crepe", "category": "dessert-crepes", "icon": "🧇", "ingredients": ["flour", "banana", "cream", "chocolate"], "tags": ["sweet", "rich", "caffeine_free"], "illustration": "A thin golden crepe folded around banana slices with chocolate drizzle." }
 ]
