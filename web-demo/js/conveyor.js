@@ -319,19 +319,14 @@ class ConveyorBeltEngine {
         el.querySelector(".cb-table-surface").appendChild(seat);
       });
 
-      // Order bubble — shows the next needed dish + tower progress
-      if (state === "ordering" && td.pendingRecipes && td.pendingRecipes.length > 0) {
+      // Heart bubble — shows satisfaction progress (light pink → bright red)
+      if (state === "ordering") {
         const filled = this._towerFilledCount(td.tower);
         const bubble = document.createElement("div");
-        bubble.className = "cb-order-bubble";
+        bubble.className = "cb-order-bubble cb-heart-bubble";
 
-        // Cycle through unique pending recipes
-        const uniquePending = [...new Map(td.pendingRecipes.map(r => [r.id, r])).values()];
-        if (td._displayIdx === undefined) td._displayIdx = 0;
-        const r = uniquePending[td._displayIdx % uniquePending.length];
-        const request = r ? `<span>${r.icon}</span> ${r.name}` : "";
-
-        bubble.innerHTML = `${request} <span class="bubble-count">${filled}/${this.PLATES_TO_COMPLETE}</span>`;
+        const pct = filled / this.PLATES_TO_COMPLETE;
+        bubble.innerHTML = `<span class="heart-icon" style="color:${this._heartColor(pct)}">\u2764</span> <span class="bubble-count">${filled}/${this.PLATES_TO_COMPLETE}</span>`;
         el.appendChild(bubble);
       }
 
@@ -435,7 +430,7 @@ class ConveyorBeltEngine {
     heart.className = "cb-heart-particle";
     heart.textContent = "\u2764\uFE0F";
     overlay.appendChild(heart);
-    setTimeout(() => heart.remove(), 4000);
+    setTimeout(() => heart.remove(), 6500);
   }
 
   _onTableClick(tableId) {
@@ -747,21 +742,14 @@ class ConveyorBeltEngine {
     const oldBubble = el.querySelector(".cb-order-bubble");
     if (oldBubble) oldBubble.remove();
 
-    if (td.state !== "ordering" || !td.pendingRecipes || td.pendingRecipes.length === 0) return;
-
-    // Cycle to next unique pending recipe
-    const uniquePending = [...new Map(td.pendingRecipes.map(r => [r.id, r])).values()];
-    if (td._displayIdx === undefined) td._displayIdx = 0;
-    td._displayIdx = (td._displayIdx + 1) % uniquePending.length;
+    if (td.state !== "ordering") return;
 
     const filled = this._towerFilledCount(td.tower);
     const bubble = document.createElement("div");
-    bubble.className = "cb-order-bubble";
+    bubble.className = "cb-order-bubble cb-heart-bubble";
 
-    const r = uniquePending[td._displayIdx];
-    const request = r ? `<span>${r.icon}</span> ${r.name}` : "";
-
-    bubble.innerHTML = `${request} <span class="bubble-count">${filled}/${this.PLATES_TO_COMPLETE}</span>`;
+    const pct = filled / this.PLATES_TO_COMPLETE;
+    bubble.innerHTML = `<span class="heart-icon" style="color:${this._heartColor(pct)}">\u2764</span> <span class="bubble-count">${filled}/${this.PLATES_TO_COMPLETE}</span>`;
     el.appendChild(bubble);
   }
 
@@ -781,20 +769,33 @@ class ConveyorBeltEngine {
     td.state = "served";
     this._renderTable(tableId);
 
-    // served → eating → messy
+    // served → eating → messy (longer eating time — they have 12 dishes!)
     setTimeout(() => {
       if (td.state !== "served") return;
       td.state = "eating";
       this._renderTable(tableId);
 
+      // Spawn hearts periodically while eating
+      let heartCount = 0;
+      const heartInterval = setInterval(() => {
+        if (td.state !== "eating" || heartCount >= 5) {
+          clearInterval(heartInterval);
+          return;
+        }
+        const overlay = td.el.querySelector(".cb-table-overlay");
+        if (overlay) this._spawnHeart(overlay);
+        heartCount++;
+      }, 1500);
+
       setTimeout(() => {
+        clearInterval(heartInterval);
         if (td.state !== "eating") return;
         td.state = "messy";
         this._renderTable(tableId);
 
         this._checkShiftComplete();
-      }, 1500);
-    }, 1200);
+      }, 8000);
+    }, 2000);
   }
 
   /* ══════════════════════════════════════════════════════════════
@@ -1026,18 +1027,34 @@ class ConveyorBeltEngine {
       this.orderDialogue.textContent = `\u201CWe\u2019re ${filled}/${this.PLATES_TO_COMPLETE} done\u2026 keep them coming!\u201D`;
     }
 
-    // Render pending order items
+    // Render all 12 tower slots: done, needed (pending), and empty
     this.orderItems.innerHTML = "";
+    const pendingCount = td.pendingRecipes ? td.pendingRecipes.length : 0;
+    const emptySlots = this.PLATES_TO_COMPLETE - filled - pendingCount;
+
+    // 1) Filled (done) slots
+    const filledRecipes = td.tower.filter(s => s !== null);
+    const uniqueFilled = [...new Map(filledRecipes.map(s => [s.recipe.id, s.recipe])).values()];
+    uniqueFilled.forEach(recipe => {
+      const count = filledRecipes.filter(s => s.recipe.id === recipe.id).length;
+      const item = document.createElement("div");
+      item.className = "cb-order-item done";
+      item.innerHTML = `
+        <span class="item-icon">${recipe.icon}</span>
+        <span class="item-name">${recipe.name}${count > 1 ? ` \u00D7${count}` : ""}</span>
+        <span class="item-status done">\u2713 done</span>
+      `;
+      this.orderItems.appendChild(item);
+    });
+
+    // 2) Pending (needed) slots — unique recipes with counts
     const uniquePending = [...new Map(
       (td.pendingRecipes || []).map(r => [r.id, r])
     ).values()];
-
-    // Show up to 6 unique pending items
-    const showItems = uniquePending.slice(0, 6);
-    showItems.forEach(recipe => {
+    uniquePending.forEach(recipe => {
       const count = td.pendingRecipes.filter(r => r.id === recipe.id).length;
       const item = document.createElement("div");
-      item.className = "cb-order-item";
+      item.className = "cb-order-item needed";
       item.innerHTML = `
         <span class="item-icon">${recipe.icon}</span>
         <span class="item-name">${recipe.name}${count > 1 ? ` \u00D7${count}` : ""}</span>
@@ -1046,20 +1063,29 @@ class ConveyorBeltEngine {
       this.orderItems.appendChild(item);
     });
 
-    // Also show completed items
-    const filledRecipes = td.tower.filter(s => s !== null);
-    const uniqueFilled = [...new Map(filledRecipes.map(s => [s.recipe.id, s.recipe])).values()];
-    uniqueFilled.slice(0, 3).forEach(recipe => {
-      const count = filledRecipes.filter(s => s.recipe.id === recipe.id).length;
+    // 3) Empty remaining slots
+    if (emptySlots > 0) {
       const item = document.createElement("div");
-      item.className = "cb-order-item";
+      item.className = "cb-order-item empty-slots";
       item.innerHTML = `
-        <span class="item-icon">${recipe.icon}</span>
-        <span class="item-name">${recipe.name}${count > 1 ? ` \u00D7${count}` : ""}</span>
-        <span class="item-status done">\u2713 done</span>
+        <span class="item-icon">\u2B1C</span>
+        <span class="item-name">${emptySlots} empty slot${emptySlots > 1 ? "s" : ""} left</span>
+        <span class="item-status empty">open</span>
       `;
       this.orderItems.appendChild(item);
-    });
+    }
+
+    // Summary bar
+    const summary = document.createElement("div");
+    summary.className = "cb-order-summary";
+    const pct = filled / this.PLATES_TO_COMPLETE;
+    summary.innerHTML = `
+      <div class="summary-bar">
+        <div class="summary-fill" style="width:${pct * 100}%; background:${this._heartColor(pct)}"></div>
+      </div>
+      <span class="summary-text"><span style="color:${this._heartColor(pct)}">\u2764</span> ${filled}/${this.PLATES_TO_COMPLETE}</span>
+    `;
+    this.orderItems.appendChild(summary);
 
     // Show the board
     this.orderBoard.classList.remove("hidden");
@@ -1237,6 +1263,18 @@ class ConveyorBeltEngine {
   /* ══════════════════════════════════════════════════════════════
      UTILITIES
      ══════════════════════════════════════════════════════════════ */
+
+  /**
+   * Lerp heart color from light pink (#F4B8C1) at 0% to bright red (#E03050) at 100%.
+   */
+  _heartColor(pct) {
+    const t = Math.max(0, Math.min(1, pct));
+    // From: rgb(244, 184, 193) → To: rgb(224, 48, 80)
+    const r = Math.round(244 + (224 - 244) * t);
+    const g = Math.round(184 + (48  - 184) * t);
+    const b = Math.round(193 + (80  - 193) * t);
+    return `rgb(${r},${g},${b})`;
+  }
 
   _shuffle(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
