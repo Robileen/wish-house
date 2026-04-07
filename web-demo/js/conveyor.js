@@ -96,6 +96,7 @@ class ConveyorBeltEngine {
     this._baristaWalking = false;       // currently in transit
     this._activeOrderTable = null;      // tableId for the open order board
     this._currentChat = null;           // current dialogue object
+    this._chatAnswered = false;         // true once player picks a chat choice
     this._dialoguePool = [];            // loaded from CUSTOMER_DIALOGUES
     this._shiftTips = 0;
 
@@ -1074,12 +1075,21 @@ class ConveyorBeltEngine {
 
     const tableId = this._activeOrderTable;
     this._activeOrderTable = null;
-    this._currentChat = null;
 
-    // Mark this table as having had its chat
+    // Only mark chat as done if the player actually answered
     if (tableId && this.tables[tableId]) {
-      this.tables[tableId]._chatShown = true;
+      if (this._chatAnswered) {
+        this.tables[tableId]._chatShown = true;
+        this.tables[tableId]._wantsChat = false;
+      } else {
+        // Player closed without answering — keep the call bubble
+        this.tables[tableId]._wantsChat = true;
+        this._renderTable(tableId);
+      }
     }
+
+    this._currentChat = null;
+    this._chatAnswered = false;
 
     // Send barista home
     this._returnBaristaHome();
@@ -1131,6 +1141,8 @@ class ConveyorBeltEngine {
   _onChatChoice(choiceIdx) {
     const dialogue = this._currentChat;
     if (!dialogue) return;
+
+    this._chatAnswered = true;
 
     const chosen = dialogue.choices[choiceIdx];
     const correctIdx = dialogue.choices.findIndex(c => c.is_correct);
