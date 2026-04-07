@@ -105,6 +105,9 @@ class ConveyorBeltEngine {
     this._callBubbleTimer = 0;
     this.CALL_BUBBLE_INTERVAL = 5000;   // check every 5s for new call bubbles
 
+    // ── Test: table 1 grabs first 12 dishes on its 1st customer ──
+    this._table1FirstDone = false;
+
     // ── Build the scene ──
     this._layoutScene();
     this._buildTables();
@@ -469,7 +472,14 @@ class ConveyorBeltEngine {
 
     if (emptyIds.length === 0) return;
 
+    // Ensure table 1 is always filled first if empty
     const shuffled = this._shuffle([...emptyIds]);
+    const idx1 = shuffled.indexOf(1);
+    if (idx1 > 0) {
+      shuffled.splice(idx1, 1);
+      shuffled.unshift(1);
+    }
+
     // Fill most empty tables — leave at most 1-2 empty for breathing room
     const leave = Math.random() < 0.4 ? 1 : 2;
     const maxFill = Math.max(1, shuffled.length - leave);
@@ -501,6 +511,13 @@ class ConveyorBeltEngine {
       td._displayIdx = 0;
       td._wantsChat = false;   // will be set true by call bubble timer
       td._chatShown = false;   // true once chat has been triggered for this seating
+
+      // Test: table 1's first customer grabs any plate that passes
+      td._grabsAnything = (tableId === 1 && !this._table1FirstDone);
+      if (tableId === 1 && !this._table1FirstDone) {
+        this._table1FirstDone = true;
+      }
+
       td.state = "ordering";
 
       this._renderTable(tableId);
@@ -652,9 +669,14 @@ class ConveyorBeltEngine {
       if (td.state !== "ordering") continue;
       if (this._isTowerComplete(td.tower)) continue;
 
-      // Check if this table still needs this recipe
-      const needsThis = td.pendingRecipes.some(r => r.id === plate.recipe.id);
-      if (!needsThis) continue;
+      // Test mode: table 1 grabs any plate on its first seating
+      const grabsAnything = td._grabsAnything;
+
+      // Normal tables only grab what they need
+      if (!grabsAnything) {
+        const needsThis = td.pendingRecipes.some(r => r.id === plate.recipe.id);
+        if (!needsThis) continue;
+      }
 
       const range = this._tableBeltRange(td);
       if (!range) continue;
@@ -827,6 +849,7 @@ class ConveyorBeltEngine {
     this._plateIdSeq = 0;
     this._spawnTimer = 0;
     this._callBubbleTimer = 0;
+    this._table1FirstDone = false;
     this._baristaAtTable = null;
     this._baristaWalking = false;
     this._baristaCleaning = false;
