@@ -1201,7 +1201,7 @@ class ConveyorBeltEngine {
       item.innerHTML = `
         <span class="item-icon">${recipe.icon}</span>
         <span class="item-name">${recipe.name}${count > 1 ? ` \u00D7${count}` : ""}</span>
-        <span class="item-status pending">needed</span>
+        <span class="item-status pending">craving..</span>
       `;
       this.orderItems.appendChild(item);
     });
