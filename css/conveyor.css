@@ -387,6 +387,20 @@ body {
   border: 5px solid transparent; border-right-color: rgba(255, 245, 235, 0.95);
 }
 
+/* Heart bubble variant — minimal, just heart + count */
+.cb-heart-bubble {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-color: var(--blush);
+}
+
+.cb-heart-bubble .heart-icon {
+  font-size: 0.85rem;
+  line-height: 1;
+  transition: color 0.4s ease;
+}
+
 /* ── Food Slot ── */
 .cb-food-slot {
   position: absolute;
@@ -456,7 +470,7 @@ body {
 .cb-heart-particle {
   position: absolute;
   font-size: 1.8rem;
-  animation: heart-pulse 4s ease-in-out forwards;
+  animation: heart-pulse 6s ease-in-out forwards;
   pointer-events: none;
 }
 
@@ -548,11 +562,13 @@ body {
 
 @keyframes heart-pulse {
   0%   { transform: scale(0); opacity: 0; }
-  15%  { transform: scale(1.2); opacity: 1; }
-  30%  { transform: scale(1); }
-  50%  { transform: scale(1.15); }
-  70%  { transform: scale(1); opacity: 1; }
-  100% { transform: scale(0.8); opacity: 0; }
+  10%  { transform: scale(1.3); opacity: 1; }
+  20%  { transform: scale(1); }
+  35%  { transform: scale(1.15); }
+  50%  { transform: scale(1); opacity: 1; }
+  65%  { transform: scale(1.1); }
+  80%  { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(0.7) translateY(-10px); opacity: 0; }
 }
 
 @keyframes sponge-wobble {
@@ -986,6 +1002,57 @@ body {
 .cb-order-item .item-status.done {
   background: rgba(200, 230, 208, 0.5);
   color: #4A7A5A;
+}
+
+.cb-order-item .item-status.empty {
+  background: rgba(200, 168, 130, 0.15);
+  color: var(--text-light);
+}
+
+/* Visual distinction for item categories */
+.cb-order-item.done {
+  border-color: rgba(200, 230, 208, 0.4);
+}
+
+.cb-order-item.needed {
+  border-color: rgba(253, 220, 186, 0.4);
+}
+
+.cb-order-item.empty-slots {
+  opacity: 0.55;
+  border-style: dashed;
+}
+
+/* Summary progress bar at the bottom of the order list */
+.cb-order-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 6px 0 0;
+  border-top: 1px solid rgba(200, 168, 130, 0.15);
+}
+
+.cb-order-summary .summary-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(200, 168, 130, 0.15);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.cb-order-summary .summary-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease, background 0.4s ease;
+}
+
+.cb-order-summary .summary-text {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-light);
+  white-space: nowrap;
 }
 
 /* Done button */
