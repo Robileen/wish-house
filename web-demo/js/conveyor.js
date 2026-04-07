@@ -103,7 +103,7 @@ class ConveyorBeltEngine {
 
     // ── Call bubble timer ──
     this._callBubbleTimer = 0;
-    this.CALL_BUBBLE_INTERVAL = 5000;   // check every 5s for new call bubbles
+    this.CALL_BUBBLE_INTERVAL = 12000;  // check every 12s for new call bubbles
 
     // ── Test: table 1 grabs first 12 dishes on its 1st customer ──
     this._table1FirstDone = false;
@@ -965,7 +965,7 @@ class ConveyorBeltEngine {
 
   /**
    * Periodically decide which ordering tables should show call bubbles.
-   * ~40% chance per check for a table that hasn't chatted yet.
+   * ~15% chance per check for a table that hasn't chatted yet.
    */
   _maybeShowCallBubbles() {
     if (this._baristaWalking || this._baristaCleaning || this._activeOrderTable) return;
@@ -975,8 +975,8 @@ class ConveyorBeltEngine {
       if (td.state !== "ordering") continue;
       if (td._wantsChat || td._chatShown) continue;
 
-      // 40% chance per check
-      if (Math.random() < 0.4) {
+      // 15% chance per check
+      if (Math.random() < 0.15) {
         td._wantsChat = true;
         this._renderTable(Number(tableId));
       }
