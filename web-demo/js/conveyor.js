@@ -94,6 +94,7 @@ class ConveyorBeltEngine {
     this._baristaHome = { left: "50%", top: "50%" };
     this._baristaAtTable = null;        // tableId the barista is currently at
     this._baristaWalking = false;       // currently in transit
+    this._baristaCleaning = false;      // currently cleaning a table
     this._activeOrderTable = null;      // tableId for the open order board
     this._currentChat = null;           // current dialogue object
     this._chatAnswered = false;         // true once player picks a chat choice
@@ -330,8 +331,8 @@ class ConveyorBeltEngine {
         el.appendChild(bubble);
       }
 
-      // Call bubble — customer wants to chat (dusty-rose complementary bubble)
-      if (state === "ordering" && td._wantsChat && !this._baristaWalking) {
+      // Call bubble — customer wants to chat (lavender complementary bubble)
+      if (state === "ordering" && td._wantsChat && !this._baristaWalking && !this._baristaCleaning) {
         const callBubble = document.createElement("div");
         callBubble.className = "cb-call-bubble";
         callBubble.innerHTML = `<span class="call-emoji">\uD83D\uDCAC</span> Chat?`;
@@ -362,7 +363,7 @@ class ConveyorBeltEngine {
       sponge.addEventListener("click", (e) => {
         e.stopPropagation();
         const tid = Number(el.dataset.tableId);
-        this._cleanTable(tid);
+        this._startCleaningTable(tid);
       });
       el.appendChild(sponge);
     }
@@ -440,7 +441,7 @@ class ConveyorBeltEngine {
   _onTableClick(tableId) {
     const td = this.tables[tableId];
     if (!td || td.state !== "messy") return;
-    this._cleanTable(tableId);
+    this._startCleaningTable(tableId);
   }
 
   _cleanTable(tableId) {
@@ -828,6 +829,7 @@ class ConveyorBeltEngine {
     this._callBubbleTimer = 0;
     this._baristaAtTable = null;
     this._baristaWalking = false;
+    this._baristaCleaning = false;
     this._activeOrderTable = null;
     this._currentChat = null;
     this.serveResult.classList.add("hidden");
@@ -937,7 +939,7 @@ class ConveyorBeltEngine {
    * ~40% chance per check for a table that hasn't chatted yet.
    */
   _maybeShowCallBubbles() {
-    if (this._baristaWalking || this._activeOrderTable) return;
+    if (this._baristaWalking || this._baristaCleaning || this._activeOrderTable) return;
     if (this._dialoguePool.length === 0) return;
 
     for (const [tableId, td] of Object.entries(this.tables)) {
@@ -957,7 +959,7 @@ class ConveyorBeltEngine {
    * Computes the table's screen position relative to the play area.
    */
   _sendBaristaToTable(tableId) {
-    if (this._baristaWalking || this._activeOrderTable) return;
+    if (this._baristaWalking || this._baristaCleaning || this._activeOrderTable) return;
 
     const td = this.tables[tableId];
     if (!td) return;
@@ -1002,6 +1004,110 @@ class ConveyorBeltEngine {
       this.baristaEl.classList.remove("walking");
       this._baristaAtTable = null;
     }, 650);
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     CLEANING — barista walks to messy table, circles it, cleans
+     ══════════════════════════════════════════════════════════════ */
+
+  /**
+   * Start the cleaning sequence: walk to table → circle → clean → return.
+   * Barista can only clean one table at a time.
+   */
+  _startCleaningTable(tableId) {
+    if (this._baristaWalking || this._baristaCleaning || this._activeOrderTable) return;
+
+    const td = this.tables[tableId];
+    if (!td || td.state !== "messy") return;
+
+    this._baristaCleaning = true;
+    this._baristaWalking = true;
+    this._baristaAtTable = tableId;
+
+    // Remove the sponge immediately so player can't click again
+    td.el.querySelectorAll(".cb-above-tower-sponge").forEach(s => s.remove());
+
+    // Get table position relative to play area
+    const tableRect = td.el.getBoundingClientRect();
+    const playRect  = this.playArea.getBoundingClientRect();
+    const cx = (tableRect.left - playRect.left) + tableRect.width / 2;
+    const cy = (tableRect.top  - playRect.top)  + tableRect.height / 2;
+
+    // Walk to table (beside it, offset to the right)
+    const orbitR = tableRect.width * 0.7;
+    this.baristaEl.classList.add("walking");
+    this.baristaEl.style.transform = "translate(-50%, -50%)";
+    this.baristaEl.style.left = (cx + orbitR) + "px";
+    this.baristaEl.style.top  = cy + "px";
+
+    // After arriving, start circling
+    setTimeout(() => {
+      this._baristaWalking = false;
+      this.baristaEl.classList.remove("walking");
+      this.baristaEl.classList.add("cleaning");
+      this._circleTable(tableId, cx, cy, orbitR);
+    }, 700);
+  }
+
+  /**
+   * Barista circles the table in 4 steps (right → bottom → left → top),
+   * then cleans and returns home.
+   */
+  _circleTable(tableId, cx, cy, radius) {
+    const td = this.tables[tableId];
+    if (!td) { this._finishCleaning(tableId); return; }
+
+    // 4 positions around the table: right, bottom, left, top
+    const positions = [
+      { left: cx + radius, top: cy          },  // right (already here)
+      { left: cx,          top: cy + radius  },  // bottom
+      { left: cx - radius, top: cy           },  // left
+      { left: cx,          top: cy - radius  },  // top
+    ];
+
+    let step = 1; // start from 1 since we're already at position 0 (right)
+    const STEP_MS = 500;
+
+    const moveNext = () => {
+      if (step >= positions.length) {
+        // Finished circling — clean the table
+        this._finishCleaning(tableId);
+        return;
+      }
+
+      const pos = positions[step];
+      this.baristaEl.style.left = pos.left + "px";
+      this.baristaEl.style.top  = pos.top + "px";
+      step++;
+
+      setTimeout(moveNext, STEP_MS);
+    };
+
+    // Start the circle after a brief pause
+    setTimeout(moveNext, STEP_MS);
+  }
+
+  /**
+   * Clean the table, then return barista home.
+   */
+  _finishCleaning(tableId) {
+    this.baristaEl.classList.remove("walking", "cleaning");
+
+    // Actually clean the table
+    this._cleanTable(tableId);
+
+    // Brief pause then return home
+    setTimeout(() => {
+      this.baristaEl.classList.add("walking");
+      this.baristaEl.style.left = "50%";
+      this.baristaEl.style.top  = "50%";
+
+      setTimeout(() => {
+        this.baristaEl.classList.remove("walking");
+        this._baristaAtTable = null;
+        this._baristaCleaning = false;
+      }, 650);
+    }, 300);
   }
 
   /* ══════════════════════════════════════════════════════════════
