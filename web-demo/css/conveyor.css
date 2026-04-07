@@ -453,6 +453,10 @@ body {
   cursor: pointer;
 }
 
+.cb-table.messy .cb-tower {
+  opacity: 0.3;
+}
+
 .cb-food-slot.clickable {
   cursor: pointer;
 }
@@ -478,36 +482,53 @@ body {
   animation: overlay-glow 1.5s ease-in-out infinite;
 }
 
-/* Heart centered on finished tower */
+/* Heart centered on finished tower — seat-style circle */
 .cb-above-tower-heart {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  font-size: 1.8rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(244, 184, 193, 0.3), rgba(253, 220, 186, 0.35));
+  border: 1.5px solid rgba(244, 184, 193, 0.5);
+  box-shadow: 0 2px 4px rgba(74, 55, 40, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
   animation: heart-pulse 6s ease-in-out forwards;
   pointer-events: none;
   z-index: 9;
 }
 
-/* Sponge centered on finished tower (same spot as heart) */
+/* Sponge centered on finished tower — seat-style circle */
 .cb-above-tower-sponge {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  font-size: 1.4rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(244, 184, 193, 0.3), rgba(253, 220, 186, 0.35));
+  border: 1.5px solid rgba(244, 184, 193, 0.5);
+  box-shadow: 0 2px 4px rgba(74, 55, 40, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
   cursor: pointer;
   pointer-events: auto;
   animation: sponge-wobble 1s ease-in-out infinite;
-  filter: drop-shadow(0 1px 3px rgba(74, 55, 40, 0.2));
-  transition: filter 0.2s;
   z-index: 9;
 }
 
 .cb-above-tower-sponge:hover {
-  transform: translate(-50%, -50%) scale(1.3);
-  filter: drop-shadow(0 0 6px rgba(196, 139, 159, 0.5));
+  transform: translate(-50%, -50%) scale(1.15);
+  border-color: var(--dusty-rose);
+  box-shadow: 0 3px 8px rgba(196, 139, 159, 0.35);
 }
 
 /* ── Serve Result ── */
@@ -735,6 +756,7 @@ body {
 /* Tower complete glow */
 .cb-tower.complete {
   filter: drop-shadow(0 0 6px rgba(200, 230, 208, 0.6));
+  opacity: 0.4;
 }
 
 /* Tower progress bubble (shows count) */
