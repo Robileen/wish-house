@@ -966,21 +966,31 @@ class ConveyorBeltEngine {
 
   /**
    * Periodically decide which ordering tables should show call bubbles.
-   * ~15% chance per check for a table that hasn't chatted yet.
+   * Hard cap: max 2 call bubbles visible at any time.
    */
   _maybeShowCallBubbles() {
     if (this._baristaWalking || this._baristaCleaning || this._activeOrderTable) return;
     if (this._dialoguePool.length === 0) return;
 
-    for (const [tableId, td] of Object.entries(this.tables)) {
-      if (td.state !== "ordering") continue;
-      if (td._wantsChat || td._chatShown) continue;
+    // Count how many call bubbles are already active
+    const MAX_CALL_BUBBLES = 2;
+    let activeCount = 0;
+    for (const td of Object.values(this.tables)) {
+      if (td._wantsChat) activeCount++;
+    }
+    if (activeCount >= MAX_CALL_BUBBLES) return;
 
-      // 15% chance per check
-      if (Math.random() < 0.15) {
-        td._wantsChat = true;
-        this._renderTable(Number(tableId));
-      }
+    // Pick one eligible table at random (not all of them)
+    const eligible = Object.entries(this.tables).filter(([, td]) =>
+      td.state === "ordering" && !td._wantsChat && !td._chatShown
+    );
+    if (eligible.length === 0) return;
+
+    // 20% chance to spawn one bubble this check
+    if (Math.random() < 0.2) {
+      const [tableId, td] = eligible[Math.floor(Math.random() * eligible.length)];
+      td._wantsChat = true;
+      this._renderTable(Number(tableId));
     }
   }
 
