@@ -273,8 +273,8 @@ class ConveyorBeltEngine {
     if (!td) return;
     const el = td.el;
 
-    // Clear dynamic children (seats, bubbles, call bubbles)
-    el.querySelectorAll(".cb-seat, .cb-order-bubble, .cb-call-bubble").forEach(e => e.remove());
+    // Clear dynamic children (seats, bubbles, call bubbles, sponge, hearts)
+    el.querySelectorAll(".cb-seat, .cb-order-bubble, .cb-call-bubble, .cb-above-tower-sponge, .cb-above-tower-heart").forEach(e => e.remove());
     el.classList.remove("has-customer", "served", "eating", "messy");
 
     const foodSlot = el.querySelector(".cb-food-slot");
@@ -348,19 +348,23 @@ class ConveyorBeltEngine {
           overlay.className = "cb-table-overlay glow";
         } else {
           overlay.className = "cb-table-overlay";
-          this._spawnHeart(overlay);
+          // Hearts spawn above the tower via _spawnHeart
         }
       }
     }
 
     if (state === "messy") {
       el.classList.add("messy");
-      // Sponge goes on top of the tower, not in the food slot
-      const towerEl = el.querySelector(".cb-tower");
+      // Sponge floats above the finished tower
       const sponge = document.createElement("div");
-      sponge.className = "cb-tower-sponge";
+      sponge.className = "cb-above-tower-sponge";
       sponge.textContent = "\uD83E\uDDFD"; // 🧽
-      towerEl.appendChild(sponge);
+      sponge.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const tid = Number(el.dataset.tableId);
+        this._cleanTable(tid);
+      });
+      el.appendChild(sponge);
     }
   }
 
@@ -425,11 +429,11 @@ class ConveyorBeltEngine {
     towerEl.appendChild(stand);
   }
 
-  _spawnHeart(overlay) {
+  _spawnHeart(tableEl) {
     const heart = document.createElement("div");
-    heart.className = "cb-heart-particle";
+    heart.className = "cb-above-tower-heart";
     heart.textContent = "\u2764\uFE0F";
-    overlay.appendChild(heart);
+    tableEl.appendChild(heart);
     setTimeout(() => heart.remove(), 6500);
   }
 
@@ -775,15 +779,14 @@ class ConveyorBeltEngine {
       td.state = "eating";
       this._renderTable(tableId);
 
-      // Spawn hearts periodically while eating
+      // Spawn hearts periodically while eating — above the tower
       let heartCount = 0;
       const heartInterval = setInterval(() => {
         if (td.state !== "eating" || heartCount >= 5) {
           clearInterval(heartInterval);
           return;
         }
-        const overlay = td.el.querySelector(".cb-table-overlay");
-        if (overlay) this._spawnHeart(overlay);
+        this._spawnHeart(td.el);
         heartCount++;
       }, 1500);
 
