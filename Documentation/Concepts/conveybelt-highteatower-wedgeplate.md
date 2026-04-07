@@ -626,3 +626,625 @@ Failed dishes skip steps 2-3 and go directly to messy state.
 | Row gap            | 52px          | 40px             |
 | Windows            | 64x80px       | 44x56px          |
 | Recipe book width  | 92%           | 96%              |
+
+---
+---
+
+# Conveyor Belt Prototype — Implementation
+
+Everything below documents the **conveyor belt prototype** as implemented in `conveyor.js`, `conveyor.css`, and `conveyor.html`.
+
+Source files:
+- `web-demo/conveyor.html` — standalone page
+- `web-demo/js/conveyor.js` — `ConveyorBeltEngine` class
+- `web-demo/css/conveyor.css` — all conveyor-specific styles
+- `web-demo/js/cafe-data.js` — shared data loader (recipes, ingredients, dialogues)
+
+---
+
+## Overview
+
+A top-down 2D square-loop conveyor belt surrounded by 8 customer tables (2 per side). Wedge-shaped plates spawn on the belt and travel around the loop. Customers auto-grab matching plates from the belt and stack them into 3-tier high tea towers (12 plates total). A barista sprite (coffee icon) can walk to tables to interact with customers via an order board and small talk dialogue system.
+
+---
+
+## Architecture
+
+### Class: `ConveyorBeltEngine`
+
+Single class managing all state, rendering, and game loop. Instantiated on `DOMContentLoaded`:
+
+```javascript
+let conveyor;
+document.addEventListener("DOMContentLoaded", () => {
+  conveyor = new ConveyorBeltEngine();
+  window.conveyor = conveyor;
+  conveyor.start();
+});
+```
+
+### Data Dependencies
+
+Loads data via the shared `cafe-data.js` loader:
+- `RECIPES` — keyed by recipe id, loaded from `manifest.json` subcategory files
+- `INGREDIENTS` — keyed by ingredient id
+- `CUSTOMER_DIALOGUES` — array of dialogue objects from `cafe_shift_customer_dialogues.json`
+- `cafeDataReady` — Promise that resolves when all data is loaded
+
+Falls back to 12 hardcoded recipes if `RECIPES` is empty.
+
+---
+
+## Layout Constants
+
+| Constant           | Value  | Description                         |
+|--------------------|--------|-------------------------------------|
+| `BELT_W`           | 320px  | Inner belt width                    |
+| `BELT_H`           | 240px  | Inner belt height                   |
+| `BELT_PAD`         | 4px    | Belt border thickness               |
+| `TABLE_MARGIN`     | 16px   | Gap between belt edge and tables    |
+| `TABLES_PER_SIDE`  | 2      | Tables per side of belt             |
+| `PLATE_SIZE`       | 40px   | Wedge plate dimensions              |
+| `PLATE_SPEED`      | 60     | Pixels per second                   |
+| `MAX_PLATES`       | 14     | Max plates on belt at once          |
+| `SPAWN_INTERVAL`   | 2000ms | Time between new plate spawns       |
+| `TOWER_TIERS`      | 3      | Number of tower tiers               |
+| `PLATES_PER_TIER`  | 4      | Wedge plates per tier               |
+| `PLATES_TO_COMPLETE` | 12   | Total plates to fill a tower        |
+
+---
+
+## Scene Layout
+
+```
+          ┌──────────────────────────────────┐
+          │  [Table 1]          [Table 2]    │  ← tables-top
+          │                                  │
+  tables- │  ┌──────── Belt Track ────────┐  │  tables-
+  left    │  │  (plates travel clockwise) │  │  right
+  [T7]    │  │                            │  │  [T3]
+  [T8]    │  │        ☕ Barista           │  │  [T4]
+          │  └────────────────────────────┘  │
+          │                                  │
+          │  [Table 5]          [Table 6]    │  ← tables-bottom
+          └──────────────────────────────────┘
+```
+
+Tables are positioned absolutely around the belt using JS in `_layoutScene()`:
+- **Top/Bottom**: `left: 50%; transform: translateX(-50%)` + vertical offset from belt center
+- **Left/Right**: `top: 50%; transform: translateY(-50%)` + horizontal offset from belt center
+
+---
+
+## Belt & Plate System
+
+### Belt Track
+
+- Square loop with rounded corners (`border-radius: 12px`)
+- Border: `4px solid var(--milk-tea)`
+- Subtle striped background texture
+- Corner markers: 10px circles at each corner
+
+### Plate Movement
+
+Plates spawn at progress `0` and travel clockwise around the belt perimeter:
+
+```
+Progress 0.00 → top-left corner
+Progress 0.25 → approx top-right
+Progress 0.50 → approx bottom-right
+Progress 0.75 → approx bottom-left
+Progress 1.00 → back to start (removed)
+```
+
+Position calculated by `_progressToPosition(progress)`:
+- Converts progress (0-1) to distance along perimeter
+- Maps to (x, y) coordinates on the belt edges
+- Plates are always upright (no rotation)
+
+### Plate Spawning
+
+`_spawnPlate()` called every `SPAWN_INTERVAL` (2000ms):
+- 70% chance to spawn something a table actually needs
+- 30% chance random recipe from all available
+- Capped at `MAX_PLATES` on belt simultaneously
+
+### Plate Grabbing
+
+`_checkPlateNearTable(plate)` runs every frame for each moving plate:
+1. Calculate plate's distance along belt perimeter
+2. For each ordering table, check if plate is within the table's grab range (60px window centered on the table's belt-side position)
+3. If the table still needs this recipe → grab it
+
+`_grabPlate(plate, tableId)`:
+1. Mark plate as grabbed, add CSS `.grabbed` class (shrink + fade)
+2. After 300ms delay: remove plate from DOM and belt array
+3. Remove recipe from table's pending list
+4. Place into next empty tower slot (bottom-up)
+5. Re-render tower with `just-filled` animation
+6. Update heart bubble
+7. Check if tower is now complete
+
+### Plate Categories & Colors
+
+| Category   | CSS Class       | Gradient Colors              |
+|------------|-----------------|------------------------------|
+| Drink      | `.plate-drink`  | `#E8DFF0` → `#D0C4E0`       |
+| Food       | `.plate-food`   | `#FDDCBA` → `#F0C89A`       |
+| Dessert    | `.plate-dessert` | `#F8D0D8` → `#F4B8C1`      |
+| Special    | `.plate-special` | `#F5E6A3` → `#E8D480`      |
+
+---
+
+## Table System
+
+### Table Structure (DOM)
+
+```html
+<div class="cb-table" data-table-id="1" data-side="top">
+  <div class="cb-table-surface">
+    <div class="cb-tower">...</div>
+    <div class="cb-food-slot"></div>
+    <div class="cb-table-overlay"></div>
+  </div>
+  <!-- Seats, heart bubble, call bubble injected dynamically -->
+</div>
+```
+
+### Table Dimensions
+
+| Element        | Size     | Shape    |
+|----------------|----------|----------|
+| `.cb-table`    | 100x100px | —       |
+| `.cb-table-surface` | 80x80px | Circle (50% radius) |
+| `.cb-seat`     | 36x36px  | Circle   |
+
+Mobile (<=640px): table 72x72px, surface 58x58px, seat 26x26px.
+
+### Table Data Structure
+
+```javascript
+{
+  side: "top" | "right" | "bottom" | "left",
+  index: 0 | 1,
+  customers: [{ avatar: "🧑" }, ...],
+  state: "empty" | "ordering" | "served" | "eating" | "messy",
+  el: HTMLElement,
+  tower: [null | { recipe, categoryClass }],  // 12 slots
+  wantedRecipes: [],      // original wish-list (12 recipes)
+  pendingRecipes: [],     // mutable copy, items removed as grabbed
+  _displayIdx: 0,         // bubble display cycling
+  _wantsChat: false,      // true when call bubble should show
+  _chatShown: false,      // true once chat has been answered
+}
+```
+
+### Table States & Transitions
+
+```
+empty → ordering → served → eating → messy → empty
+         ↑                                     │
+         └─────────────────────────────────────┘
+```
+
+| State      | Duration  | Visual                                          |
+|------------|-----------|--------------------------------------------------|
+| **empty**    | —       | No customers, no decorations                     |
+| **ordering** | Until tower complete | Customers seated, heart bubble, call bubbles |
+| **served**   | 2s      | Green glow overlay, tower complete glow          |
+| **eating**   | 8s      | Hearts spawn every 1.5s (up to 5), customers visible |
+| **messy**    | Until click | Customers gone, sponge on tower, dusty-rose border |
+
+### Customer Seating
+
+`_seatNewCustomers()`:
+- Finds all empty tables, shuffles them
+- Fills most tables, leaving 1-2 empty for breathing room
+- Each table gets 1-2 customers (50% chance of 2)
+- Each customer gets a random avatar emoji
+- Tower wish-list: 12 random recipes from available pool
+- Called on `start()` and after each table is cleaned
+
+### Seat Positioning
+
+Same elliptical algorithm as `cafe.js`:
+- Elliptical orbit around table center
+- Minimum 60 degree angle separation
+- 30 random attempts per seat, fallback to even distribution
+
+---
+
+## High Tea Tower
+
+### Structure
+
+3 tiers x 4 wedge slots = 12 total. Rendered with CSS `flex-direction: column-reverse` so tier 1 (base) appears at the bottom.
+
+```
+     ┌─┬─┬─┬─┐   Tier 3 (top)
+     ├─┼─┼─┼─┤   Tier 2
+     ├─┼─┼─┼─┤   Tier 1 (base)
+        │ │
+       pole
+      [stand]
+```
+
+### Tower Slot Styling
+
+| State  | CSS Class              | Opacity | Gradient                    |
+|--------|------------------------|---------|-----------------------------|
+| Empty  | `.cb-tower-slot`       | 0.25    | `rgba(200, 168, 130, 0.3)` |
+| Filled | `.cb-tower-slot.filled` | 1.0    | Category-specific gradient  |
+
+Filled slots inherit the plate's category color:
+- `.slot-drink` — purple
+- `.slot-food` — peach
+- `.slot-dessert` — pink
+- `.slot-special` — gold
+
+### Tower Completion
+
+When all 12 slots are filled:
+1. Tower gets `.complete` class → green drop-shadow glow
+2. Success count increments
+3. State transitions: served (2s) → eating (8s) → messy
+
+---
+
+## Heart Bubble (Satisfaction Meter)
+
+Replaces the old order bubble that showed dish names. The player doesn't know what the customer wants unless they chat — the heart is a progress-only indicator.
+
+### Appearance
+
+- Same positioning as old order bubble (per-side offsets with directional tails)
+- Shows a heart icon + "X/12" count
+- Heart color lerps from **light pink** (`#F4B8C1`) at 0/12 to **bright red** (`#E03050`) at 12/12
+
+### Color Interpolation
+
+```javascript
+_heartColor(pct) {
+  const t = Math.max(0, Math.min(1, pct));
+  const r = Math.round(244 + (224 - 244) * t);
+  const g = Math.round(184 + (48  - 184) * t);
+  const b = Math.round(193 + (80  - 193) * t);
+  return `rgb(${r},${g},${b})`;
+}
+```
+
+### CSS
+
+```css
+.cb-heart-bubble {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-color: var(--blush);
+}
+.cb-heart-bubble .heart-icon {
+  font-size: 0.85rem;
+  transition: color 0.4s ease;
+}
+```
+
+---
+
+## Barista Sprite
+
+### Appearance
+
+- 48x48px circle
+- Background: `linear-gradient(180deg, var(--soft-peach), var(--blush))`
+- Border: `2px solid var(--dusty-rose)`
+- Icon: ☕ (coffee cup emoji, 1.5rem)
+- Z-index: 20 (above plates and tables)
+- Starts at center of play area (`left: 50%; top: 50%`)
+- `pointer-events: none` (not directly clickable)
+
+### Movement
+
+CSS transition-driven (0.6s cubic-bezier):
+
+```css
+transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+            top  0.6s cubic-bezier(0.4, 0, 0.2, 1);
+```
+
+Walking animation (bobbing):
+
+```css
+@keyframes barista-bob {
+  0%, 100% { margin-top: 0; }
+  50%      { margin-top: -4px; }
+}
+```
+
+### Walk Flow
+
+1. Player clicks a **call bubble** on a table
+2. `_sendBaristaToTable(tableId)`:
+   - Sets `_baristaWalking = true`
+   - Clears the call bubble
+   - Calculates table's screen position relative to play area
+   - Sets barista's `left`/`top` to table center → CSS transition animates the slide
+   - Adds `.walking` class for bob animation
+3. After 650ms: removes walking class, opens order board
+4. On order board close → `_returnBaristaHome()`:
+   - Sets barista back to `left: 50%; top: 50%`
+   - CSS transition slides it back to center
+
+---
+
+## Customer Call Bubble
+
+A complementary-colored speech bubble that appears when a customer wants the barista's attention.
+
+### Design
+
+- **Color**: Soft lavender gradient (cool-toned complement to the warm cafe palette)
+  - Background: `linear-gradient(135deg, rgba(200, 190, 230, 0.92), rgba(230, 220, 245, 0.95))`
+  - Border: `1.5px solid #9B8EC4`
+  - Text: `#5A4A72`
+- **Content**: 💬 emoji + "Chat?"
+- **Shape**: 14px border-radius, directional tails matching table side
+- **Interaction**: `cursor: pointer`, scale 1.08 on hover, clickable
+
+### Positioning (per side)
+
+| Side   | Position                                               |
+|--------|--------------------------------------------------------|
+| Top    | `bottom: calc(100% + 20px); left: 50%` (above table)  |
+| Bottom | `top: calc(100% + 20px); left: 50%` (below table)     |
+| Left   | `right: calc(100% + 20px); top: 50%` (left of table)  |
+| Right  | `left: calc(100% + 20px); top: 50%` (right of table)  |
+
+Offset is 20px from table edge (vs 4px for the heart bubble), so they don't overlap.
+
+### Trigger Logic
+
+`_maybeShowCallBubbles()` runs every 5 seconds:
+- Skipped if barista is walking or order board is open
+- Skipped if no dialogues loaded
+- For each ordering table that hasn't chatted yet: 40% chance to show call bubble
+- Sets `td._wantsChat = true` → bubble renders on next `_renderTable()`
+
+### Persistence
+
+- If the player closes the order board **without answering** the chat → `_wantsChat` is restored to `true`, bubble reappears
+- Only set `_chatShown = true` (permanently hides bubble) when the player actually picks a chat choice
+
+---
+
+## Guest Order Board
+
+A modal overlay that opens when the barista reaches a customer table.
+
+### Structure
+
+```html
+<div id="cb-order-board">          <!-- fullscreen backdrop -->
+  <div id="cb-order-board-inner">  <!-- centered card -->
+    <div id="cb-order-header">     <!-- avatar + name + close btn -->
+    <div id="cb-order-items">      <!-- done/needed/empty items + summary -->
+    <div id="cb-chat">             <!-- small talk (conditionally shown) -->
+    <button id="cb-order-done-btn"><!-- dismiss button -->
+  </div>
+</div>
+```
+
+### Header
+
+- Customer avatar (2rem emoji in a 48px circle, blush gradient background)
+- Random name from: "Customer", "Guest", "Patron", "Visitor", "Friend"
+- Dialogue line about tower progress
+- Close button (X, 28px circle, top-right)
+
+### Order Items — All 12 Slots Shown
+
+Three categories rendered in order:
+
+1. **Done items** (green):
+   - Unique filled recipes with counts (e.g., "Latte x2")
+   - Green border, checkmark badge: `item-status done`
+
+2. **Needed items** (peach):
+   - Unique pending recipes with counts
+   - Peach border, "needed" badge: `item-status pending`
+
+3. **Empty slots** (dashed):
+   - Count of remaining capacity: `PLATES_TO_COMPLETE - filled - pending`
+   - Dashed border, faded, white-square emoji, "open" badge
+
+### Summary Progress Bar
+
+At the bottom of the items list:
+- Thin progress bar (6px height) that fills left-to-right
+- Fill color matches the heart color gradient (pink → red based on progress)
+- Heart icon + "X/12" text beside it
+
+### Styling
+
+```css
+#cb-order-board-inner {
+  background: linear-gradient(180deg, var(--cream), var(--warm-white));
+  border: 2px solid var(--blush);
+  border-radius: 20px;
+  max-width: 340px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(74, 55, 40, 0.25);
+  animation: board-slide-up 0.35s ease;
+}
+```
+
+---
+
+## Customer Small Talk / Dialogue System
+
+Adapted from `cafe.js`'s `maybeShowChat()` / `onChatChoice()` system.
+
+### Data Format
+
+Dialogues loaded from `CUSTOMER_DIALOGUES` (via `cafe-data.js`):
+
+```json
+{
+  "id": "lactose_intolerant_drink",
+  "category": "dietary",
+  "customer_line": "Hey, sorry -- I'm lactose intolerant. Do you have drinks without milk?",
+  "tags": ["lactose_free"],
+  "choices": [
+    {
+      "id": "A",
+      "text": "Yes we do! We've got lemonade, teas without milk...",
+      "is_correct": true,
+      "response": "Oh nice! I'll take a tea then.",
+      "order_tags": ["lactose_free"],
+      "reward": { "buttons": 2, "satisfaction": 2 }
+    },
+    {
+      "id": "B",
+      "text": "Hmm... I think most of our drinks have milk.",
+      "is_correct": false,
+      "response": "Ah... that's okay, I'll pass.",
+      "reward": { "buttons": 0, "satisfaction": -1 }
+    }
+  ]
+}
+```
+
+### Chat Flow
+
+1. Order board opens → `_maybeShowChat(tableId)` called (70% chance)
+2. Random dialogue selected from pool
+3. Customer line displayed in a blush-gradient bubble (italic)
+4. Two choice buttons shown in randomized order
+5. Player picks a choice → `_onChatChoice(choiceIdx)`:
+   - Correct button highlighted green (`.correct`), wrong highlighted rose (`.wrong`)
+   - Customer response shown in mint-gradient bubble
+   - If correct: tip awarded (floating "+1 🧾" animation)
+6. `_chatAnswered` flag set → closing the board marks `_chatShown = true`
+
+### Chat UI Styling
+
+| Element         | Background                                       | Border              |
+|-----------------|--------------------------------------------------|---------------------|
+| Chat bubble     | `linear-gradient(135deg, rgba(244,184,193,0.3), rgba(255,248,240,0.6))` | `1px solid var(--blush)` |
+| Choice buttons  | `rgba(255, 248, 240, 0.8)`                      | `1.5px solid var(--milk-tea)` |
+| Correct choice  | `rgba(200, 230, 208, 0.5)`                      | `var(--pale-mint)`  |
+| Wrong choice    | `rgba(196, 139, 159, 0.2)`                      | `var(--dusty-rose)` |
+| Response bubble | `linear-gradient(135deg, rgba(200,230,208,0.25), rgba(255,248,240,0.5))` | `rgba(200,230,208,0.4)` |
+
+### Tip Award Animation
+
+```css
+.cb-tip-float {
+  position: fixed;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gold);
+  animation: tip-float-up 1.2s ease forwards;
+  /* floats up 40px and fades out */
+}
+```
+
+Tips are tracked per shift in `_shiftTips` and shown in the shift completion summary.
+
+---
+
+## Heart Eating Animation
+
+When a tower is completed, the customer enters a longer eating phase with repeated heart spawns.
+
+### Sequence
+
+| Phase    | Duration | Visual Effect                                          |
+|----------|----------|--------------------------------------------------------|
+| Served   | 2s       | Green glow overlay (`overlay-glow` animation)          |
+| Eating   | 8s       | Hearts spawn every 1.5s (up to 5), customers visible  |
+| Messy    | Until click | Sponge on tower, dusty-rose border, 70% opacity    |
+
+### Heart Particle
+
+```css
+.cb-heart-particle {
+  font-size: 1.8rem;
+  animation: heart-pulse 6s ease-in-out forwards;
+}
+
+@keyframes heart-pulse {
+  0%   { transform: scale(0); opacity: 0; }
+  10%  { transform: scale(1.3); opacity: 1; }
+  20%  { transform: scale(1); }
+  35%  { transform: scale(1.15); }
+  50%  { transform: scale(1); opacity: 1; }
+  65%  { transform: scale(1.1); }
+  80%  { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(0.7) translateY(-10px); opacity: 0; }
+}
+```
+
+Hearts are removed from DOM after 6.5s.
+
+---
+
+## HUD
+
+Top bar with shift info:
+
+| Element             | Content              | Style                   |
+|---------------------|----------------------|-------------------------|
+| `#hud-shift-label`  | "Conveyor Shift"     | Playfair Display, 0.85rem |
+| `#hud-progress`     | Progress bar         | 100px wide, mint→gold gradient |
+| `#hud-dish-count`   | "X / 12"             | 0.75rem, text-light     |
+| `#hud-streak`       | "Streak: X"          | 0.75rem, gold           |
+| `#hud-mistakes`     | "❌ X"               | 0.75rem, dusty-rose     |
+
+---
+
+## Shift Completion
+
+When `successCount >= ordersRequired` and no active tables remain:
+
+| Mistakes | Rating   | Emoji       |
+|----------|----------|-------------|
+| 0        | Perfect  | ✨✨✨       |
+| 1-2      | Great    | ✨✨         |
+| 3-4      | Not bad  | ✨           |
+| 5+       | Rough    | 💥           |
+
+Summary shows: towers completed, best streak, mistakes, tips earned.
+
+---
+
+## Conveyor Animations Reference
+
+| Animation          | Keyframes                                            | Duration / Timing          |
+|--------------------|------------------------------------------------------|----------------------------|
+| `bubble-pop`       | Scale 0 → 1 (from center)                           | 0.35s ease                 |
+| `call-bubble-pop`  | Scale 0 → 1 (from center)                           | 0.4s ease                  |
+| `food-appear`      | Scale 0 → 1 (centered)                              | 0.4s ease                  |
+| `overlay-glow`     | Opacity 0.6 → 1 → 0.6                               | 1.5s ease-in-out infinite  |
+| `heart-pulse`      | Scale 0 → 1.3 → 1 → 1.15 → 1 → 1.1 → 0.7, float up | 6s ease-in-out forwards |
+| `sponge-wobble`    | Rotate 0 → -8deg → +8deg → 0                        | 1s ease-in-out infinite    |
+| `plate-spawn`      | Scale 0 rotate -30deg → scale 1 rotate 0             | 0.3s ease                  |
+| `tower-slot-fill`  | Scale 0 rotate -20deg → 1.15 rotate 2deg → 1         | 0.35s ease forwards        |
+| `barista-bob`      | Margin-top 0 → -4px → 0                              | 0.3s ease-in-out infinite  |
+| `overlay-fade-in`  | Opacity 0 → 1                                        | 0.3s ease                  |
+| `board-slide-up`   | TranslateY 30px → 0, fade in                         | 0.35s ease                 |
+| `chat-appear`      | TranslateY 8px → 0, fade in                          | 0.3s ease                  |
+| `tip-float-up`     | TranslateY 0 → -40px, fade out                       | 1.2s ease forwards         |
+| `result-bounce`    | Scale 0.3 → 1.15 → 1, fade in                        | 0.6s ease                  |
+
+---
+
+## Conveyor Responsive Breakpoints (<=640px)
+
+| Element            | Desktop       | Mobile         |
+|--------------------|---------------|----------------|
+| `.cb-table`        | 100x100px     | 72x72px        |
+| `.cb-table-surface`| 80x80px       | 58x58px        |
+| `.cb-seat`         | 36x36px       | 26x26px        |
+| `.wedge-plate`     | 40x40px       | 30x30px        |
+| `#cb-barista`      | 48x48px       | 36x36px        |
+| Table side gaps    | 16px          | 8px            |
