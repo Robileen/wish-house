@@ -324,6 +324,7 @@ class ConveyorBeltEngine {
       });
 
       // Heart bubble — shows satisfaction progress (light pink → bright red)
+      // Clickable: sends barista to check on the customer's order board
       if (state === "ordering") {
         const filled = this._towerFilledCount(td.tower);
         const bubble = document.createElement("div");
@@ -331,6 +332,10 @@ class ConveyorBeltEngine {
 
         const pct = filled / this.PLATES_TO_COMPLETE;
         bubble.innerHTML = `<span class="heart-icon" style="color:${this._heartColor(pct)}">\u2764</span> <span class="bubble-count">${filled}/${this.PLATES_TO_COMPLETE}</span>`;
+        bubble.addEventListener("click", (e) => {
+          e.stopPropagation();
+          this._sendBaristaToTable(tableId);
+        });
         el.appendChild(bubble);
       }
 
@@ -1179,11 +1184,16 @@ class ConveyorBeltEngine {
       this.orderItems.appendChild(item);
     });
 
-    // 2) Pending (needed) slots — unique recipes with counts
+    // 2) Pending (needed) slots — show only 1-2 items at a time
+    //    (customers don't think of 12 items all at once)
     const uniquePending = [...new Map(
       (td.pendingRecipes || []).map(r => [r.id, r])
     ).values()];
-    uniquePending.forEach(recipe => {
+    const MAX_SHOWN = 2;
+    const shownPending = uniquePending.slice(0, MAX_SHOWN);
+    const hiddenCount = uniquePending.length - shownPending.length;
+
+    shownPending.forEach(recipe => {
       const count = td.pendingRecipes.filter(r => r.id === recipe.id).length;
       const item = document.createElement("div");
       item.className = "cb-order-item needed";
@@ -1194,6 +1204,18 @@ class ConveyorBeltEngine {
       `;
       this.orderItems.appendChild(item);
     });
+
+    // Show how many more items the customer is still thinking about
+    if (hiddenCount > 0) {
+      const more = document.createElement("div");
+      more.className = "cb-order-item thinking";
+      more.innerHTML = `
+        <span class="item-icon">\uD83D\uDCAD</span>
+        <span class="item-name">${hiddenCount} more item${hiddenCount > 1 ? "s" : ""}\u2026 still deciding</span>
+        <span class="item-status thinking">\uD83E\uDD14</span>
+      `;
+      this.orderItems.appendChild(more);
+    }
 
     // 3) Empty remaining slots
     if (emptySlots > 0) {

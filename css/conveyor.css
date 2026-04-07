@@ -393,7 +393,19 @@ body {
   align-items: center;
   gap: 4px;
   border-color: var(--blush);
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
 }
+
+.cb-heart-bubble:hover {
+  box-shadow: 0 3px 12px rgba(244, 184, 193, 0.4);
+}
+
+.table-side-top .cb-heart-bubble:hover    { transform: translateX(-50%) scale(1.08); }
+.table-side-bottom .cb-heart-bubble:hover { transform: translateX(-50%) scale(1.08); }
+.table-side-left .cb-heart-bubble:hover   { transform: translateY(-50%) scale(1.08); }
+.table-side-right .cb-heart-bubble:hover  { transform: translateY(-50%) scale(1.08); }
 
 .cb-heart-bubble .heart-icon {
   font-size: 0.85rem;
@@ -1037,6 +1049,18 @@ body {
 .cb-order-item.empty-slots {
   opacity: 0.55;
   border-style: dashed;
+}
+
+.cb-order-item.thinking {
+  opacity: 0.65;
+  border-style: dotted;
+  border-color: rgba(200, 190, 230, 0.4);
+  font-style: italic;
+}
+
+.cb-order-item .item-status.thinking {
+  background: rgba(200, 190, 230, 0.25);
+  color: #7A6A9A;
 }
 
 /* Summary progress bar at the bottom of the order list */
