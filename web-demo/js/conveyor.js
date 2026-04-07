@@ -33,6 +33,26 @@ class ConveyorBeltEngine {
       left:   document.getElementById("tables-left"),
     };
 
+    // Barista sprite
+    this.baristaEl = document.getElementById("cb-barista");
+
+    // Order board DOM
+    this.orderBoard        = document.getElementById("cb-order-board");
+    this.orderBoardInner   = document.getElementById("cb-order-board-inner");
+    this.orderAvatar       = document.getElementById("cb-order-avatar");
+    this.orderCustomerName = document.getElementById("cb-order-customer-name");
+    this.orderDialogue     = document.getElementById("cb-order-dialogue");
+    this.orderItems        = document.getElementById("cb-order-items");
+    this.orderCloseBtn     = document.getElementById("cb-order-close-btn");
+    this.orderDoneBtn      = document.getElementById("cb-order-done-btn");
+
+    // Chat DOM (inside order board)
+    this.chatEl            = document.getElementById("cb-chat");
+    this.chatCustomerLine  = document.getElementById("cb-chat-customer-line");
+    this.chatChoices       = document.getElementById("cb-chat-choices");
+    this.chatResponse      = document.getElementById("cb-chat-response");
+    this.chatResponseText  = document.getElementById("cb-chat-response-text");
+
     // Avatar emoji pool (same as cafe.js)
     this._avatarEmojis = ["\uD83D\uDC64", "\uD83E\uDDD1", "\uD83D\uDC69", "\uD83D\uDC68", "\uD83D\uDC66", "\uD83D\uDC67", "\uD83E\uDDD3"];
 
@@ -70,6 +90,19 @@ class ConveyorBeltEngine {
     this._spawnTimer  = 0;
     this._animFrameId = null;
 
+    // ── Barista state ──
+    this._baristaHome = { left: "50%", top: "50%" };
+    this._baristaAtTable = null;        // tableId the barista is currently at
+    this._baristaWalking = false;       // currently in transit
+    this._activeOrderTable = null;      // tableId for the open order board
+    this._currentChat = null;           // current dialogue object
+    this._dialoguePool = [];            // loaded from CUSTOMER_DIALOGUES
+    this._shiftTips = 0;
+
+    // ── Call bubble timer ──
+    this._callBubbleTimer = 0;
+    this.CALL_BUBBLE_INTERVAL = 5000;   // check every 5s for new call bubbles
+
     // ── Build the scene ──
     this._layoutScene();
     this._buildTables();
@@ -77,6 +110,18 @@ class ConveyorBeltEngine {
     // Bind shift-continue
     document.getElementById("shift-continue-btn").addEventListener("click", () => {
       this.shiftComplete.classList.add("hidden");
+    });
+
+    // Bind order board buttons
+    this.orderCloseBtn.addEventListener("click", () => this._closeOrderBoard());
+    this.orderDoneBtn.addEventListener("click", () => this._closeOrderBoard());
+
+    // Bind chat choice buttons
+    this.chatChoices.querySelectorAll(".cb-chat-choice").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const idx = parseInt(btn.dataset.choice);
+        this._onChatChoice(idx);
+      });
     });
   }
 
@@ -226,8 +271,8 @@ class ConveyorBeltEngine {
     if (!td) return;
     const el = td.el;
 
-    // Clear dynamic children (seats, bubbles)
-    el.querySelectorAll(".cb-seat, .cb-order-bubble").forEach(e => e.remove());
+    // Clear dynamic children (seats, bubbles, call bubbles)
+    el.querySelectorAll(".cb-seat, .cb-order-bubble, .cb-call-bubble").forEach(e => e.remove());
     el.classList.remove("has-customer", "served", "eating", "messy");
 
     const foodSlot = el.querySelector(".cb-food-slot");
@@ -286,6 +331,18 @@ class ConveyorBeltEngine {
 
         bubble.innerHTML = `${request} <span class="bubble-count">${filled}/${this.PLATES_TO_COMPLETE}</span>`;
         el.appendChild(bubble);
+      }
+
+      // Call bubble — customer wants to chat (dusty-rose complementary bubble)
+      if (state === "ordering" && td._wantsChat && !this._baristaWalking) {
+        const callBubble = document.createElement("div");
+        callBubble.className = "cb-call-bubble";
+        callBubble.innerHTML = `<span class="call-emoji">\uD83D\uDCAC</span> Chat?`;
+        callBubble.addEventListener("click", (e) => {
+          e.stopPropagation();
+          this._sendBaristaToTable(tableId);
+        });
+        el.appendChild(callBubble);
       }
 
       // Completed tower — served/eating state
@@ -393,6 +450,8 @@ class ConveyorBeltEngine {
     td.wantedRecipes = [];
     td.pendingRecipes = [];
     td._displayIdx = 0;
+    td._wantsChat = false;
+    td._chatShown = false;
     this._renderTable(tableId);
     this._seatNewCustomers();
   }
@@ -437,6 +496,8 @@ class ConveyorBeltEngine {
 
       td.tower = this._createEmptyTower();
       td._displayIdx = 0;
+      td._wantsChat = false;   // will be set true by call bubble timer
+      td._chatShown = false;   // true once chat has been triggered for this seating
       td.state = "ordering";
 
       this._renderTable(tableId);
@@ -742,18 +803,35 @@ class ConveyorBeltEngine {
       await cafeDataReady;
     }
 
+    // Load customer dialogues
+    this._dialoguePool = (typeof CUSTOMER_DIALOGUES !== "undefined" && CUSTOMER_DIALOGUES.length > 0)
+      ? [...CUSTOMER_DIALOGUES] : [];
+
     // Reset state
     this.successCount = 0;
     this.mistakeCount = 0;
     this.streak = 0;
     this.bestStreak = 0;
     this.totalCustomersServed = 0;
+    this._shiftTips = 0;
     this.plates.forEach(p => p.el.remove());
     this.plates = [];
     this._plateIdSeq = 0;
     this._spawnTimer = 0;
+    this._callBubbleTimer = 0;
+    this._baristaAtTable = null;
+    this._baristaWalking = false;
+    this._activeOrderTable = null;
+    this._currentChat = null;
     this.serveResult.classList.add("hidden");
     this.shiftComplete.classList.add("hidden");
+    this.orderBoard.classList.add("hidden");
+
+    // Reset barista to center
+    this.baristaEl.style.left = "50%";
+    this.baristaEl.style.top = "50%";
+    this.baristaEl.style.transform = "translate(-50%, -50%)";
+    this.baristaEl.classList.remove("walking");
 
     // Reset all tables
     Object.keys(this.tables).forEach(id => {
@@ -793,6 +871,13 @@ class ConveyorBeltEngine {
 
     this._movePlates(dt);
 
+    // Periodically check if any ordering table should show a call bubble
+    this._callBubbleTimer += dt * 1000;
+    if (this._callBubbleTimer >= this.CALL_BUBBLE_INTERVAL) {
+      this._callBubbleTimer -= this.CALL_BUBBLE_INTERVAL;
+      this._maybeShowCallBubbles();
+    }
+
     this._animFrameId = requestAnimationFrame(t => this._tick(t));
   }
 
@@ -830,9 +915,275 @@ class ConveyorBeltEngine {
       <p>Towers completed: <strong>${this.successCount}</strong></p>
       <p>Best streak: <strong>${this.bestStreak}</strong></p>
       <p>Mistakes: <strong>${this.mistakeCount}</strong></p>
+      <p>Tips earned: <strong>${this._shiftTips}</strong> \uD83E\uDDFE</p>
       <p style="font-size:1.3rem; margin-top:12px;">${ratingEmoji} ${rating}</p>
     `;
     this.shiftComplete.classList.remove("hidden");
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     BARISTA — walk / slide to tables
+     ══════════════════════════════════════════════════════════════ */
+
+  /**
+   * Periodically decide which ordering tables should show call bubbles.
+   * ~40% chance per check for a table that hasn't chatted yet.
+   */
+  _maybeShowCallBubbles() {
+    if (this._baristaWalking || this._activeOrderTable) return;
+    if (this._dialoguePool.length === 0) return;
+
+    for (const [tableId, td] of Object.entries(this.tables)) {
+      if (td.state !== "ordering") continue;
+      if (td._wantsChat || td._chatShown) continue;
+
+      // 40% chance per check
+      if (Math.random() < 0.4) {
+        td._wantsChat = true;
+        this._renderTable(Number(tableId));
+      }
+    }
+  }
+
+  /**
+   * Send the barista walking to a specific table.
+   * Computes the table's screen position relative to the play area.
+   */
+  _sendBaristaToTable(tableId) {
+    if (this._baristaWalking || this._activeOrderTable) return;
+
+    const td = this.tables[tableId];
+    if (!td) return;
+
+    this._baristaWalking = true;
+    this._baristaAtTable = tableId;
+
+    // Clear call bubble immediately
+    td._wantsChat = false;
+    this._renderTable(tableId);
+
+    // Get table element position relative to play area
+    const tableRect = td.el.getBoundingClientRect();
+    const playRect  = this.playArea.getBoundingClientRect();
+
+    const targetLeft = (tableRect.left - playRect.left) + tableRect.width / 2;
+    const targetTop  = (tableRect.top - playRect.top) + tableRect.height / 2;
+
+    // Animate barista to table
+    this.baristaEl.classList.add("walking");
+    this.baristaEl.style.transform = "translate(-50%, -50%)";
+    this.baristaEl.style.left = targetLeft + "px";
+    this.baristaEl.style.top  = targetTop + "px";
+
+    // Wait for transition to complete, then open order board
+    setTimeout(() => {
+      this.baristaEl.classList.remove("walking");
+      this._baristaWalking = false;
+      this._openOrderBoard(tableId);
+    }, 650);
+  }
+
+  /**
+   * Send the barista back to center after closing the order board.
+   */
+  _returnBaristaHome() {
+    this.baristaEl.classList.add("walking");
+    this.baristaEl.style.left = "50%";
+    this.baristaEl.style.top  = "50%";
+
+    setTimeout(() => {
+      this.baristaEl.classList.remove("walking");
+      this._baristaAtTable = null;
+    }, 650);
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     ORDER BOARD — shows customer order + triggers chat
+     ══════════════════════════════════════════════════════════════ */
+
+  _openOrderBoard(tableId) {
+    const td = this.tables[tableId];
+    if (!td) return;
+
+    this._activeOrderTable = tableId;
+
+    // Pick the first customer's avatar
+    const avatar = td.customers.length > 0 ? td.customers[0].avatar : "\uD83D\uDC64";
+    this.orderAvatar.textContent = avatar;
+
+    // Customer name (use a cute generic name)
+    const names = ["Customer", "Guest", "Patron", "Visitor", "Friend"];
+    this.orderCustomerName.textContent = names[Math.floor(Math.random() * names.length)];
+
+    // Dialogue line about their order
+    const filled = this._towerFilledCount(td.tower);
+    if (filled === 0) {
+      this.orderDialogue.textContent = "\u201CWe\u2019d like to fill our high tea tower, please!\u201D";
+    } else {
+      this.orderDialogue.textContent = `\u201CWe\u2019re ${filled}/${this.PLATES_TO_COMPLETE} done\u2026 keep them coming!\u201D`;
+    }
+
+    // Render pending order items
+    this.orderItems.innerHTML = "";
+    const uniquePending = [...new Map(
+      (td.pendingRecipes || []).map(r => [r.id, r])
+    ).values()];
+
+    // Show up to 6 unique pending items
+    const showItems = uniquePending.slice(0, 6);
+    showItems.forEach(recipe => {
+      const count = td.pendingRecipes.filter(r => r.id === recipe.id).length;
+      const item = document.createElement("div");
+      item.className = "cb-order-item";
+      item.innerHTML = `
+        <span class="item-icon">${recipe.icon}</span>
+        <span class="item-name">${recipe.name}${count > 1 ? ` \u00D7${count}` : ""}</span>
+        <span class="item-status pending">needed</span>
+      `;
+      this.orderItems.appendChild(item);
+    });
+
+    // Also show completed items
+    const filledRecipes = td.tower.filter(s => s !== null);
+    const uniqueFilled = [...new Map(filledRecipes.map(s => [s.recipe.id, s.recipe])).values()];
+    uniqueFilled.slice(0, 3).forEach(recipe => {
+      const count = filledRecipes.filter(s => s.recipe.id === recipe.id).length;
+      const item = document.createElement("div");
+      item.className = "cb-order-item";
+      item.innerHTML = `
+        <span class="item-icon">${recipe.icon}</span>
+        <span class="item-name">${recipe.name}${count > 1 ? ` \u00D7${count}` : ""}</span>
+        <span class="item-status done">\u2713 done</span>
+      `;
+      this.orderItems.appendChild(item);
+    });
+
+    // Show the board
+    this.orderBoard.classList.remove("hidden");
+
+    // Maybe trigger a chat interaction
+    this._maybeShowChat(tableId);
+  }
+
+  _closeOrderBoard() {
+    this.orderBoard.classList.add("hidden");
+    this.chatEl.classList.add("hidden");
+    this.chatResponse.classList.add("hidden");
+
+    const tableId = this._activeOrderTable;
+    this._activeOrderTable = null;
+    this._currentChat = null;
+
+    // Mark this table as having had its chat
+    if (tableId && this.tables[tableId]) {
+      this.tables[tableId]._chatShown = true;
+    }
+
+    // Send barista home
+    this._returnBaristaHome();
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     CUSTOMER CHAT / SMALL TALK (adapted from cafe.js)
+     ══════════════════════════════════════════════════════════════ */
+
+  /**
+   * Maybe show a customer dialogue interaction inside the order board.
+   * ~70% chance when triggered from a call bubble.
+   */
+  _maybeShowChat(tableId) {
+    if (this._dialoguePool.length === 0 || Math.random() > 0.7) {
+      this.chatEl.classList.add("hidden");
+      return;
+    }
+
+    const dialogue = this._dialoguePool[Math.floor(Math.random() * this._dialoguePool.length)];
+    this._currentChat = dialogue;
+
+    this.chatCustomerLine.textContent = `\u201C${dialogue.customer_line}\u201D`;
+
+    // Hide response area from previous interaction
+    this.chatResponse.classList.add("hidden");
+
+    // Randomize choice order so the correct answer isn't always first
+    const flip = Math.random() < 0.5;
+    const btns = this.chatChoices.querySelectorAll(".cb-chat-choice");
+    const order = flip ? [1, 0] : [0, 1];
+
+    btns[0].textContent = dialogue.choices[order[0]].text;
+    btns[0].dataset.choice = order[0];
+    btns[0].className = "cb-chat-choice";
+    btns[0].style.pointerEvents = "";
+
+    btns[1].textContent = dialogue.choices[order[1]].text;
+    btns[1].dataset.choice = order[1];
+    btns[1].className = "cb-chat-choice";
+    btns[1].style.pointerEvents = "";
+
+    this.chatEl.classList.remove("hidden");
+  }
+
+  /**
+   * Handle a chat choice selection (correct/wrong answer).
+   */
+  _onChatChoice(choiceIdx) {
+    const dialogue = this._currentChat;
+    if (!dialogue) return;
+
+    const chosen = dialogue.choices[choiceIdx];
+    const correctIdx = dialogue.choices.findIndex(c => c.is_correct);
+
+    const btns = this.chatChoices.querySelectorAll(".cb-chat-choice");
+
+    // Highlight correct/wrong
+    btns.forEach(btn => {
+      const idx = parseInt(btn.dataset.choice);
+      if (idx === correctIdx) {
+        btn.classList.add("correct");
+      } else {
+        btn.classList.add("wrong");
+      }
+      btn.style.pointerEvents = "none";
+    });
+
+    // Show customer response
+    this.chatResponseText.textContent = `\u201C${chosen.response}\u201D`;
+    this.chatResponse.classList.remove("hidden");
+
+    if (chosen.is_correct) {
+      // Award tip
+      const tipAmount = (chosen.reward && chosen.reward.buttons) || 1;
+      for (let i = 0; i < tipAmount; i++) {
+        setTimeout(() => this._awardTip(), i * 200);
+      }
+    }
+
+    this._currentChat = null;
+  }
+
+  /**
+   * Award a tip — floating "+1" animation.
+   */
+  _awardTip() {
+    this._shiftTips++;
+
+    const float = document.createElement("div");
+    float.className = "cb-tip-float";
+    float.textContent = "+1 \uD83E\uDDFE";
+
+    // Position near the HUD
+    const hud = document.getElementById("conveyor-hud");
+    if (hud) {
+      const rect = hud.getBoundingClientRect();
+      float.style.left = `${rect.left + rect.width / 2}px`;
+      float.style.top = `${rect.bottom + 4}px`;
+    } else {
+      float.style.left = "50%";
+      float.style.top = "60px";
+    }
+
+    document.body.appendChild(float);
+    setTimeout(() => float.remove(), 1200);
   }
 
   /* ══════════════════════════════════════════════════════════════
