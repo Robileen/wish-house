@@ -424,6 +424,7 @@ body {
 .cb-table.messy .cb-table-surface {
   border-color: var(--dusty-rose);
   opacity: 0.7;
+  cursor: pointer;
 }
 
 .cb-food-slot.clickable {
