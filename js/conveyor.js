@@ -176,9 +176,10 @@ class ConveyorBeltEngine {
       container.innerHTML = "";
 
       for (let i = 0; i < this.TABLES_PER_SIDE; i++) {
+        const id = tableId; // capture current value for closure
         const tEl = document.createElement("div");
         tEl.className = "cb-table";
-        tEl.dataset.tableId = tableId;
+        tEl.dataset.tableId = id;
         tEl.dataset.side = side;
 
         tEl.innerHTML = `
@@ -189,10 +190,10 @@ class ConveyorBeltEngine {
           </div>
         `;
 
-        tEl.addEventListener("click", () => this._onTableClick(tableId));
+        tEl.addEventListener("click", () => this._onTableClick(id));
         container.appendChild(tEl);
 
-        this.tables[tableId] = {
+        this.tables[id] = {
           side,
           index: i,
           customers: [],
