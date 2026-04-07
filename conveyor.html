@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bake a Wish — Conveyor Belt Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/conveyor.css">
+</head>
+<body>
+  <div id="conveyor-screen">
+
+    <!-- HUD -->
+    <div id="conveyor-hud">
+      <div class="hud-left">
+        <span id="hud-shift-label">Conveyor Shift</span>
+        <div id="hud-progress">
+          <div id="hud-progress-fill"></div>
+        </div>
+        <span id="hud-dish-count">0 / 12</span>
+      </div>
+      <div class="hud-right">
+        <span id="hud-streak">Streak: 0</span>
+        <span id="hud-mistakes">❌ 0</span>
+      </div>
+    </div>
+
+    <!-- Main play area -->
+    <div id="play-area">
+
+      <!-- Tables: 4 sides of the belt -->
+      <!-- Top tables -->
+      <div class="table-side table-side-top" id="tables-top"></div>
+      <!-- Right tables -->
+      <div class="table-side table-side-right" id="tables-right"></div>
+      <!-- Bottom tables -->
+      <div class="table-side table-side-bottom" id="tables-bottom"></div>
+      <!-- Left tables -->
+      <div class="table-side table-side-left" id="tables-left"></div>
+
+      <!-- The conveyor belt (square loop) -->
+      <div id="conveyor-belt">
+        <div id="belt-track">
+          <!-- Belt corner markers -->
+          <div class="belt-corner corner-tl"></div>
+          <div class="belt-corner corner-tr"></div>
+          <div class="belt-corner corner-br"></div>
+          <div class="belt-corner corner-bl"></div>
+          <!-- Plates are dynamically injected here -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Serve result overlay -->
+    <div id="serve-result" class="hidden">
+      <div id="serve-result-icon"></div>
+      <div id="serve-result-text"></div>
+    </div>
+
+    <!-- Shift complete overlay -->
+    <div id="shift-complete" class="hidden">
+      <h2>Shift Complete!</h2>
+      <div id="shift-summary"></div>
+      <button id="shift-continue-btn">Continue</button>
+    </div>
+
+  </div>
+
+  <script src="js/cafe-data.js?v=5"></script>
+  <script src="js/conveyor.js?v=1"></script>
+</body>
+</html>
