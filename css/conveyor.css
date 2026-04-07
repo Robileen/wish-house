@@ -791,6 +791,14 @@ body {
   animation: barista-bob 0.3s ease-in-out infinite;
 }
 
+#cb-barista.cleaning {
+  animation: barista-bob 0.25s ease-in-out infinite;
+  border-color: var(--pale-mint);
+  box-shadow:
+    0 3px 8px rgba(74, 55, 40, 0.2),
+    0 0 8px rgba(200, 230, 208, 0.4);
+}
+
 @keyframes barista-bob {
   0%, 100% { margin-top: 0; }
   50%      { margin-top: -4px; }
