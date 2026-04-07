@@ -388,7 +388,7 @@ body {
 }
 
 /* Heart bubble variant — minimal, just heart + count */
-.cb-heart-bubble {
+.cb-order-bubble.cb-heart-bubble {
   display: flex;
   align-items: center;
   gap: 4px;
