@@ -468,8 +468,9 @@ class ConveyorBeltEngine {
     if (emptyIds.length === 0) return;
 
     const shuffled = this._shuffle([...emptyIds]);
-    // Randomise how many tables to fill: 1-3 (weighted towards 1-2)
-    const maxFill = Math.min(shuffled.length, Math.random() < 0.3 ? 3 : Math.random() < 0.5 ? 2 : 1);
+    // Fill most empty tables — leave at most 1-2 empty for breathing room
+    const leave = Math.random() < 0.4 ? 1 : 2;
+    const maxFill = Math.max(1, shuffled.length - leave);
 
     const recipes = this._getAvailableRecipes();
     if (recipes.length === 0) return;
@@ -478,8 +479,8 @@ class ConveyorBeltEngine {
       const tableId = shuffled[i];
       const td = this.tables[tableId];
 
-      // 1-2 customers (30% chance of 2)
-      const numCust = Math.random() < 0.3 ? 2 : 1;
+      // 1-2 customers (50% chance of 2)
+      const numCust = Math.random() < 0.5 ? 2 : 1;
       td.customers = [];
       for (let c = 0; c < numCust; c++) {
         const avatarIdx = Math.floor(Math.random() * this._avatarEmojis.length);
