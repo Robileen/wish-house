@@ -52,6 +52,40 @@
         </div>
       </div>
 
+      <!-- Barista sprite (coffee icon) -->
+      <div id="cb-barista">&#9749;</div>
+
+    </div>
+
+    <!-- Order board overlay (appears when barista reaches a table) -->
+    <div id="cb-order-board" class="hidden">
+      <div id="cb-order-board-inner">
+        <div id="cb-order-header">
+          <span id="cb-order-avatar"></span>
+          <div id="cb-order-info">
+            <div id="cb-order-customer-name">Customer</div>
+            <div id="cb-order-dialogue"></div>
+          </div>
+          <button id="cb-order-close-btn" title="Close">&times;</button>
+        </div>
+        <div id="cb-order-items"></div>
+
+        <!-- Customer chat (small talk) -->
+        <div id="cb-chat" class="hidden">
+          <div id="cb-chat-bubble">
+            <div id="cb-chat-customer-line"></div>
+          </div>
+          <div id="cb-chat-choices">
+            <button class="cb-chat-choice" data-choice="0"></button>
+            <button class="cb-chat-choice" data-choice="1"></button>
+          </div>
+          <div id="cb-chat-response" class="hidden">
+            <div id="cb-chat-response-text"></div>
+          </div>
+        </div>
+
+        <button id="cb-order-done-btn">Done</button>
+      </div>
     </div>
 
     <!-- Serve result overlay -->
@@ -70,6 +104,6 @@
   </div>
 
   <script src="js/cafe-data.js?v=5"></script>
-  <script src="js/conveyor.js?v=1"></script>
+  <script src="js/conveyor.js?v=2"></script>
 </body>
 </html>
