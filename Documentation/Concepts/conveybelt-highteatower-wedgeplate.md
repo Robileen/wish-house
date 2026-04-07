@@ -6,6 +6,31 @@ This is not a food game.
 This is a game about:
 **Turning small, disconnected choices into something emotionally meaningful.**
 
+
+Devin's comments 7th Apr 2026 : Honestly, it's shaping up really well. Here's my take:
+
+What's working great:
+
+  • The heart meter is a smart design choice. Hiding what the customer wants behind a progress-only indicator forces the player to engage with the chat system to understand their customers. That's the core thesis of the
+  game -- empathy, not just efficiency.
+  • The barista as a physical presence adds a real cost to every action. Walking to chat, circling to clean -- it creates natural pacing and makes the player prioritize. You can't do everything at once, which is good
+  tension.
+  • The two-bubble system (gold heart vs lavender chat) gives clear visual language: gold = passive status, lavender = someone wants your attention. Easy to read at a glance.
+  • The order board's "still deciding" mechanic is a nice touch. It makes the customers feel like people, not vending machines with a fixed list.
+
+Things I'd think about next:
+
+  • The conveyor belt is mostly passive right now. Plates spawn, customers auto-grab them. The player's main interaction is chatting and cleaning. You might want a mechanic where the player has some influence over what
+  goes on the belt, or can direct plates to specific tables -- that would tie the belt into the empathy loop more.
+  • Tips don't do anything yet. Once you wire tips into the journal/button economy from the main game, that'll give the chat choices real stakes.
+  • The "grabs anything" test flag on table 1 should be removed before it goes to real players -- easy to forget about.
+  • Table-side positioning matters. Left/right tables feel a bit cramped compared to top/bottom. Might be worth adjusting the spacing or table count per side as the scene gets more complex.
+  • No fail state during the shift. The cafe.js version has a 5-mistake limit. The conveyor prototype just runs until the target is hit. Some kind of pressure (timer, impatient customers leaving) would add stakes.
+
+Overall the emotional design intent from the concept doc is coming through in the actual gameplay. The system is cohesive -- fragments (plates) → assembly (tower) → emotional response (heart color). The barista
+interaction layer on top gives it the "understanding someone" feel you're going for. Solid foundation.
+
+
 ---
 
 ## The System (Under the Surface)
@@ -909,7 +934,8 @@ Position calculated by `_progressToPosition(progress)`:
 `_checkPlateNearTable(plate)` runs every frame for each moving plate:
 1. Calculate plate's distance along belt perimeter
 2. For each ordering table, check if plate is within the table's grab range (60px window centered on the table's belt-side position)
-3. If the table still needs this recipe → grab it
+3. If the table has `_grabsAnything` flag (test mode) → grab regardless of recipe
+4. Otherwise, if the table still needs this recipe → grab it
 
 `_grabPlate(plate, tableId)`:
 1. Mark plate as grabbed, add CSS `.grabbed` class (shrink + fade)
@@ -1040,9 +1066,17 @@ Filled slots inherit the plate's category color:
 ### Tower Completion
 
 When all 12 slots are filled:
-1. Tower gets `.complete` class → green drop-shadow glow
+1. Tower gets `.complete` class → green drop-shadow glow + **opacity fades to 0.4**
 2. Success count increments
 3. State transitions: served (2s) → eating (8s) → messy
+
+### Tower Opacity by State
+
+| State      | Tower Opacity | Purpose                                      |
+|------------|---------------|----------------------------------------------|
+| Ordering   | 1.0 (default) | Tower is actively being filled               |
+| Complete   | 0.4           | Faded so heart/sponge circle stands out      |
+| Messy      | 0.3           | Very faded, sponge is the focal element      |
 
 ---
 
@@ -1055,6 +1089,14 @@ Replaces the old order bubble that showed dish names. The player doesn't know wh
 - Same positioning as old order bubble (per-side offsets with directional tails)
 - Shows a heart icon + "X/12" count
 - Heart color lerps from **light pink** (`#F4B8C1`) at 0/12 to **bright red** (`#E03050`) at 12/12
+
+### Clickable
+
+The heart bubble is interactive — clicking it sends the barista to that table and opens the guest order board. This allows the player to check on any customer's progress at any time, even without a "Chat?" bubble.
+
+- CSS: `.cb-order-bubble.cb-heart-bubble` (two-class specificity to override `pointer-events: none` on `.cb-order-bubble`)
+- Hover: `scale(1.08)` with pink shadow glow, per-side aware transforms
+- Click → `_sendBaristaToTable(tableId)` (same flow as call bubble, but without `_forceChat`)
 
 ### Color Interpolation
 
@@ -1117,17 +1159,67 @@ Walking animation (bobbing):
 
 ### Walk Flow
 
-1. Player clicks a **call bubble** on a table
-2. `_sendBaristaToTable(tableId)`:
+Two ways to trigger the barista walking to a table:
+
+1. **Click a "Chat?" call bubble** → sets `_forceChat = true`, then calls `_sendBaristaToTable()`
+2. **Click a heart bubble** → calls `_sendBaristaToTable()` directly (no forced chat)
+
+`_sendBaristaToTable(tableId)`:
+   - Guards: returns if `_baristaWalking`, `_baristaCleaning`, or `_activeOrderTable`
    - Sets `_baristaWalking = true`
    - Clears the call bubble
    - Calculates table's screen position relative to play area
    - Sets barista's `left`/`top` to table center → CSS transition animates the slide
    - Adds `.walking` class for bob animation
-3. After 650ms: removes walking class, opens order board
-4. On order board close → `_returnBaristaHome()`:
-   - Sets barista back to `left: 50%; top: 50%`
-   - CSS transition slides it back to center
+   - After 650ms: removes walking class, opens order board
+   - On order board close → `_returnBaristaHome()` slides barista back to center
+
+### Cleaning Flow
+
+When a table is messy, clicking the sponge (or the table itself) triggers a cleaning sequence:
+
+```
+click sponge → barista walks to table → circles table → cleans → returns home
+```
+
+1. **`_startCleaningTable(tableId)`**:
+   - Guards: returns if `_baristaWalking`, `_baristaCleaning`, or `_activeOrderTable`
+   - Sets `_baristaCleaning = true`, `_baristaWalking = true`
+   - Removes sponge immediately (prevents double-click)
+   - Calculates orbit radius (`tableRect.width * 0.7`)
+   - Walks barista to right side of table (700ms)
+   - Switches from `.walking` to `.cleaning` class
+
+2. **`_circleTable(tableId, cx, cy, radius)`**:
+   - 4 positions: right → bottom → left → top
+   - 500ms per step (CSS transition handles the slide)
+   - Barista bobs faster (0.25s) with mint border glow during cleaning
+
+3. **`_finishCleaning(tableId)`**:
+   - Removes `.cleaning` class
+   - Calls `_cleanTable()` — resets table state, seats new customers
+   - 300ms pause, then walks barista back to center (650ms)
+   - Clears `_baristaCleaning` flag
+
+**One at a time:** The `_baristaCleaning` flag blocks all barista actions (chat, heart clicks, other sponge clicks) until the full sequence completes.
+
+### Cleaning Timing
+
+| Step              | Duration | Notes                          |
+|-------------------|----------|--------------------------------|
+| Walk to table     | 700ms    | CSS transition + walking bob   |
+| Circle (3 steps)  | 1500ms   | 500ms each, cleaning bob       |
+| Pause after clean | 300ms    | Brief stop                     |
+| Return to center  | 650ms    | CSS transition + walking bob   |
+| **Total**         | **~3.2s** |                               |
+
+### Barista Visual States
+
+| State    | CSS Class   | Bob Speed | Border              | Extra                          |
+|----------|-------------|-----------|---------------------|--------------------------------|
+| Idle     | (none)      | —         | `var(--dusty-rose)` | Static at center               |
+| Walking  | `.walking`  | 0.3s      | `var(--dusty-rose)` | Sliding to/from table          |
+| Cleaning | `.cleaning` | 0.25s     | `var(--pale-mint)`  | Mint glow shadow, circling     |
 
 ---
 
@@ -1158,11 +1250,15 @@ Offset is 20px from table edge (vs 4px for the heart bubble), so they don't over
 
 ### Trigger Logic
 
-`_maybeShowCallBubbles()` runs every 5 seconds:
-- Skipped if barista is walking or order board is open
+`_maybeShowCallBubbles()` runs every **12 seconds** (`CALL_BUBBLE_INTERVAL`):
+- Skipped if barista is walking, cleaning, or order board is open
 - Skipped if no dialogues loaded
-- For each ordering table that hasn't chatted yet: 40% chance to show call bubble
+- For each ordering table that hasn't chatted yet: **15% chance** to show call bubble
 - Sets `td._wantsChat = true` → bubble renders on next `_renderTable()`
+
+### Force Chat
+
+When the player clicks a "Chat?" call bubble, `td._forceChat = true` is set before sending the barista. This guarantees the dialogue always appears in the order board (bypasses the 70% random chance in `_maybeShowChat`). Clicking a heart bubble does NOT set this flag, so dialogue has the normal 70% chance.
 
 ### Persistence
 
@@ -1192,24 +1288,40 @@ A modal overlay that opens when the barista reaches a customer table.
 
 - Customer avatar (2rem emoji in a 48px circle, blush gradient background)
 - Random name from: "Customer", "Guest", "Patron", "Visitor", "Friend"
-- Dialogue line about tower progress
+- Dynamic dialogue line about tower progress:
+  - At 0 filled: *"We'd like to fill our high tea tower, please!"*
+  - Otherwise: *"We're X/12 done... keep them coming!"*
 - Close button (X, 28px circle, top-right)
 
-### Order Items — All 12 Slots Shown
+### Order Items — Cognitive Load Management
 
-Three categories rendered in order:
+Items are shown in four categories, but **pending items are limited to 2 at a time** (`MAX_SHOWN = 2`) because customers don't think of 12 things at once.
 
-1. **Done items** (green):
+1. **Done items** (green border):
    - Unique filled recipes with counts (e.g., "Latte x2")
-   - Green border, checkmark badge: `item-status done`
+   - Checkmark badge: `item-status done` — "done"
 
-2. **Needed items** (peach):
-   - Unique pending recipes with counts
-   - Peach border, "needed" badge: `item-status pending`
+2. **Craving items** (peach border) — max 2 shown:
+   - First 2 unique pending recipes with counts
+   - Peach badge: `item-status pending` — **"craving.."**
 
-3. **Empty slots** (dashed):
+3. **Still deciding** (lavender dotted border) — shown when >2 pending:
+   - "X more items... still deciding" with thought bubble emoji
+   - Badge: `item-status thinking` — 🤔
+   - Italic, 65% opacity, dotted border, lavender color (matches call bubble theme)
+
+4. **Empty slots** (dashed border):
    - Count of remaining capacity: `PLATES_TO_COMPLETE - filled - pending`
-   - Dashed border, faded, white-square emoji, "open" badge
+   - Faded (55% opacity), white-square emoji, "open" badge
+
+### Order Item Status Badges
+
+| Badge        | Label           | Background                     | Color         | Border Style |
+|--------------|-----------------|--------------------------------|---------------|--------------|
+| `.done`      | "done"          | `rgba(200, 230, 208, 0.5)`    | `#4A7A5A`     | solid green  |
+| `.pending`   | "craving.."     | `rgba(253, 220, 186, 0.5)`    | `var(--cocoa)` | solid peach |
+| `.thinking`  | 🤔              | `rgba(200, 190, 230, 0.25)`   | `#7A6A9A`     | dotted lavender |
+| `.empty`     | "open"          | `rgba(200, 168, 130, 0.15)`   | `var(--text-light)` | dashed tan |
 
 ### Summary Progress Bar
 
@@ -1307,39 +1419,65 @@ Tips are tracked per shift in `_shiftTips` and shown in the shift completion sum
 
 ---
 
-## Heart Eating Animation
+## Heart & Sponge on Table (Completion / Cleanup)
 
-When a tower is completed, the customer enters a longer eating phase with repeated heart spawns.
+When a tower is completed, the customer enters a longer eating phase with repeated heart spawns. Both heart and sponge are styled as **seat-style circles** (same look as customer avatars) centered on the table surface, covering the faded tower.
+
+### Heart & Sponge Circle Styling
+
+Both use 42px circles with cream background to match the game's visual language:
+
+```css
+/* Shared styling (both heart and sponge) */
+width: 42px;
+height: 42px;
+border-radius: 50%;
+background: rgba(255, 248, 240, 0.9);  /* near-opaque cream */
+border: 1.5px solid rgba(244, 184, 193, 0.5);
+box-shadow: 0 2px 4px rgba(74, 55, 40, 0.1);
+/* Centered on table: left: 50%; top: 50%; transform: translate(-50%, -50%) */
+```
+
+The heart icon is 1.4rem, the sponge is also 1.4rem (matched sizes).
 
 ### Sequence
 
-| Phase    | Duration | Visual Effect                                          |
-|----------|----------|--------------------------------------------------------|
-| Served   | 2s       | Green glow overlay (`overlay-glow` animation)          |
-| Eating   | 8s       | Hearts spawn every 1.5s (up to 5), customers visible  |
-| Messy    | Until click | Sponge on tower, dusty-rose border, 70% opacity    |
+| Phase    | Duration    | Visual Effect                                          |
+|----------|-------------|--------------------------------------------------------|
+| Served   | 2s          | Green glow overlay, tower fades to 40% opacity         |
+| Eating   | 8s          | Heart circles spawn every 1.5s (up to 5), centered on table |
+| Messy    | Until click | Sponge circle replaces heart, tower at 30% opacity     |
 
-### Heart Particle
+### Heart Circle
+
+- Class: `.cb-above-tower-heart`
+- Appended to `.cb-table` element (positioned absolute, centered)
+- Animation: `heart-pulse` 6s (includes `translate(-50%, -50%)` in every keyframe)
+- Removed from DOM after 6.5s
+
+### Sponge Circle
+
+- Class: `.cb-above-tower-sponge`
+- Same position and size as heart
+- Animation: `sponge-wobble` 1s infinite (includes centering in keyframes)
+- Clickable: `pointer-events: auto; cursor: pointer`
+- Hover: `scale(1.15)` with dusty-rose border + shadow
+- Click → `_startCleaningTable(tableId)` (triggers barista cleaning sequence)
+
+### Heart Pulse Keyframes
 
 ```css
-.cb-heart-particle {
-  font-size: 1.8rem;
-  animation: heart-pulse 6s ease-in-out forwards;
-}
-
 @keyframes heart-pulse {
-  0%   { transform: scale(0); opacity: 0; }
-  10%  { transform: scale(1.3); opacity: 1; }
-  20%  { transform: scale(1); }
-  35%  { transform: scale(1.15); }
-  50%  { transform: scale(1); opacity: 1; }
-  65%  { transform: scale(1.1); }
-  80%  { transform: scale(1); opacity: 0.8; }
-  100% { transform: scale(0.7) translateY(-10px); opacity: 0; }
+  0%   { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  10%  { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+  20%  { transform: translate(-50%, -50%) scale(1); }
+  35%  { transform: translate(-50%, -50%) scale(1.15); }
+  50%  { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  65%  { transform: translate(-50%, -50%) scale(1.1); }
+  80%  { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(0.7) translateY(-10px); opacity: 0; }
 }
 ```
-
-Hearts are removed from DOM after 6.5s.
 
 ---
 
@@ -1403,3 +1541,18 @@ Summary shows: towers completed, best streak, mistakes, tips earned.
 | `.wedge-plate`     | 40x40px       | 30x30px        |
 | `#cb-barista`      | 48x48px       | 36x36px        |
 | Table side gaps    | 16px          | 8px            |
+
+---
+
+## Test Mode Features
+
+> These features are for development testing and should be removed before production.
+
+### Table 1 Grabs Anything (First Seating)
+
+On its very first customer seating, table 1 accepts **any plate** that passes by on the belt (skips recipe matching). This fills its tower quickly with the first 12 dishes for testing the complete flow: tower fill → served → eating → messy → sponge → barista cleaning.
+
+- Flag: `_table1FirstDone` (false on start, set true after table 1's first seating)
+- Per-table flag: `td._grabsAnything` (set true for table 1's first seating only)
+- Table 1 is always seated first when empty (moved to front of shuffle array)
+- Subsequent seatings at table 1 and all other tables use normal recipe matching
