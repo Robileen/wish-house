@@ -346,6 +346,7 @@ class ConveyorBeltEngine {
         callBubble.innerHTML = `<span class="call-emoji">\uD83D\uDCAC</span> Chat?`;
         callBubble.addEventListener("click", (e) => {
           e.stopPropagation();
+          td._forceChat = true;  // guarantee dialogue shows
           this._sendBaristaToTable(tableId);
         });
         el.appendChild(callBubble);
@@ -1281,10 +1282,23 @@ class ConveyorBeltEngine {
 
   /**
    * Maybe show a customer dialogue interaction inside the order board.
-   * ~70% chance when triggered from a call bubble.
+   * Always shows when the customer's _forceChat flag is set (from Chat? bubble).
+   * Otherwise ~70% chance when opened from the heart bubble.
    */
   _maybeShowChat(tableId) {
-    if (this._dialoguePool.length === 0 || Math.random() > 0.7) {
+    const td = this.tables[tableId];
+    const forced = td && td._forceChat;
+
+    // Clear the flag regardless
+    if (td) td._forceChat = false;
+
+    if (this._dialoguePool.length === 0) {
+      this.chatEl.classList.add("hidden");
+      return;
+    }
+
+    // Skip randomly only if not forced (heart bubble click)
+    if (!forced && Math.random() > 0.7) {
       this.chatEl.classList.add("hidden");
       return;
     }
