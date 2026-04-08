@@ -641,20 +641,24 @@ class ConveyorBeltEngine {
     let x, y, angle;
 
     if (dist < bw) {
+      // Top edge — moving right
       x = dist - halfPlate;
       y = -halfPlate - offset;
       angle = 0;
     } else if (dist < bw + bh) {
+      // Right edge — moving down
       const d = dist - bw;
-      x = bw + offset;
+      x = bw - halfPlate + offset;
       y = d - halfPlate;
       angle = 90;
     } else if (dist < 2 * bw + bh) {
+      // Bottom edge — moving left
       const d = dist - bw - bh;
       x = bw - d - halfPlate;
-      y = bh + offset;
+      y = bh - halfPlate + offset;
       angle = 180;
     } else {
+      // Left edge — moving up
       const d = dist - 2 * bw - bh;
       x = -halfPlate - offset;
       y = bh - d - halfPlate;
@@ -784,6 +788,10 @@ class ConveyorBeltEngine {
 
     const pct = filled / this.PLATES_TO_COMPLETE;
     bubble.innerHTML = `<span class="heart-icon" style="color:${this._heartColor(pct)}">\u2764</span> <span class="bubble-count">${filled}/${this.PLATES_TO_COMPLETE}</span>`;
+    bubble.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this._sendBaristaToTable(tableId);
+    });
     el.appendChild(bubble);
   }
 
