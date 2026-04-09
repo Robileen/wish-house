@@ -99,6 +99,7 @@ class ConveyorBeltEngine {
     this._currentChat = null;           // current dialogue object
     this._chatAnswered = false;         // true once player picks a chat choice
     this._chatWasShown = false;         // true if a chat dialogue was displayed this session
+    this._hadCallBubble = false;        // true if table had a call bubble before barista was sent
     this._dialoguePool = [];            // loaded from CUSTOMER_DIALOGUES
     this._shiftTips = 0;
 
@@ -1015,6 +1016,9 @@ class ConveyorBeltEngine {
     this._baristaWalking = true;
     this._baristaAtTable = tableId;
 
+    // Remember whether the table already had a call bubble before we clear it
+    this._hadCallBubble = td._wantsChat || false;
+
     // Clear call bubble immediately
     td._wantsChat = false;
     this._renderTable(tableId);
@@ -1281,8 +1285,9 @@ class ConveyorBeltEngine {
       if (this._chatAnswered) {
         this.tables[tableId]._chatShown = true;
         this.tables[tableId]._wantsChat = false;
-      } else if (this._chatWasShown) {
+      } else if (this._chatWasShown && this._hadCallBubble) {
         // Chat was shown but player closed without answering — keep the call bubble
+        // only if one already existed before clicking (don't spawn a new one)
         this.tables[tableId]._wantsChat = true;
         this._renderTable(tableId);
       }
