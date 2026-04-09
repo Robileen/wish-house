@@ -7,6 +7,13 @@
  * Character name format: "Kit (Wizard)", "Edward (Barista)", "Claire"
  */
 
+// ── HTML Escape Utility ──
+function _esc(str) {
+  const el = document.createElement("span");
+  el.textContent = String(str);
+  return el.innerHTML;
+}
+
 // ── Character Definitions ──
 const CHARACTERS = {
   "Kit (Wizard)":     { id: "kit",     color: "#D4A843", icon: "\uD83C\uDFA9", cssClass: "char-kit",     side: "left"  },
@@ -338,7 +345,7 @@ class WishHouseEngine {
 
       // Try sprite image if path exists and was confirmed loadable
       if (imgPath && this.spriteCache[imgPath] === true) {
-        iconHtml = `<img class="char-sprite" src="${imgPath}" alt="${exprLabel}">`;
+        iconHtml = `<img class="char-sprite" src="${_esc(imgPath)}" alt="${_esc(exprLabel)}">`;
       } else if (imgPath && this.spriteCache[imgPath] === undefined) {
         // Haven't tested this sprite yet -- probe it, use emoji for now
         this.probeSprite(imgPath);
@@ -354,11 +361,11 @@ class WishHouseEngine {
     // Always show character icon on top when an expression is active
     const charIconHtml = exprState ? `<span class="char-icon">${charData.icon}</span>` : "";
 
-    return `<div class="character-placeholder ${charData.cssClass} ${dimClass}" data-expression="${exprLabel}">
+    return `<div class="character-placeholder ${charData.cssClass} ${dimClass}" data-expression="${_esc(exprLabel)}">
       ${charIconHtml}
       ${iconHtml}
-      <span class="char-name-label">${charName}</span>
-      ${exprLabel ? `<span class="char-expression-label">${exprLabel.replace(/_/g, " ")}</span>` : ""}
+      <span class="char-name-label">${_esc(charName)}</span>
+      ${exprLabel ? `<span class="char-expression-label">${_esc(exprLabel.replace(/_/g, " "))}</span>` : ""}
     </div>`;
   }
 

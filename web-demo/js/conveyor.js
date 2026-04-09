@@ -6,6 +6,13 @@
    3-tier high tea tower (4 plates per tier = 12 total).
    ══════════════════════════════════════════════════════════════ */
 
+// ── HTML Escape Utility ──
+function _escConv(str) {
+  const el = document.createElement("span");
+  el.textContent = String(str);
+  return el.innerHTML;
+}
+
 class ConveyorBeltEngine {
 
   /* ── Constructor ── */
@@ -418,7 +425,7 @@ class ConveyorBeltEngine {
           }
           slotEl.innerHTML = `
             <div class="cb-tower-slot-inner"></div>
-            <span class="slot-icon">${plateData.recipe.icon}</span>
+            <span class="slot-icon">${_escConv(plateData.recipe.icon)}</span>
           `;
         } else {
           slotEl.innerHTML = `<div class="cb-tower-slot-inner"></div>`;
@@ -566,9 +573,9 @@ class ConveyorBeltEngine {
     el.dataset.plateId = id;
     el.innerHTML = `
       <div class="wedge-plate-inner">
-        <span class="plate-icon">${recipe.icon}</span>
+        <span class="plate-icon">${_escConv(recipe.icon)}</span>
       </div>
-      <span class="plate-label">${recipe.name}</span>
+      <span class="plate-label">${_escConv(recipe.name)}</span>
     `;
     el.style.animation = "plate-spawn 0.3s ease";
 
@@ -1197,8 +1204,8 @@ class ConveyorBeltEngine {
       const item = document.createElement("div");
       item.className = "cb-order-item done";
       item.innerHTML = `
-        <span class="item-icon">${recipe.icon}</span>
-        <span class="item-name">${recipe.name}${count > 1 ? ` \u00D7${count}` : ""}</span>
+        <span class="item-icon">${_escConv(recipe.icon)}</span>
+        <span class="item-name">${_escConv(recipe.name)}${count > 1 ? ` \u00D7${count}` : ""}</span>
         <span class="item-status done">\u2713 done</span>
       `;
       this.orderItems.appendChild(item);
@@ -1218,8 +1225,8 @@ class ConveyorBeltEngine {
       const item = document.createElement("div");
       item.className = "cb-order-item needed";
       item.innerHTML = `
-        <span class="item-icon">${recipe.icon}</span>
-        <span class="item-name">${recipe.name}${count > 1 ? ` \u00D7${count}` : ""}</span>
+        <span class="item-icon">${_escConv(recipe.icon)}</span>
+        <span class="item-name">${_escConv(recipe.name)}${count > 1 ? ` \u00D7${count}` : ""}</span>
         <span class="item-status pending">craving..</span>
       `;
       this.orderItems.appendChild(item);
