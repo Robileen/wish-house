@@ -626,6 +626,7 @@ class WishHouseEngine {
 
     this.currentBlock = block;
     this.dialogueBox.style.opacity = "1";
+    this.applyTimeTheme(block);
 
     // Set up character expressions and reveal all speakers from the main block
     // so the characters show their final expressions (skip-to-choice = replay)
