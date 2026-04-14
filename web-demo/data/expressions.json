@@ -17,7 +17,8 @@
         "warm":               { "emoji": "🤗", "image": "sprites/kit/warm.png" },
         "gentle":             { "emoji": "😌", "image": "sprites/kit/gentle.png" },
         "curious":            { "emoji": "🤔", "image": "sprites/kit/curious.png" },
-        "proud":              { "emoji": "😤", "image": "sprites/kit/proud.png" }
+        "proud":              { "emoji": "😤", "image": "sprites/kit/proud.png" },
+        "knowing":            { "emoji": "🧙", "image": "sprites/kit/knowing.png" }
       }
     },
     "edward": {
@@ -50,7 +51,27 @@
         "curious":   { "emoji": "🤔", "image": "sprites/claire/curious.png" },
         "warm":      { "emoji": "😊", "image": "sprites/claire/warm.png" },
         "surprised": { "emoji": "😲", "image": "sprites/claire/surprised.png" },
-        "relieved":  { "emoji": "😌", "image": "sprites/claire/relieved.png" }
+        "relieved":    { "emoji": "😌", "image": "sprites/claire/relieved.png" },
+        "exhausted":   { "emoji": "😩", "image": "sprites/claire/exhausted.png" },
+        "weary":       { "emoji": "😔", "image": "sprites/claire/weary.png" },
+        "overwhelmed": { "emoji": "😖", "image": "sprites/claire/overwhelmed.png" },
+        "bitter":      { "emoji": "😠", "image": "sprites/claire/bitter.png" },
+        "frustrated":  { "emoji": "😤", "image": "sprites/claire/frustrated.png" },
+        "resigned":    { "emoji": "😐", "image": "sprites/claire/resigned.png" },
+        "thoughtful":  { "emoji": "🤔", "image": "sprites/claire/thoughtful.png" },
+        "uncertain":   { "emoji": "🤷", "image": "sprites/claire/uncertain.png" },
+        "analytical":  { "emoji": "🧠", "image": "sprites/claire/analytical.png" },
+        "determined":  { "emoji": "💪", "image": "sprites/claire/determined.png" },
+        "steeled":     { "emoji": "😐", "image": "sprites/claire/steeled.png" },
+        "grimacing":   { "emoji": "😣", "image": "sprites/claire/grimacing.png" },
+        "accepting":   { "emoji": "😔", "image": "sprites/claire/accepting.png" },
+        "desperate":   { "emoji": "😨", "image": "sprites/claire/desperate.png" },
+        "panicked":    { "emoji": "😰", "image": "sprites/claire/panicked.png" },
+        "resolute":    { "emoji": "😠", "image": "sprites/claire/resolute.png" },
+        "vulnerable":  { "emoji": "🥹", "image": "sprites/claire/vulnerable.png" },
+        "amazed":      { "emoji": "😲", "image": "sprites/claire/amazed.png" },
+        "pragmatic":   { "emoji": "🧠", "image": "sprites/claire/pragmatic.png" },
+        "wincing":     { "emoji": "😣", "image": "sprites/claire/wincing.png" }
       }
     }
   }
