@@ -3,192 +3,126 @@
   "episodes": {
     "1": {
       "episode": 1,
+      "title": "The Weight of Small Hours",
+      "setting": "Claire's cramped room in the estate, 3:00 AM",
       "dialogueLines": [
         {
           "id": 1,
           "speaker": "Narrator",
-          "text": "A soft chime rings as the café door opens. A young woman steps inside, shoulders heavy, expression tired yet hopeful."
+          "text": "3:00 AM. The estate sleeps, the streets are empty, and the only sound in Claire's small room is the faint creak of her floorboards as she moves."
         },
         {
           "id": 2,
-          "speaker": "Narrator",
-          "text": "Her uniform—simple, modest, and unmistakably that of a maid—carries faint wrinkles of a day far longer than most could bear."
+          "speaker": "Claire",
+          "text": "Gosh. Three in the morning…",
+          "expression": "exhausted",
+          "expressionEmoji": "😩"
         },
         {
           "id": 3,
-          "speaker": "Narrator",
-          "text": "She works in one of the wealthiest estates in town. A place where perfection is demanded, gratitude is rare, and mistakes are not forgiven."
+          "speaker": "Claire",
+          "text": "Haha… I must be losing it.",
+          "expression": "weary",
+          "expressionEmoji": "😔"
         },
         {
           "id": 4,
-          "speaker": "Narrator",
-          "text": "Today is her off day. A fleeting breath of freedom she desperately needed."
+          "speaker": "Stage",
+          "text": "[She closes the door quietly behind her and leans against it, as if the weight of the day might push through the wood.]"
         },
         {
           "id": 5,
           "speaker": "Claire",
-          "text": "...Hello? Is—Is it alright for me to come in?",
-          "expression": "shy",
-          "expressionEmoji": "😳",
-          "expressionImage": "sprites/claire/shy.png"
+          "text": "My ears feel like they're going to explode.",
+          "expression": "overwhelmed",
+          "expressionEmoji": "😖"
         },
         {
           "id": 6,
-          "speaker": "Kit (Wizard)",
-          "text": "Of course. Welcome to the Wish House. A seat is yours if you wish to rest.",
-          "expression": "warm",
-          "expressionEmoji": "🤗",
-          "expressionImage": "sprites/kit/warm.png"
+          "speaker": "Claire",
+          "text": "Everything I do is like a landmine waiting to be stepped on. One wrong move, one moment of slowness, one sigh they overhear…",
+          "expression": "bitter",
+          "expressionEmoji": "😠"
         },
         {
           "id": 7,
-          "speaker": "Kit (Wizard)",
-          "text": "What brings you here on this fine evening? You look like you've walked through an entire storm.",
-          "expression": "neutral",
-          "expressionEmoji": "😐",
-          "expressionImage": "sprites/kit/neutral.png"
+          "speaker": "Claire",
+          "text": "And if I dare to rest? If I close my eyes for just a moment? Somehow it irritates them that I'm not like the senior maids.",
+          "expression": "frustrated",
+          "expressionEmoji": "😤"
         },
         {
           "id": 8,
-          "speaker": "Claire",
-          "text": "Sorry... It's been a long day. A long week. Maybe a long life.",
-          "expression": "tired",
-          "expressionEmoji": "😩",
-          "expressionImage": "sprites/claire/tired.png"
+          "speaker": "Stage",
+          "text": "[She sits on the edge of her bed and examines her hands—the skin dry, cracked, bleeding in thin lines where the work has worn them raw.]"
         },
         {
           "id": 9,
           "speaker": "Claire",
-          "text": "I work at a rich household nearby. They’re… demanding. Everything has to be spotless. Timed. Perfect.",
-          "expression": "shy",
-          "expressionEmoji": "😳",
-          "expressionImage": "sprites/claire/shy.png"
+          "text": "My hands… I don't even know if these cuts are healing anymore.",
+          "expression": "resigned",
+          "expressionEmoji": "😐"
         },
         {
           "id": 10,
-          "speaker": "Claire",
-          "text": "And on my off day, I just wanted somewhere new. Somewhere quiet. Somewhere the world can't find me for a while.",
-          "expression": "relieved",
-          "expressionEmoji": "😌",
-          "expressionImage": "sprites/claire/relieved.png"
+          "speaker": "Narrator",
+          "text": "On her table lies what Chef Koon gave her: a small antiseptic patch, gentle and clean. Beside it—a small cup of honey mixed with chopped garlic. Strong medicine. Poor medicine. But medicine nonetheless."
         },
         {
           "id": 11,
-          "speaker": "Kit (Wizard)",
-          "text": "Then you've found the right corner of the world. What can I brew to help you forget your troubles?",
-          "expression": "gentle",
-          "expressionEmoji": "😌",
-          "expressionImage": "sprites/kit/gentle.png"
+          "speaker": "Claire",
+          "text": "Chef Koon was kind today. He handed me these bandages and… this.",
+          "expression": "grateful",
+          "expressionEmoji": "🥹"
         },
         {
           "id": 12,
           "speaker": "Claire",
-          "text": "Just… coffee. Something warm. Something simple.",
-          "expression": "grateful",
-          "expressionEmoji": "🥹",
-          "expressionImage": "sprites/claire/grateful.png"
+          "text": "Garlic. Who bandages wounds with garlic? But he says it helps.",
+          "expression": "thoughtful",
+          "expressionEmoji": "🤔"
         },
         {
           "id": 13,
           "speaker": "Stage",
-          "text": "[Kit begins brewing—gentle, steady movements, like a small ritual written in steam and warmth.]"
+          "text": "[She looks at her two hands—both equally damaged, both needing care. She has only one patch.]"
         },
         {
           "id": 14,
-          "speaker": "Kit (Wizard)",
-          "text": "Here you go—one house blend. Let it warm more than just your hands.",
-          "expression": "warm",
-          "expressionEmoji": "🤗",
-          "expressionImage": "sprites/kit/warm.png"
-        },
-        {
-          "id": 15,
           "speaker": "Claire",
-          "text": "Thank you. Um… how much is it?",
-          "expression": "grateful",
-          "expressionEmoji": "🥹",
-          "expressionImage": "sprites/claire/grateful.png"
-        },
-        {
-          "id": 16,
-          "speaker": "Kit (Wizard)",
-          "text": "that'll be a button, miss. but for today, its on the house",
-          "expression": "neutral",
-          "expressionEmoji": "😐",
-          "expressionImage": "sprites/kit/neutral.png"
-        },
-        {
-          "id": 17,
-          "speaker": "Claire",
-          "text": "A… button? That’s… oddly adorable.",
-          "expression": "curious",
-          "expressionEmoji": "🤔",
-          "expressionImage": "sprites/claire/curious.png"
-        },
-        {
-          "id": 18,
-          "speaker": "Kit (Wizard)",
-          "text": "Think of it as a tradition here. One small token, one small wish.",
-          "expression": "warm",
-          "expressionEmoji": "🤗",
-          "expressionImage": "sprites/kit/warm.png"
+          "text": "Now… which one first?",
+          "expression": "uncertain",
+          "expressionEmoji": "🤷"
         }
       ],
       "choices": [
         {
-          "id": "EP1-CHOICE-1",
-          "prompt": "Claire hesitates, holding the warm cup. What should Kit say next?",
+          "id": "EP1-HAND-CHOICE",
+          "prompt": "Which hand should Claire treat first?",
           "options": [
             {
-              "text": "“If you’d like… you can tell me what’s been weighing on you.”",
+              "text": "Treat the left hand with the gentle patch (thinking strategically)",
               "next": {
                 "chapter": 1,
                 "episode": 1.1
               }
             },
             {
-              "text": "“You don’t have to talk. Just rest. The world can wait.”",
+              "text": "Treat the right hand with the gentle patch (healing where it's needed most)",
               "next": {
                 "chapter": 1,
                 "episode": 1.2
-              }
-            },
-            {
-              "text": "“Have you ever visited a place like this before?”",
-              "next": {
-                "chapter": 1,
-                "episode": 1.3
               }
             }
           ]
         }
       ],
-      "cafeOrders": [
-        {
-          "orderId": "EP1-001",
-          "customer": "Claire",
-          "items": [
-            {
-              "name": "House Coffee",
-              "type": "Drip",
-              "size": "Regular",
-              "sugar": 0,
-              "milk": "None"
-            }
-          ],
-          "servedBy": "Kit (Wizard)",
-          "notes": "Claire is emotionally vulnerable; first-time customer."
-        }
-      ],
+      "cafeOrders": [],
       "sceneTransition": {
-        "next": {
-          "chapter": 1,
-          "episode": 2
-        },
         "effect": "fade",
-        "music": "cafe_theme",
-        "delayMs": 1200
-      }
+        "delayMs": 800
+      },
+      "time": "03:00"
     }
   }
 }

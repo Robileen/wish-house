@@ -14,7 +14,7 @@ const CHAPTERS = {
     location: "The Wish House",
     synopsis: "In a quiet corner of the city stands the Wish House, a small cafe whispered about in rumors \u2014 said to grant the wishes of anyone who walks through its doors. Most dismiss it as a silly urban legend. But those who visit discover that the rumors are true\u2026 just not in the way they expect.",
     episodes: [
-      { episode: 1, title: "That\u2019ll Be 1 Button.", shiftId: null, type: "Visual Novel", pov: ["wizard"], scene: "Story will be focused on a NPC, who visited the wish house and met the magician who served her coffee. This is the introduction of this entire game VN." },
+      { episode: 1, title: "The Weight of Small Hours", shiftId: null, type: "Visual Novel", pov: ["wizard"], scene: "Claire, exhausted from her work at the estate, tends to her wounded hands at 3 AM and wanders the empty streets until she finds the Wish House café still open." },
       { episode: 2, title: "Help Wanted, No Experience Required?", shiftId: null, type: "Visual Novel", pov: ["barista"], scene: "Barista is heading home from school, he stumbles upon job ad poster." },
       { episode: 3, title: "Operation MDI", shiftId: null, type: "Visual Novel", pov: ["wizard", "barista"], scene: "Wizard & barista are working together to make the first Wish House menu." },
       { episode: 4, title: "Trial, Error, and Too Much Sugar", shiftId: 1, type: "Visual Novel & Game", pov: ["wizard", "barista", "gameplay"], scene: "Gameplay." },

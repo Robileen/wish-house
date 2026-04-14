@@ -208,6 +208,45 @@ class WishHouseEngine {
     this.startBlock(String(this.currentEpisode));
   }
 
+  // ── Time-of-Day Theme ──
+
+  /**
+   * Determine the time-of-day theme from a "HH:MM" time string.
+   * Returns one of: "night", "sunrise", "day", "sunset", or null if no time.
+   *
+   * Ranges (per design):
+   *   night   = 7:00 PM (19:00) – 5:00 AM (04:59)
+   *   sunrise = 5:00 AM (05:00) – 7:00 AM (06:59)
+   *   day     = 7:00 AM (07:00) – 5:00 PM (16:59)
+   *   sunset  = 5:00 PM (17:00) – 7:00 PM (18:59)
+   */
+  getTimeTheme(timeStr) {
+    if (!timeStr) return null;
+    const [h, m] = timeStr.split(":").map(Number);
+    if (isNaN(h)) return null;
+    const mins = h * 60 + (m || 0);
+
+    if (mins >= 1140 || mins < 300) return "night";   // 19:00–04:59
+    if (mins >= 300 && mins < 420)  return "sunrise";  // 05:00–06:59
+    if (mins >= 420 && mins < 1020) return "day";      // 07:00–16:59
+    return "sunset";                                    // 17:00–18:59
+  }
+
+  /**
+   * Apply the time-of-day theme class to the scene element.
+   * Removes any previous theme class first.
+   */
+  applyTimeTheme(block) {
+    const themes = ["scene-night", "scene-sunrise", "scene-day", "scene-sunset"];
+    themes.forEach(cls => this.scene.classList.remove(cls));
+
+    const theme = this.getTimeTheme(block?.time);
+    if (theme) {
+      this.scene.classList.add(`scene-${theme}`);
+      console.log(`[Engine] Time theme: ${theme} (time=${block.time})`);
+    }
+  }
+
   startBlock(blockKey) {
     if (!this.episodeData) {
       console.error("[Engine] No episode data loaded.");
@@ -224,6 +263,7 @@ class WishHouseEngine {
     this.currentLineIdx = 0;
     this.choicePanel.classList.remove("visible");
     this.dialogueBox.style.opacity = "1";
+    this.applyTimeTheme(block);
     this.displayNextLine();
   }
 
