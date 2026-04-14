@@ -173,6 +173,12 @@ class WishHouseEngine {
     // This prevents characters from appearing on screen before they enter the story.
     this.activeCharacters = {};
 
+    // Set initial off-screen positions for character slide-in animation
+    this.charLeft.style.opacity = "0";
+    this.charLeft.style.transform = "translateX(-50px)";
+    this.charRight.style.opacity = "0";
+    this.charRight.style.transform = "translateX(50px)";
+
     // Show "Skip to Choice" buttons if episode was already completed and has choices
     const mainBlock = this.episodeData.episodes[String(episode)];
     const hasChoices = mainBlock?.choices?.length > 0;
@@ -341,20 +347,24 @@ class WishHouseEngine {
       if (data.side === "right") rightChar = name;
     }
 
-    // Left character
+    // Left character (slide in from left)
     if (leftChar) {
       this.charLeft.innerHTML = this.createCharacterPlaceholder(leftChar, activeSpeaker);
       this.charLeft.style.opacity = "1";
+      this.charLeft.style.transform = "translateX(0)";
     } else {
       this.charLeft.style.opacity = "0";
+      this.charLeft.style.transform = "translateX(-50px)";
     }
 
-    // Right character
+    // Right character (slide in from right)
     if (rightChar) {
       this.charRight.innerHTML = this.createCharacterPlaceholder(rightChar, activeSpeaker);
       this.charRight.style.opacity = "1";
+      this.charRight.style.transform = "translateX(0)";
     } else {
       this.charRight.style.opacity = "0";
+      this.charRight.style.transform = "translateX(50px)";
     }
   }
 
