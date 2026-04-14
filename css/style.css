@@ -546,6 +546,96 @@ body {
     box-shadow: 0 6px 20px rgba(196,139,159,0.6);
 }
 
+/* ---- Time-of-Day Scene Themes ---- */
+
+/* Night (7 PM – 5 AM): deep dark complementary to café warmth */
+#scene.scene-night {
+    background: linear-gradient(180deg, #0B0E1A 0%, #1A1B3A 40%, #2C1F3D 70%, #3A2545 100%);
+}
+
+#scene.scene-night #dialogue-box {
+    background: linear-gradient(180deg, rgba(26, 27, 58, 0.93) 0%, rgba(44, 31, 61, 0.96) 100%);
+    border-top-color: var(--gold);
+}
+
+#scene.scene-night #dialogue-text {
+    color: #E8DDD0;
+}
+
+#scene.scene-night #speaker-name {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+#scene.scene-night #advance-indicator {
+    color: #B8A89A;
+}
+
+/* Night narrator mode keeps its own styling */
+#scene.scene-night #dialogue-box.narrator-mode {
+    background: linear-gradient(180deg, rgba(11, 14, 26, 0.94) 0%, rgba(11, 14, 26, 0.97) 100%);
+    border-top-color: var(--gold);
+}
+
+#scene.scene-night #dialogue-box.narrator-mode #dialogue-text {
+    color: #D4C8B8;
+}
+
+/* Night character placeholders: subtle glow */
+#scene.scene-night .character-placeholder {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 20px rgba(212, 168, 67, 0.08);
+}
+
+/* Night choice buttons */
+#scene.scene-night #choice-panel .choice-btn {
+    background: linear-gradient(135deg, rgba(44, 31, 61, 0.9), rgba(26, 27, 58, 0.95));
+    color: #E8DDD0;
+    border-color: var(--gold);
+}
+
+#scene.scene-night #choice-panel .choice-btn:hover {
+    background: linear-gradient(135deg, rgba(58, 37, 69, 0.95), rgba(44, 31, 61, 0.98));
+    border-color: #F0D080;
+}
+
+/* Sunrise (5 AM – 7 AM): gentle warm awakening gradient */
+#scene.scene-sunrise {
+    background: linear-gradient(180deg, #A7C7E7 0%, #F7D9C4 40%, #FADCAA 70%, #FFF0D4 100%);
+}
+
+#scene.scene-sunrise #dialogue-box {
+    background: linear-gradient(180deg, rgba(247, 217, 196, 0.94) 0%, rgba(250, 220, 170, 0.96) 100%);
+    border-top-color: #E8B87A;
+}
+
+#scene.scene-sunrise #dialogue-text {
+    color: #4A3728;
+}
+
+/* Day (7 AM – 5 PM): default theme — no override needed, uses base styles */
+
+/* Sunset (5 PM – 7 PM): lavender, pink, warm yellow gradient */
+#scene.scene-sunset {
+    background: linear-gradient(180deg, #C8A2D4 0%, #E8A0B0 30%, #F4B8C1 55%, #F5D8A0 80%, #F7E4B0 100%);
+}
+
+#scene.scene-sunset #dialogue-box {
+    background: linear-gradient(180deg, rgba(232, 160, 176, 0.93) 0%, rgba(245, 216, 160, 0.95) 100%);
+    border-top-color: var(--dusty-rose);
+}
+
+#scene.scene-sunset #dialogue-text {
+    color: #3E2A3A;
+}
+
+#scene.scene-sunset #dialogue-box.narrator-mode {
+    background: linear-gradient(180deg, rgba(80, 50, 70, 0.92) 0%, rgba(80, 50, 70, 0.95) 100%);
+    border-top-color: #E8A0B0;
+}
+
+#scene.scene-sunset #dialogue-box.narrator-mode #dialogue-text {
+    color: #F7E4D8;
+}
+
 /* ---- Responsive ---- */
 @media (max-width: 640px) {
     #game-container {
