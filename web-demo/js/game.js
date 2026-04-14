@@ -169,17 +169,9 @@ class WishHouseEngine {
       return false;
     }
 
-    // Scan all dialogue lines to find which characters appear
+    // Characters are revealed progressively as they speak (not pre-scanned).
+    // This prevents characters from appearing on screen before they enter the story.
     this.activeCharacters = {};
-    for (const block of Object.values(this.episodeData.episodes)) {
-      if (!block.dialogueLines) continue;
-      for (const line of block.dialogueLines) {
-        const charData = CHARACTERS[line.speaker];
-        if (charData && charData.side) {
-          this.activeCharacters[line.speaker] = charData;
-        }
-      }
-    }
 
     // Show "Skip to Choice" buttons if episode was already completed and has choices
     const mainBlock = this.episodeData.episodes[String(episode)];
@@ -292,6 +284,12 @@ class WishHouseEngine {
 
     const line = lines[this.currentLineIdx];
     this.currentLineIdx++;
+
+    // Reveal character on screen when they first speak
+    const charData = CHARACTERS[line.speaker];
+    if (charData && charData.side && !this.activeCharacters[line.speaker]) {
+      this.activeCharacters[line.speaker] = charData;
+    }
 
     // Update expression state for this character
     if (line.expression) {
@@ -619,12 +617,16 @@ class WishHouseEngine {
     this.currentBlock = block;
     this.dialogueBox.style.opacity = "1";
 
-    // Set up character expressions from the last dialogue lines before the choice
-    // so the characters show their final expressions
+    // Set up character expressions and reveal all speakers from the main block
+    // so the characters show their final expressions (skip-to-choice = replay)
     if (block.dialogueLines) {
       for (const line of block.dialogueLines) {
+        const cd = CHARACTERS[line.speaker];
+        if (cd && cd.side && !this.activeCharacters[line.speaker]) {
+          this.activeCharacters[line.speaker] = cd;
+        }
         if (line.expression) {
-          const charId = CHARACTERS[line.speaker]?.id;
+          const charId = cd?.id;
           const catalogEntry = charId && EXPRESSIONS[charId]?.[line.expression];
           this.characterExpressions[line.speaker] = {
             expression:      line.expression,
