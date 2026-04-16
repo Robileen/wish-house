@@ -51,7 +51,7 @@ class WishHouseEngine {
     this.currentLineIdx  = 0;
     this.isTyping        = false;
     this.skipRequested   = false;
-    this.typewriterSpeed = 21; // ms per character (30% faster)
+    this.typewriterSpeed = 6; // ms per character (80% faster)
     this._typewriterId   = 0;  // incremented each typewriter call to cancel stale ones
     this.choiceHistory   = [];
     this.activeCharacters = {};  // Track which characters appear in current episode
