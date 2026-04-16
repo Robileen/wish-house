@@ -42,6 +42,7 @@ class WishHouseEngine {
     this.skipToChoiceBtn = document.getElementById("skip-to-choice-btn");
     this.skipToChoiceBtnTitle = document.getElementById("skip-to-choice-btn-title");
     this.backToJournalTitleBtn = document.getElementById("back-to-journal-title-btn");
+    this.dishCard        = document.getElementById("dish-card");
 
     // State
     this.episodeData     = null;   // Currently loaded episode data
@@ -51,7 +52,7 @@ class WishHouseEngine {
     this.currentLineIdx  = 0;
     this.isTyping        = false;
     this.skipRequested   = false;
-    this.typewriterSpeed = 30; // ms per character
+    this.typewriterSpeed = 7; // ms per character
     this._typewriterId   = 0;  // incremented each typewriter call to cancel stale ones
     this.choiceHistory   = [];
     this.activeCharacters = {};  // Track which characters appear in current episode
@@ -169,17 +170,15 @@ class WishHouseEngine {
       return false;
     }
 
-    // Scan all dialogue lines to find which characters appear
+    // Characters are revealed progressively as they speak (not pre-scanned).
+    // This prevents characters from appearing on screen before they enter the story.
     this.activeCharacters = {};
-    for (const block of Object.values(this.episodeData.episodes)) {
-      if (!block.dialogueLines) continue;
-      for (const line of block.dialogueLines) {
-        const charData = CHARACTERS[line.speaker];
-        if (charData && charData.side) {
-          this.activeCharacters[line.speaker] = charData;
-        }
-      }
-    }
+
+    // Set initial off-screen positions for character slide-in animation
+    this.charLeft.style.opacity = "0";
+    this.charLeft.style.transform = "translateX(-50px)";
+    this.charRight.style.opacity = "0";
+    this.charRight.style.transform = "translateX(50px)";
 
     // Show "Skip to Choice" buttons if episode was already completed and has choices
     const mainBlock = this.episodeData.episodes[String(episode)];
@@ -208,6 +207,45 @@ class WishHouseEngine {
     this.startBlock(String(this.currentEpisode));
   }
 
+  // ── Time-of-Day Theme ──
+
+  /**
+   * Determine the time-of-day theme from a "HH:MM" time string.
+   * Returns one of: "night", "sunrise", "day", "sunset", or null if no time.
+   *
+   * Ranges (per design):
+   *   night   = 7:00 PM (19:00) – 5:00 AM (04:59)
+   *   sunrise = 5:00 AM (05:00) – 7:00 AM (06:59)
+   *   day     = 7:00 AM (07:00) – 5:00 PM (16:59)
+   *   sunset  = 5:00 PM (17:00) – 7:00 PM (18:59)
+   */
+  getTimeTheme(timeStr) {
+    if (!timeStr) return null;
+    const [h, m] = timeStr.split(":").map(Number);
+    if (isNaN(h)) return null;
+    const mins = h * 60 + (m || 0);
+
+    if (mins >= 1140 || mins < 300) return "night";   // 19:00–04:59
+    if (mins >= 300 && mins < 420)  return "sunrise";  // 05:00–06:59
+    if (mins >= 420 && mins < 1020) return "day";      // 07:00–16:59
+    return "sunset";                                    // 17:00–18:59
+  }
+
+  /**
+   * Apply the time-of-day theme class to the scene element.
+   * Removes any previous theme class first.
+   */
+  applyTimeTheme(block) {
+    const themes = ["scene-night", "scene-sunrise", "scene-day", "scene-sunset"];
+    themes.forEach(cls => this.scene.classList.remove(cls));
+
+    const theme = this.getTimeTheme(block?.time);
+    if (theme) {
+      this.scene.classList.add(`scene-${theme}`);
+      console.log(`[Engine] Time theme: ${theme} (time=${block.time})`);
+    }
+  }
+
   startBlock(blockKey) {
     if (!this.episodeData) {
       console.error("[Engine] No episode data loaded.");
@@ -223,7 +261,9 @@ class WishHouseEngine {
     this.currentBlock = block;
     this.currentLineIdx = 0;
     this.choicePanel.classList.remove("visible");
+    this.hideDishCard();
     this.dialogueBox.style.opacity = "1";
+    this.applyTimeTheme(block);
     this.displayNextLine();
   }
 
@@ -253,6 +293,12 @@ class WishHouseEngine {
     const line = lines[this.currentLineIdx];
     this.currentLineIdx++;
 
+    // Reveal character on screen when they first speak
+    const charData = CHARACTERS[line.speaker];
+    if (charData && charData.side && !this.activeCharacters[line.speaker]) {
+      this.activeCharacters[line.speaker] = charData;
+    }
+
     // Update expression state for this character
     if (line.expression) {
       const charId = CHARACTERS[line.speaker]?.id;
@@ -266,6 +312,15 @@ class WishHouseEngine {
 
     this.updateSpeaker(line.speaker);
     this.updateCharacters(line.speaker);
+
+    // Dish card: show or hide based on dialogue fields
+    if (line.dish) {
+      this.showDishCard(line.dish);
+    }
+    if (line.hideDish) {
+      this.hideDishCard();
+    }
+
     this.typewriterEffect(line.text);
   }
 
@@ -303,20 +358,24 @@ class WishHouseEngine {
       if (data.side === "right") rightChar = name;
     }
 
-    // Left character
+    // Left character (slide in from left)
     if (leftChar) {
       this.charLeft.innerHTML = this.createCharacterPlaceholder(leftChar, activeSpeaker);
       this.charLeft.style.opacity = "1";
+      this.charLeft.style.transform = "translateX(0)";
     } else {
       this.charLeft.style.opacity = "0";
+      this.charLeft.style.transform = "translateX(-50px)";
     }
 
-    // Right character
+    // Right character (slide in from right)
     if (rightChar) {
       this.charRight.innerHTML = this.createCharacterPlaceholder(rightChar, activeSpeaker);
       this.charRight.style.opacity = "1";
+      this.charRight.style.transform = "translateX(0)";
     } else {
       this.charRight.style.opacity = "0";
+      this.charRight.style.transform = "translateX(50px)";
     }
   }
 
@@ -372,6 +431,37 @@ class WishHouseEngine {
     img.onload = () => { this.spriteCache[path] = true; };
     img.onerror = () => { this.spriteCache[path] = false; };
     img.src = path;
+  }
+
+  // ── Dish Card (served item popup) ──
+
+  showDishCard(dish) {
+    // Make container visible if not already
+    this.dishCard.classList.add("visible");
+
+    // Create a new dish-item element
+    const item = document.createElement("div");
+    item.className = "dish-item";
+    item.innerHTML = `
+      <span class="dish-emoji">${dish.emoji || "☕"}</span>
+      <span class="dish-name">${dish.name || ""}</span>
+    `;
+    this.dishCard.appendChild(item);
+
+    // Force reflow then animate in
+    void item.offsetWidth;
+    item.classList.add("visible");
+  }
+
+  hideDishCard() {
+    // Fade out all dish items, then clear container
+    const items = this.dishCard.querySelectorAll(".dish-item");
+    items.forEach(item => item.classList.remove("visible"));
+    // After transition completes, hide container and clear
+    setTimeout(() => {
+      this.dishCard.classList.remove("visible");
+      this.dishCard.innerHTML = "";
+    }, 850);
   }
 
   // ── Typewriter Effect ──
@@ -578,13 +668,18 @@ class WishHouseEngine {
 
     this.currentBlock = block;
     this.dialogueBox.style.opacity = "1";
+    this.applyTimeTheme(block);
 
-    // Set up character expressions from the last dialogue lines before the choice
-    // so the characters show their final expressions
+    // Set up character expressions and reveal all speakers from the main block
+    // so the characters show their final expressions (skip-to-choice = replay)
     if (block.dialogueLines) {
       for (const line of block.dialogueLines) {
+        const cd = CHARACTERS[line.speaker];
+        if (cd && cd.side && !this.activeCharacters[line.speaker]) {
+          this.activeCharacters[line.speaker] = cd;
+        }
         if (line.expression) {
-          const charId = CHARACTERS[line.speaker]?.id;
+          const charId = cd?.id;
           const catalogEntry = charId && EXPRESSIONS[charId]?.[line.expression];
           this.characterExpressions[line.speaker] = {
             expression:      line.expression,

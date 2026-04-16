@@ -3,93 +3,242 @@
   "episodes": {
     "1.1": {
       "episode": 1.1,
+      "title": "Left Hand—Strategy",
+      "setting": "Claire's room, 3:15 AM - 3:45 AM",
       "dialogueLines": [
         {
           "id": 1,
-          "speaker": "Kit (Wizard)",
-          "text": "If you'd like… you can tell me what’s been weighing on you.",
-          "expression": "neutral",
-          "expressionEmoji": "😐",
-          "expressionImage": "sprites/kit/neutral.png"
+          "speaker": "Claire",
+          "text": "Left hand first. Surface area-wise, it makes sense to patch here and let it heal properly.",
+          "expression": "analytical",
+          "expressionEmoji": "🧠"
         },
         {
           "id": 2,
           "speaker": "Claire",
-          "text": "I… don’t usually talk about it. People don’t really listen.",
-          "expression": "shy",
-          "expressionEmoji": "😳",
-          "expressionImage": "sprites/claire/shy.png"
+          "text": "I use my right hand for everything. The patch will just fall off from too much movement. At least this way, one hand gets real rest.",
+          "expression": "determined",
+          "expressionEmoji": "💪"
         },
         {
           "id": 3,
-          "speaker": "Claire",
-          "text": "But today… I feel like if I don’t let it out, I might just disappear.",
-          "expression": "neutral",
-          "expressionEmoji": "😐",
-          "expressionImage": "sprites/claire/neutral.png"
+          "speaker": "Stage",
+          "text": "[She carefully applies the antiseptic patch to her left hand. It's gentle, clean—a small moment of care. Then she reaches for the honey and garlic mixture.]"
         },
         {
           "id": 4,
-          "speaker": "Stage",
-          "text": "[She grips the cup gently, drawing warmth from it.]"
+          "speaker": "Claire",
+          "text": "And the right hand… gets this.",
+          "expression": "steeled",
+          "expressionEmoji": "😐"
         },
         {
           "id": 5,
-          "speaker": "Claire",
-          "text": "The household I work for… they're strict. Cruel, sometimes. I’m one mistake away from being yelled at—or replaced.",
-          "expression": "sad",
-          "expressionEmoji": "😢",
-          "expressionImage": "sprites/claire/sad.png"
+          "speaker": "Stage",
+          "text": "[She dips her fingers into the mixture. The sting is immediate—sharp, biting, but oddly soothing beneath the pain. She hisses softly.]"
         },
         {
           "id": 6,
           "speaker": "Claire",
-          "text": "I keep my head down. Smile when spoken to. Hide when needed. It’s suffocating.",
-          "expression": "tired",
-          "expressionEmoji": "😩",
-          "expressionImage": "sprites/claire/tired.png"
+          "text": "Hnn—ngh. Okay. That's… that's the medicine working.",
+          "expression": "grimacing",
+          "expressionEmoji": "😣"
         },
         {
           "id": 7,
-          "speaker": "Kit (Wizard)",
-          "text": "No one should have to live under fear.",
-          "expression": "concerned",
-          "expressionEmoji": "😟",
-          "expressionImage": "sprites/kit/concerned.png"
+          "speaker": "Claire",
+          "text": "One hand heals gently. The other survives. I guess that's how it has to be.",
+          "expression": "accepting",
+          "expressionEmoji": "😔"
         },
         {
           "id": 8,
-          "speaker": "Claire",
-          "text": "I know. But quitting isn't an option. I need the money… badly.",
-          "expression": "shy",
-          "expressionEmoji": "😳",
-          "expressionImage": "sprites/claire/shy.png"
+          "speaker": "Narrator",
+          "text": "The applications done, Claire sits at the edge of her narrow bed. The room is small. The window dark. Outside, the world belongs to people who sleep."
         },
         {
           "id": 9,
           "speaker": "Claire",
-          "text": "This café… it feels different. Quiet. Safe.",
-          "expression": "grateful",
-          "expressionEmoji": "🥹",
-          "expressionImage": "sprites/claire/grateful.png"
+          "text": "I should rest now. Try to sleep before dawn. Before the day starts again.",
+          "expression": "weary",
+          "expressionEmoji": "😩"
         },
         {
           "id": 10,
+          "speaker": "Stage",
+          "text": "[She lies down. The pillow is thin. The blanket has known better days. She closes her eyes.]"
+        },
+        {
+          "id": 11,
+          "speaker": "Narrator",
+          "text": "But sleep doesn't come. Minutes pass. Then an hour. The darkness doesn't feel like rest—it feels like drowning."
+        },
+        {
+          "id": 12,
+          "speaker": "Claire",
+          "text": "I can't…",
+          "expression": "desperate",
+          "expressionEmoji": "😰"
+        },
+        {
+          "id": 13,
+          "speaker": "Claire",
+          "text": "I don't know what will happen to me if I stay here another minute.",
+          "expression": "panicked",
+          "expressionEmoji": "😨"
+        },
+        {
+          "id": 14,
+          "speaker": "Stage",
+          "text": "[She sits up. Her hands throb—one with gentle ache, one with the sharp reminder of survival. Before she can think better of it, she's on her feet.]"
+        },
+        {
+          "id": 15,
+          "speaker": "Claire",
+          "text": "I need to go outside. Now.",
+          "expression": "resolute",
+          "expressionEmoji": "😠"
+        },
+        {
+          "id": 16,
+          "speaker": "Narrator",
+          "text": "The streets at 3:45 AM are nearly empty. Lamplight pools on wet pavement—rain from earlier in the night. Claire walks without direction, just away, away from the house that has become her cage."
+        },
+        {
+          "id": 17,
+          "speaker": "Narrator",
+          "text": "At 4:10 AM, she sees it: a shophouse, windows softly glowing. Inside, through the glass, a man—sleeves rolled up—kneads tarts on the counter with practiced hands. And above the door: 'SUPPER WEEKEND til 5:00 AM'."
+        },
+        {
+          "id": 18,
+          "speaker": "Claire",
+          "text": "It's still open… and it looks…",
+          "expression": "curious",
+          "expressionEmoji": "🤔"
+        },
+        {
+          "id": 19,
+          "speaker": "Narrator",
+          "text": "The café appears warm. Unthreatening. Safe. The man inside doesn't notice her yet."
+        },
+        {
+          "id": 20,
+          "speaker": "Claire",
+          "text": "It's warm. And I… I need warmth.",
+          "expression": "hopeful",
+          "expressionEmoji": "🥺"
+        },
+        {
+          "id": 21,
+          "speaker": "Stage",
+          "text": "[With 35 minutes until closing, she takes a breath and walks in. The door chime is soft. The man looks up—and his expression shifts to something kind.]"
+        },
+        {
+          "id": 22,
           "speaker": "Kit (Wizard)",
-          "text": "You’re welcome here anytime. For rest, warmth… or just silence.",
+          "text": "Welcome. Come in, come in.",
           "expression": "warm",
-          "expressionEmoji": "🤗",
-          "expressionImage": "sprites/kit/warm.png"
+          "expressionEmoji": "🤗"
+        },
+        {
+          "id": 23,
+          "speaker": "Narrator",
+          "text": "Kit's eyes catch the state of her—wet clothes, trembling, cracked hands. His gaze lingers on the bandages and the stains of garlic still visible on her right hand."
+        },
+        {
+          "id": 24,
+          "speaker": "Kit (Wizard)",
+          "text": "What brings you here at this hour? And what's happened to your hands?",
+          "expression": "concerned",
+          "expressionEmoji": "😟"
+        },
+        {
+          "id": 25,
+          "speaker": "Claire",
+          "text": "I… I saw the light. I needed somewhere to go.",
+          "expression": "vulnerable",
+          "expressionEmoji": "🥹"
+        },
+        {
+          "id": 26,
+          "speaker": "Stage",
+          "text": "[Kit listens quietly. Without asking more, he places a warm drink in front of her—not coffee, something richer, deeper. Then he disappears to the back.]",
+          "dish": { "emoji": "☕", "name": "Hot Chocolate" }
+        },
+        {
+          "id": 27,
+          "speaker": "Narrator",
+          "text": "He returns with ten small, perfectly formed tarts—each one golden, fragrant. And beside them: a bottle of iodine solution, the kind that truly heals.",
+          "dish": { "emoji": "🥧", "name": "Golden Tarts" }
+        },
+        {
+          "id": 28,
+          "speaker": "Kit (Wizard)",
+          "text": "This café is called the Wish House. You're welcome here. And these—",
+          "expression": "gentle",
+          "expressionEmoji": "😌"
+        },
+        {
+          "id": 29,
+          "speaker": "Kit (Wizard)",
+          "text": "—are for someone who's been kind to their own hands. Garlic is strong. But the right healer knows you deserve better care now.",
+          "expression": "knowing",
+          "expressionEmoji": "🧙"
+        },
+        {
+          "id": 30,
+          "speaker": "Claire",
+          "text": "I don't… I don't understand.",
+          "expression": "amazed",
+          "expressionEmoji": "😲",
+          "hideDish": true
+        },
+        {
+          "id": 31,
+          "speaker": "Kit (Wizard)",
+          "text": "You don't have to. Just rest. The world can wait.",
+          "expression": "warm",
+          "expressionEmoji": "🤗"
         }
       ],
       "choices": [],
-      "cafeOrders": [],
+      "cafeOrders": [
+        {
+          "orderId": "EP1-001",
+          "customer": "Claire",
+          "items": [
+            {
+              "name": "House Special",
+              "type": "Hot Drink",
+              "notes": "Rich, deep, restorative"
+            },
+            {
+              "name": "Tarts",
+              "quantity": 10,
+              "notes": "Perfectly golden, fragrant"
+            }
+          ],
+          "servedBy": "Kit (Wizard)",
+          "comments": "Kit provides healing care—physical and emotional."
+        }
+      ],
+      "items": [
+        {
+          "type": "betadine_solution",
+          "description": "Iodine solution for proper wound healing",
+          "given": true
+        }
+      ],
       "sceneTransition": {
         "next": {
           "chapter": 1,
           "episode": 2
-        }
-      }
+        },
+        "effect": "fade",
+        "music": "cafe_theme_opening",
+        "delayMs": 1200
+      },
+      "time": "03:15"
     }
   }
 }
