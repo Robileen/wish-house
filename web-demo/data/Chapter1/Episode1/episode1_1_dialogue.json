@@ -168,7 +168,8 @@
         {
           "id": 27,
           "speaker": "Narrator",
-          "text": "He returns with ten small, perfectly formed tarts—each one golden, fragrant. And beside them: a bottle of iodine solution, the kind that truly heals."
+          "text": "He returns with ten small, perfectly formed tarts—each one golden, fragrant. And beside them: a bottle of iodine solution, the kind that truly heals.",
+          "dish": { "emoji": "🥧", "name": "Golden Tarts" }
         },
         {
           "id": 28,

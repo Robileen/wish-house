@@ -168,7 +168,8 @@
         {
           "id": 27,
           "speaker": "Narrator",
-          "text": "When he returns, he brings ten small tarts—golden, perfect, still warm. And a bottle: iodine solution, the kind that truly heals deep wounds."
+          "text": "When he returns, he brings ten small tarts—golden, perfect, still warm. And a bottle: iodine solution, the kind that truly heals deep wounds.",
+          "dish": { "emoji": "🥧", "name": "Golden Tarts" }
         },
         {
           "id": 28,
