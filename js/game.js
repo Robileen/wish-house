@@ -436,17 +436,32 @@ class WishHouseEngine {
   // ── Dish Card (served item popup) ──
 
   showDishCard(dish) {
-    this.dishCard.innerHTML = `
+    // Make container visible if not already
+    this.dishCard.classList.add("visible");
+
+    // Create a new dish-item element
+    const item = document.createElement("div");
+    item.className = "dish-item";
+    item.innerHTML = `
       <span class="dish-emoji">${dish.emoji || "☕"}</span>
       <span class="dish-name">${dish.name || ""}</span>
     `;
-    // Force reflow so transition fires from the initial hidden state
-    void this.dishCard.offsetWidth;
-    this.dishCard.classList.add("visible");
+    this.dishCard.appendChild(item);
+
+    // Force reflow then animate in
+    void item.offsetWidth;
+    item.classList.add("visible");
   }
 
   hideDishCard() {
-    this.dishCard.classList.remove("visible");
+    // Fade out all dish items, then clear container
+    const items = this.dishCard.querySelectorAll(".dish-item");
+    items.forEach(item => item.classList.remove("visible"));
+    // After transition completes, hide container and clear
+    setTimeout(() => {
+      this.dishCard.classList.remove("visible");
+      this.dishCard.innerHTML = "";
+    }, 850);
   }
 
   // ── Typewriter Effect ──
