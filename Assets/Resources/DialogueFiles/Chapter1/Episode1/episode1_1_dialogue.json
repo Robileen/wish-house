@@ -162,7 +162,8 @@
         {
           "id": 26,
           "speaker": "Stage",
-          "text": "[Kit listens quietly. Without asking more, he places a warm drink in front of her—not coffee, something richer, deeper. Then he disappears to the back.]"
+          "text": "[Kit listens quietly. Without asking more, he places a warm drink in front of her—not coffee, something richer, deeper. Then he disappears to the back.]",
+          "dish": { "emoji": "☕", "name": "Hot Chocolate" }
         },
         {
           "id": 27,
@@ -188,7 +189,8 @@
           "speaker": "Claire",
           "text": "I don't… I don't understand.",
           "expression": "amazed",
-          "expressionEmoji": "😲"
+          "expressionEmoji": "😲",
+          "hideDish": true
         },
         {
           "id": 31,

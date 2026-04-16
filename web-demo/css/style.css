@@ -700,6 +700,120 @@ body {
     color: #F7E4D8;
 }
 
+/* ---- Dish Card (served item popup) ---- */
+#dish-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    width: 140px;
+    height: 160px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg,
+        rgba(255, 230, 240, 0.92),
+        rgba(230, 210, 255, 0.92),
+        rgba(210, 230, 255, 0.92));
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    box-shadow:
+        0 0 20px rgba(212, 168, 255, 0.4),
+        0 0 40px rgba(255, 200, 220, 0.2),
+        inset 0 0 15px rgba(255, 255, 255, 0.3);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    z-index: 15;
+    overflow: hidden;
+}
+
+#dish-card.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+#dish-card .dish-emoji {
+    font-size: 3rem;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.15));
+}
+
+#dish-card .dish-name {
+    font-family: 'Lora', serif;
+    font-size: 0.8rem;
+    color: #5A3E5E;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Sparkle particles via pseudo-elements */
+#dish-card::before,
+#dish-card::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+
+#dish-card::before {
+    background-image:
+        radial-gradient(2px 2px at 20px 25px, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(2px 2px at 80px 15px, rgba(255, 220, 180, 0.8), transparent),
+        radial-gradient(1.5px 1.5px at 110px 45px, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(2px 2px at 35px 130px, rgba(220, 200, 255, 0.8), transparent),
+        radial-gradient(1.5px 1.5px at 100px 120px, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(2px 2px at 60px 70px, rgba(255, 230, 200, 0.7), transparent);
+    background-size: 140px 160px;
+    animation: dish-sparkle1 2.5s ease-in-out infinite alternate;
+}
+
+#dish-card::after {
+    background-image:
+        radial-gradient(1.5px 1.5px at 50px 20px, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(2px 2px at 120px 80px, rgba(255, 200, 240, 0.7), transparent),
+        radial-gradient(1.5px 1.5px at 15px 90px, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(2px 2px at 90px 140px, rgba(220, 210, 255, 0.8), transparent);
+    background-size: 140px 160px;
+    animation: dish-sparkle2 3s ease-in-out infinite alternate;
+}
+
+@keyframes dish-sparkle1 {
+    0%   { opacity: 0.3; }
+    50%  { opacity: 0.8; }
+    100% { opacity: 0.4; }
+}
+
+@keyframes dish-sparkle2 {
+    0%   { opacity: 0.6; }
+    50%  { opacity: 0.2; }
+    100% { opacity: 0.7; }
+}
+
+/* Night-mode dish card variant */
+#scene.scene-night #dish-card {
+    background: linear-gradient(135deg,
+        rgba(80, 60, 120, 0.92),
+        rgba(60, 50, 100, 0.92),
+        rgba(100, 70, 130, 0.92));
+    border-color: rgba(212, 168, 67, 0.5);
+    box-shadow:
+        0 0 20px rgba(212, 168, 67, 0.3),
+        0 0 40px rgba(180, 140, 255, 0.15),
+        inset 0 0 15px rgba(212, 168, 67, 0.1);
+}
+
+#scene.scene-night #dish-card .dish-name {
+    color: #E8DDD0;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
 /* ---- Responsive ---- */
 @media (max-width: 640px) {
     #game-container {

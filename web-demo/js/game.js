@@ -42,6 +42,7 @@ class WishHouseEngine {
     this.skipToChoiceBtn = document.getElementById("skip-to-choice-btn");
     this.skipToChoiceBtnTitle = document.getElementById("skip-to-choice-btn-title");
     this.backToJournalTitleBtn = document.getElementById("back-to-journal-title-btn");
+    this.dishCard        = document.getElementById("dish-card");
 
     // State
     this.episodeData     = null;   // Currently loaded episode data
@@ -260,6 +261,7 @@ class WishHouseEngine {
     this.currentBlock = block;
     this.currentLineIdx = 0;
     this.choicePanel.classList.remove("visible");
+    this.hideDishCard();
     this.dialogueBox.style.opacity = "1";
     this.applyTimeTheme(block);
     this.displayNextLine();
@@ -310,6 +312,15 @@ class WishHouseEngine {
 
     this.updateSpeaker(line.speaker);
     this.updateCharacters(line.speaker);
+
+    // Dish card: show or hide based on dialogue fields
+    if (line.dish) {
+      this.showDishCard(line.dish);
+    }
+    if (line.hideDish) {
+      this.hideDishCard();
+    }
+
     this.typewriterEffect(line.text);
   }
 
@@ -420,6 +431,22 @@ class WishHouseEngine {
     img.onload = () => { this.spriteCache[path] = true; };
     img.onerror = () => { this.spriteCache[path] = false; };
     img.src = path;
+  }
+
+  // ── Dish Card (served item popup) ──
+
+  showDishCard(dish) {
+    this.dishCard.innerHTML = `
+      <span class="dish-emoji">${dish.emoji || "☕"}</span>
+      <span class="dish-name">${dish.name || ""}</span>
+    `;
+    // Force reflow so transition fires from the initial hidden state
+    void this.dishCard.offsetWidth;
+    this.dishCard.classList.add("visible");
+  }
+
+  hideDishCard() {
+    this.dishCard.classList.remove("visible");
   }
 
   // ── Typewriter Effect ──

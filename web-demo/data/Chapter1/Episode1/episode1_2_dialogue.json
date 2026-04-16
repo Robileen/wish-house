@@ -162,7 +162,8 @@
         {
           "id": 26,
           "speaker": "Stage",
-          "text": "[Kit nods as if this makes perfect sense. He sets down a warm drink—something deeper than coffee, richer, more restorative. Then he steps back to the kitchen.]"
+          "text": "[Kit nods as if this makes perfect sense. He sets down a warm drink—something deeper than coffee, richer, more restorative. Then he steps back to the kitchen.]",
+          "dish": { "emoji": "☕", "name": "Hot Chocolate" }
         },
         {
           "id": 27,
@@ -188,7 +189,8 @@
           "speaker": "Claire",
           "text": "How did you…?",
           "expression": "amazed",
-          "expressionEmoji": "😲"
+          "expressionEmoji": "😲",
+          "hideDish": true
         },
         {
           "id": 31,
