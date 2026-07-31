@@ -72,9 +72,15 @@ class JournalBook {
   loadProgress() {
     const saved = localStorage.getItem("wishhouse_journal");
     if (saved) {
-      const data = JSON.parse(saved);
-      if (data.buttons === undefined) data.buttons = 0;
-      return data;
+      try {
+        const data = JSON.parse(saved);
+        if (data && typeof data === "object" && Array.isArray(data.completedEpisodes)) {
+          if (data.buttons === undefined) data.buttons = 0;
+          return data;
+        }
+      } catch (e) {
+        console.warn("[Journal] Corrupted save data, resetting progress.", e);
+      }
     }
 
     // Default: Episode 1 unlocked, rest locked

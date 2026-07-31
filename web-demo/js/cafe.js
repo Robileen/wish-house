@@ -15,6 +15,13 @@
  *            journal.js  (window.journal for return flow)
  */
 
+// ── HTML Escape Utility ──
+function _escCafe(str) {
+  const el = document.createElement("span");
+  el.textContent = String(str);
+  return el.innerHTML;
+}
+
 class CafeEngine {
   constructor() {
     // DOM — overlays
@@ -605,10 +612,10 @@ class CafeEngine {
           const bubble = document.createElement("div");
           bubble.className = isNewSeating ? "table-order-bubble" : "table-order-bubble no-anim";
           bubble.innerHTML = pendingOrders
-            .map(r => `<span class="bubble-icon">${r.icon}</span>`)
+            .map(r => `<span class="bubble-icon">${_escCafe(r.icon)}</span>`)
             .join(" ");
           if (pendingOrders.length === 1) {
-            bubble.innerHTML += ` ${pendingOrders[0].name}`;
+            bubble.innerHTML += ` ${_escCafe(pendingOrders[0].name)}`;
           } else {
             bubble.innerHTML += ` <span class="bubble-count">${pendingOrders.length} orders</span>`;
           }
@@ -766,10 +773,10 @@ class CafeEngine {
 
       const customer = tableData.customers[customerIdx];
       card.innerHTML = `
-        <span class="order-pick-icon">${recipe ? recipe.icon : "\uD83C\uDF7D"}</span>
+        <span class="order-pick-icon">${recipe ? _escCafe(recipe.icon) : "\uD83C\uDF7D"}</span>
         <div class="order-pick-info">
-          <span class="order-pick-name">${recipe ? recipe.name : "Unknown"}</span>
-          <span class="order-pick-customer">${customer.avatar} ${order.customer}</span>
+          <span class="order-pick-name">${recipe ? _escCafe(recipe.name) : "Unknown"}</span>
+          <span class="order-pick-customer">${_escCafe(customer.avatar)} ${_escCafe(order.customer)}</span>
         </div>
       `;
 
@@ -1290,14 +1297,14 @@ class CafeEngine {
       const ingredientIcons = recipe.ingredients
         .map(ingId => {
           const ing = INGREDIENTS[ingId];
-          return ing ? `<span class="recipe-ingredient-icon"><span class="ri-icon">${ing.icon}</span><span class="ri-name">${ing.name}</span></span>` : "";
+          return ing ? `<span class="recipe-ingredient-icon"><span class="ri-icon">${_escCafe(ing.icon)}</span><span class="ri-name">${_escCafe(ing.name)}</span></span>` : "";
         })
         .join("");
 
       card.innerHTML = `
-        <div class="recipe-card-icon">${recipe.icon}</div>
-        <div class="recipe-card-name">${recipe.name}</div>
-        ${subcat ? `<div class="recipe-card-subcategory">${subcat}</div>` : ""}
+        <div class="recipe-card-icon">${_escCafe(recipe.icon)}</div>
+        <div class="recipe-card-name">${_escCafe(recipe.name)}</div>
+        ${subcat ? `<div class="recipe-card-subcategory">${_escCafe(subcat)}</div>` : ""}
         <div class="recipe-card-ingredients">${ingredientIcons}</div>
       `;
 
@@ -1331,8 +1338,8 @@ class CafeEngine {
         if (isCorrect) slotEl.classList.add("correct");
 
         slotEl.innerHTML = `<div class="slot-ingredient">
-          <span class="slot-icon">${ing ? ing.icon : "?"}</span>
-          <span class="slot-name">${ing ? ing.name : ""}</span>
+          <span class="slot-icon">${ing ? _escCafe(ing.icon) : "?"}</span>
+          <span class="slot-name">${ing ? _escCafe(ing.name) : ""}</span>
         </div>`;
 
         slotEl.addEventListener("click", () => this.removeFromSlot(idx));
@@ -1360,7 +1367,8 @@ class CafeEngine {
         slotEl.classList.remove("drag-over");
         const ingId = e.dataTransfer.getData("text/plain");
         if (ingId && !slot.ingredientId) {
-          const cardEl = this.deckScroll.querySelector(`.ingredient-card[data-ingredient-id="${ingId}"]`);
+          if (typeof INGREDIENTS[ingId] === "undefined") return;
+          const cardEl = this.deckScroll.querySelector(`.ingredient-card[data-ingredient-id="${CSS.escape(ingId)}"]`);
           this.placeInSlot(idx, ingId, cardEl);
         }
       });
@@ -1459,8 +1467,8 @@ class CafeEngine {
       if (isTempDisabled) card.classList.add("disabled");
 
       card.innerHTML = `
-        <span class="card-icon">${ing.icon}</span>
-        <span class="card-name">${ing.name}</span>
+        <span class="card-icon">${_escCafe(ing.icon)}</span>
+        <span class="card-name">${_escCafe(ing.name)}</span>
         ${usageCount > 0 ? `<span class="card-use-count">${usageCount}</span>` : ""}
       `;
 
